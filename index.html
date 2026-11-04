@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน ศูนย์ AI & Metaverse Innovation Center">
+  <title>ระบบอาสาสมัครนักเรียน | AI & Metaverse Innovation Center</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; background: #f4f6fc; }
+    iframe { display: block; width: 100%; height: 100vh; height: 100dvh; border: 0; }
+    noscript { display: block; padding: 24px; font-family: sans-serif; }
+  </style>
+</head>
+<body>
+  <!-- The app and its data remain in Google Apps Script. -->
+  <iframe id="staffApp" title="ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน" src="https://script.google.com/macros/s/AKfycbxdhLNYigGGYjR7BBntCt9qXGtyP5Zhdr4dRA-AKwKYdyjJaW1vwiuiI31koeKUhXgl/exec?embed=1" allow="clipboard-write"></iframe>
+  <script>
+    const query = new URLSearchParams(location.search);
+    const frame = document.getElementById("staffApp");
+    const destination = new URL(frame.src);
+    const page = query.get("page");
+    if (["apply", "admin", "volunteer"].includes(page)) destination.searchParams.set("page", page);
+    const checkin = query.get("checkin");
+    if (checkin && /^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkin)) destination.searchParams.set("checkin", checkin);
+    if (destination.href !== frame.src) frame.src = destination.href;
+  </script>
+  <noscript>กรุณาเปิด JavaScript เพื่อใช้งานระบบอาสาสมัครนักเรียน</noscript>
+</body>
+</html>
