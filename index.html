@@ -14,16 +14,31 @@
 </head>
 <body>
   <!-- The app and its data remain in Google Apps Script. -->
-  <iframe id="staffApp" title="ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน" src="https://script.google.com/macros/s/AKfycbxdhLNYigGGYjR7BBntCt9qXGtyP5Zhdr4dRA-AKwKYdyjJaW1vwiuiI31koeKUhXgl/exec?embed=1" allow="clipboard-write"></iframe>
+  <p id="entry" style="padding:24px;font:16px/1.7 Tahoma,sans-serif;color:#122b51">กำลังเข้าสู่ระบบ… <a id="enterApp" target="_self" href="https://script.google.com/macros/s/AKfycbxdhLNYigGGYjR7BBntCt9qXGtyP5Zhdr4dRA-AKwKYdyjJaW1vwiuiI31koeKUhXgl/exec">เข้าสู่ระบบอาสาสมัคร</a></p>
   <script>
     const query = new URLSearchParams(location.search);
-    const frame = document.getElementById("staffApp");
-    const destination = new URL(frame.src);
+    const enter = document.getElementById("enterApp");
+    const destination = new URL(enter.href);
     const page = query.get("page");
     if (["apply", "admin", "volunteer"].includes(page)) destination.searchParams.set("page", page);
     const checkin = query.get("checkin");
     if (checkin && /^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkin)) destination.searchParams.set("checkin", checkin);
-    if (destination.href !== frame.src) frame.src = destination.href;
+    enter.href = destination.href;
+    // Mobile enters the app in the same tab without first starting an iframe session.
+    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+      || matchMedia("(pointer: coarse)").matches || matchMedia("(max-width: 800px)").matches;
+    if (mobile) {
+      location.replace(destination.href);
+    } else {
+      destination.searchParams.set("embed", "1");
+      const frame = document.createElement("iframe");
+      frame.id = "staffApp";
+      frame.title = "ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน";
+      frame.allow = "clipboard-write";
+      frame.src = destination.href;
+      document.body.append(frame);
+      document.getElementById("entry").hidden = true;
+    }
   </script>
   <noscript>กรุณาเปิด JavaScript เพื่อใช้งานระบบอาสาสมัครนักเรียน</noscript>
 </body>
