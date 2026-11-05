@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="th"><head><title>ระบบอาสาสมัครนักเรียน | AI & Metaverse</title><script src="./bridge.js?v=1"></script><base target="_self"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&family=Plus+Jakarta+Sans:wght@600..800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><style>
+:root{color-scheme:light;--ink:#122b51;--muted:#415875;--line:#cddceb;--blue:#124ad2;--bg:#f4f8fc}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:linear-gradient(155deg,#f8fbff,#edf5fd 63%,#eff8f8);font:18px/1.6 'Anuphan','Noto Sans Thai',Tahoma,sans-serif}
+main{width:min(1180px,calc(100% - 48px));margin:auto;padding-bottom:28px}
+.brand{display:flex;gap:18px;align-items:center;padding:17px 3px}.center-logo{width:90px;height:90px;border:1px solid #cadde9;border-radius:50%;background:white;display:grid;place-items:center;flex:none;box-shadow:0 5px 24px #1c4b8a14}.center-logo img{width:100%;height:100%;object-fit:contain;border-radius:50%}.brand-title strong{display:block;font:800 clamp(21px,2.25vw,30px)/1.22 'Plus Jakarta Sans',sans-serif;letter-spacing:-1px;color:#172e51}.brand-title p{font-size:clamp(16px,1.6vw,20px);line-height:1.55;margin:7px 0 0;color:#405570}.brand-title p b{color:#175de2}.center-link{margin-left:auto;flex:none;text-decoration:none;font-size:16px;font-weight:600;color:#234f89;padding:10px 17px;border:1px solid #c5d9eb;border-radius:99px;background:#fff}
+.hero{position:relative;isolation:isolate;border:1px solid #c8deef;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 16px 52px #16437a12}
+.poster-head{position:relative;isolation:isolate;padding:clamp(20px,2.3vw,33px) clamp(20px,3.3vw,48px) clamp(21px,2.5vw,34px);overflow:hidden;background:radial-gradient(ellipse at 97% 0,#c6f6ed,transparent 40%),linear-gradient(108deg,#fff 12%,#eef6ff 64%,#daeeff)}
+.poster-head:after{content:'';position:absolute;z-index:-1;right:-120px;top:-225px;width:560px;height:560px;border-radius:50%;border:1px solid #5b93dc45;box-shadow:0 0 0 25px #ffffff45,0 0 0 26px #6b9ee635,0 0 0 85px #ffffff32,0 0 0 86px #598cda20;pointer-events:none}
+.kicker{display:flex;align-items:center;gap:12px;font:800 15px/1.5 'Plus Jakarta Sans',sans-serif;letter-spacing:.13em;color:#20519f}.kicker:before{content:'';width:32px;height:7px;transform:skew(-24deg);background:linear-gradient(90deg,#1858df 60%,transparent 60% 69%,#20b698 69%)}
+.hero-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:22px}.hero-copy{min-width:0}.hero h1{font-weight:800;font-size:clamp(37px,4.65vw,65px);line-height:1.28;letter-spacing:-.045em;margin:12px 0 6px;color:#152e54}.hero h1 span{display:inline-block;color:#1954d5}.hero h1 span:first-child{color:#152e54;margin-right:.17em}.hero-copy p{font-size:clamp(17px,1.45vw,20px);line-height:1.65;color:#415675;margin:0}.hero-cta{border:0;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:18px;min-height:52px;flex:none;padding:12px 22px;background:#194fce;color:#fff;text-decoration:none;border-radius:14px;font-weight:700;font-size:18px;box-shadow:0 8px 18px #2356bd28;transition:transform .2s,background .2s}.hero-cta:hover{background:#123eaa;transform:translateY(-2px)}.hero-cta svg{width:20px;height:20px}
+.activity-banner{margin:0;background:white}.banner-art{width:100%;aspect-ratio:1440/376;overflow:hidden}.campus-banner{display:block;width:100%;height:100%}.activity-banner figcaption{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px clamp(18px,3vw,40px);background:#142e55;color:#fff;font-size:15px;line-height:1.5}.band-title{display:inline-flex;align-items:center;gap:10px}.band-title:before{content:'';width:8px;height:8px;border-radius:50%;background:#7fe6bf}.band-index{color:#c3dcff;font:700 13px/1.4 'Plus Jakarta Sans',sans-serif;letter-spacing:.12em}
+.application-card{max-width:960px;margin:32px auto 0;padding:32px 36px 35px;border:1px solid #fff;border-radius:28px;background:#ffffffef;box-shadow:0 15px 55px #385e9612;scroll-margin-top:20px}.application-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:23px;margin-bottom:25px;border-bottom:1px solid var(--line)}.application-heading h2{margin:0;font-size:21px;letter-spacing:-.4px}.application-heading p{margin:5px 0 0;font-size:12px;color:var(--muted)}.heading-mark{display:inline-grid;place-items:center;margin-right:8px;vertical-align:middle;width:34px;height:34px;border-radius:11px;background:#e9f2ff;color:#3472dc;font:700 13px 'Plus Jakarta Sans',sans-serif}.badge{background:#eef7ff;border:1px solid #d7eaff;border-radius:30px;padding:7px 13px;color:#4375b2;font-size:11px;white-space:nowrap}.form-progress{display:flex;align-items:center;gap:12px;font-size:11px;color:#7b8da8;margin-bottom:23px}.progress-track{height:5px;flex:1;background:#edf2fa;border-radius:8px;overflow:hidden}.progress-fill{display:block;height:100%;width:0;background:linear-gradient(90deg,#3272f1,#25bfca);border-radius:8px;transition:width .35s}form{display:grid;gap:21px}label,.label{display:block;margin-bottom:8px;color:#384d6d;font-size:13px;font-weight:600}label span{font-weight:400;color:#8391a6;font-size:11px}input,select{width:100%;min-width:0;height:50px;padding:0 16px;border:1px solid #dce5f0;border-radius:12px;background:#f8faff;color:#1a3458;font:14px 'Anuphan','Noto Sans Thai',sans-serif;outline:none;transition:.2s}input::placeholder{color:#a0acc0}input:hover,select:hover{border-color:#afc6e9;background:#fff}input:focus,select:focus{border-color:#70a8ff;box-shadow:0 0 0 4px #edf4ff;background:white}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23728aac' stroke-width='1.5'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}select option,select optgroup{background:#fff;color:#253d60}.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}.two>div,.photo-actions{min-width:0}.hint{font-size:12px;color:#8392a9;line-height:1.7;margin:6px 0 0}.photo-box{display:flex;align-items:center;gap:20px;padding:23px;border:1px dashed #a5c8ee;border-radius:18px;background:linear-gradient(110deg,#f3f9ff,#f7f6ff)}.photo-preview{display:grid;place-items:center;flex:none;width:85px;height:106px;background:#fff;border:1px solid #dce7f7;border-radius:13px;overflow:hidden;box-shadow:0 6px 15px #4b6f9b0b}.photo-preview svg{width:35px;height:35px;stroke:#85acd6}.photo-preview img{width:100%;height:100%;object-fit:cover}.photo-actions strong{font-size:13px;font-weight:600;overflow-wrap:anywhere}.photo-actions p{margin:5px 0 9px}.file-button{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:#2b68c6;background:#fff;border:1px solid #c5dbf7;border-radius:9px;padding:8px 14px;font-size:12px;margin:0;transition:.2s}.file-button:hover{background:#e5f0ff;transform:translateY(-1px)}.file-button:focus-within{outline:2px solid #679ee9;outline-offset:3px}.remove{background:none;border:0;color:#7087a8;font:12px 'Anuphan','Noto Sans Thai',sans-serif;padding:8px 10px;cursor:pointer;text-decoration:underline}.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.submit{position:relative;height:54px;width:100%;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:18px;border:0;border-radius:14px;background:linear-gradient(110deg,#2463ec,#298cf2 65%,#26a6de);box-shadow:0 8px 22px #377bf32a;color:#fff;font:700 15px 'Anuphan','Noto Sans Thai',sans-serif;cursor:pointer;transition:filter .2s,transform .2s}.submit:hover{filter:brightness(1.07);transform:translateY(-2px)}.submit:disabled{opacity:.55;cursor:wait;transform:none}.status{padding:12px 15px;border:1px solid #ffc6cf;border-radius:12px;background:#fff2f4;color:#b53b50;font-size:13px}.success{text-align:center;padding:30px 0}.success .check{width:62px;height:62px;margin:0 auto 20px;display:grid;place-items:center;border:1px solid #bce9d9;border-radius:50%;background:#e9fff7;color:#20ad88;font-size:30px}.success h2{font-size:23px;margin:0 0 12px}.success p{color:var(--muted);line-height:1.9;font-size:14px}.success .ref{border:1px solid var(--line);padding:16px;border-radius:12px;background:#f4f9ff;margin:20px 0;color:#3973b7}footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;max-width:960px;margin:0 auto;padding:25px 4px 0;color:#8c9cb4;font-size:10px}footer a{color:#6a87ad;text-decoration:none}footer a:hover{color:#2865c9}.standalone-link{margin-left:auto}button:focus-visible,a:focus-visible{outline:3px solid #80b4ff;outline-offset:4px}[hidden]{display:none!important}
+.application-card{max-width:1000px;scroll-margin-top:12px;border:1px solid var(--line);margin-top:26px;padding:clamp(22px,3.4vw,44px);border-radius:24px;box-shadow:0 12px 44px #1939570b}.application-heading{margin-bottom:18px;padding-bottom:19px}.application-heading h2{font-size:clamp(28px,3.2vw,38px);line-height:1.4}.application-heading p{font-size:17px;color:#445a75}.badge{font-size:15px;font-weight:600;color:#2b5184}.form-progress{font-size:16px;color:#4a607d;margin-bottom:24px}.progress-track{height:8px}.form-section{display:flex;align-items:center;gap:12px;margin:5px 0 0;font-size:23px;line-height:1.5;letter-spacing:-.02em}.form-section span{font:800 15px/1 'Plus Jakarta Sans',sans-serif;color:#1f55b5;padding:8px;background:#e9f1ff;border-radius:8px}.form-section:after{content:'';flex:1;height:1px;background:#dce7f2}.form-section:not(:first-child){margin-top:14px}form{gap:18px}.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}.name-row{grid-template-columns:minmax(165px,.48fr) minmax(0,1.52fr)}
+label,.label{font-size:18px;font-weight:650;color:#243e5e}label span{font-size:16px;color:#536883}input,select{font-size:18px;height:52px;color:#173452;border-color:#c6d7e8;background-color:#fbfdff}input::placeholder{color:#657890}.hint,.photo-actions p{font-size:16px;color:#526783}.photo-actions strong{font-size:18px}.file-button,.remove{font-size:17px;color:#1b54b0}.file-button{padding:10px 16px}.photo-box{border-color:#9bbbe5}.submit{height:60px;border-radius:13px;font-size:21px;background:linear-gradient(105deg,#1849be,#1669d8)}.status,.success p,.success .ref{font-size:18px}.success h2{font-size:30px}footer{max-width:1080px;color:#536987;font-size:15px}footer a{color:#285284}
+@media(max-width:900px){.center-link{display:none}.brand{gap:15px}.brand-title strong{font-size:25px}.hero-intro{align-items:flex-start;flex-direction:column;gap:14px}.hero-cta{min-height:48px}.brand-title p{font-size:17px}}
+@media(max-width:640px){main{width:calc(100% - 24px)}.brand{gap:13px;align-items:center;padding:17px 2px}.center-logo{width:74px;height:74px}.brand-title strong{font-size:21px;line-height:1.23}.brand-title p{margin-top:5px;font-size:15px;line-height:1.52}.hero{border-radius:19px}.poster-head{padding:21px 18px 23px}.kicker{font-size:13px;gap:8px}.kicker:before{width:22px}.hero h1{font-size:clamp(35px,8vw,47px);line-height:1.23;margin:10px 0}.hero-copy p{font-size:17px}.hero-cta{font-size:17px;padding:10px 17px}.banner-art{aspect-ratio:480/350}.activity-banner figcaption{font-size:15px;padding:9px 12px}.band-index{display:none}.application-card{padding:22px 15px;margin-top:18px;border-radius:18px}.application-heading{display:block}.application-heading h2{font-size:29px}.application-heading p{font-size:16px}.badge{display:none}.form-progress{gap:8px;font-size:15px}.form-section{font-size:21px}.two,.name-row{grid-template-columns:minmax(0,1fr);gap:18px}.photo-box{padding:13px;gap:12px;align-items:flex-start}.photo-preview{width:62px;height:83px}.photo-actions strong{font-size:17px}.photo-actions p{font-size:15px}.file-button,.remove{font-size:16px}.submit{font-size:19px}footer{font-size:14px}.standalone-link{margin-left:0}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.field-note { margin: 6px 0 0; color: #a02d39; font-size: 15px; }
+.field-checked { color: #116c54; margin-inline-start: 8px; font-size: 15px; }
+input[aria-invalid="true"], select[aria-invalid="true"] { border-color: #bc4c59; background-color: #fff8f8; }
+.section-state { order: 2; flex: none; font-size: 14px; color: #12664c; font-weight: 650; }
+.review-heading { margin: 0; font-size: clamp(26px,3vw,34px); line-height: 1.4; }
+.review-intro { margin: 5px 0 22px; color: #435a75; font-size: 17px; }
+.review-id { display: flex; align-items: center; gap: 17px; padding: 19px; border: 1px solid #c8dfee; border-radius: 17px; background: linear-gradient(110deg,#edf7ff,#f0faf6); }
+.review-id img { width: 68px; height: 85px; flex: none; object-fit: cover; border: 3px solid #fff; border-radius: 13px; }
+.review-id div { min-width: 0; overflow-wrap: anywhere; }
+.review-id strong { display: block; font-size: 22px; }
+.review-id p { margin: 3px 0 0; font-size: 16px; color: #405975; }
+.review-data { display: grid; grid-template-columns: minmax(125px,1fr) minmax(0,2fr); margin: 18px 0 22px; font-size: 17px; }
+.review-data dt,.review-data dd { margin: 0; padding: 10px 6px; border-bottom: 1px solid #e2ebf3; overflow-wrap: anywhere; }
+.review-data dt { color: #455c79; }
+.review-actions { display: flex; align-items: center; gap: 12px; }
+.review-actions .submit { margin: 0; flex: 1; }
+.back-to-form { padding: 12px 18px; min-height: 48px; border: 1px solid #bccfe6; background: white; border-radius: 12px; color: #204b85; font: inherit; font-weight: 650; cursor: pointer; }
+.back-to-form:disabled { opacity: .6; cursor: wait; }
+.review-actions + .status { margin-top: 12px; }
+@media(max-width:640px) {
+  .review-actions { flex-direction: column-reverse; align-items: stretch; }
+  .review-actions .submit { flex: auto; }
+  .review-id { padding: 13px; gap: 12px; }
+  .review-data { grid-template-columns: minmax(94px,.8fr) minmax(0,1.5fr); }
+}
+
+/* Compact application typography; the masthead and activity banner keep their own scale. */
+.application-heading h2,.review-heading{font-size:clamp(24px,2.35vw,30px);line-height:1.42}
+.application-heading p,.review-intro{font-size:15px;line-height:1.6}
+.application-heading{padding-bottom:15px;margin-bottom:15px}
+.badge,.form-progress,.field-note,.section-state{font-size:14px}
+.form-progress{margin-bottom:19px}
+.form-section{font-size:20px;gap:10px}
+.form-section span{font-size:13px;padding:7px}
+form{gap:15px}
+form label,.photo-actions strong,.photo-actions label{font-size:16px}
+form label span,.hint,.photo-actions p,.remove{font-size:14px}
+form input:not([type=checkbox]):not(.visually-hidden),form select{height:48px;font-size:16px}
+form .required-mark{color:#9e3646;font-weight:700}
+.application-card .submit{height:52px;font-size:18px}
+.review-data,.status,.success p,.success .ref{font-size:16px}
+.review-id strong{font-size:20px}
+.interest-group{min-width:0;border:0;padding:0;margin:0}
+.interest-meta{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;margin:0 0 10px}
+.interest-meta p{margin:0;font-size:14px;line-height:1.65;color:#4b607b}
+.interest-count{font-size:13px;font-weight:650;color:#28559a;white-space:nowrap}
+.interest-list{display:grid;gap:7px}
+form .interest-option{display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0;min-height:46px;
+ border:1px solid #d6e2ee;border-radius:11px;background:#fbfdff;cursor:pointer}
+.interest-option:hover{background:#f2f7ff;border-color:#a7c4e7}
+.interest-option:has(input:checked){background:#eff6ff;border-color:#80a9e1}
+.interest-option:focus-within{outline:2px solid #2b67c4;outline-offset:2px}
+.interest-option input[type=checkbox]{appearance:auto;width:19px;height:19px;padding:0;margin:0;flex:none;accent-color:#205ac0;box-shadow:none}
+.interest-option .option-copy{display:block;line-height:1.55;font-size:14px;color:#465b74;font-weight:400}
+.option-copy strong{font-size:16px;color:#204e94;font-weight:700;margin-inline-end:.35em}
+@media(max-width:640px){.form-section{font-size:18px}.two,.name-row{gap:14px}.interest-option .option-copy{font-size:14px}.interest-option .option-copy strong{display:block}.interest-meta{gap:3px 9px}.application-heading p{font-size:14px}}
+
+/* Keep all three photographs visible in a shallower masthead. */
+.brand,.hero{max-width:1000px;margin-inline:auto}.brand{padding:12px 2px;gap:13px}
+.center-logo{width:64px;height:64px}.brand-title strong{font-size:clamp(17px,2vw,24px)}
+.brand-title p{font-size:15px;margin-top:3px}.center-link{font-size:14px;padding:8px 13px}
+.hero{border-radius:20px}.poster-head{padding:16px clamp(16px,2.7vw,32px) 19px}
+.kicker{font-size:12px}.hero h1{font-size:clamp(28px,3.6vw,44px);margin:6px 0 3px}
+.hero-copy p{font-size:16px}.hero-cta{font-size:15px;min-height:42px;padding:8px 16px;gap:10px}
+.banner-art{aspect-ratio:1440/286}.activity-banner figcaption{font-size:13px;padding-block:6px}
+.band-index{font-size:11px}.application-card{margin-top:20px}
+.photo-box{align-items:center;gap:20px;padding:18px;border:1px solid #c4d8e9;background:linear-gradient(115deg,#f2f8fd,#fff 70%)}
+.photo-preview{position:relative;width:98px;height:122px;background:#e7eff7;border:3px solid white;border-radius:13px;box-shadow:0 2px 12px #233f641e}
+.photo-preview img,.photo-preview svg{position:absolute}
+.photo-preview img{inset:0;width:100%;height:100%;object-fit:contain;background:#e8eff6}
+.photo-preview:has(img:not([hidden])) svg{display:none}
+.photo-actions{flex:1}.photo-actions .photo-state{display:block;font-size:15px;color:#254368}
+.photo-actions .hint{font-size:13px;overflow-wrap:anywhere}.photo-actions .file-button{min-height:40px;padding:6px 14px;background:#fff}
+.photo-actions .photo-state.ready{color:#12654e}.photo-actions .remove{font-size:14px;min-height:40px}
+.review-id img{object-fit:contain;background:#edf2f7}
+footer .admin-entry{margin-inline-start:auto;font-weight:650}
+@media(max-width:900px) and (min-width:641px){.hero-intro{flex-direction:row;align-items:flex-end}}
+@media(max-width:640px){.brand{padding:10px 2px;gap:10px}.center-logo{width:48px;height:48px}.brand-title strong{font-size:17px}.brand-title p{font-size:12px}
+.hero-intro{gap:9px}.poster-head{padding:13px 15px 14px}.hero h1{font-size:clamp(26px,7vw,36px)}.hero-copy p{font-size:14px}
+.banner-art{aspect-ratio:480/264}.photo-box{padding:12px;gap:12px}.photo-preview{width:76px;height:96px}.photo-actions .photo-state{font-size:14px}.activity-banner figcaption{font-size:12px}}
+.photo-preview #photoIcon{position:absolute;inset:0;display:grid;place-items:center}.file-button #photoChoose{color:inherit;font:inherit}
+.visit-alert{display:flex;align-items:center;gap:14px;max-width:1000px;margin:16px auto 0;padding:12px 18px;border:1px solid #b7e3cf;border-radius:16px;background:linear-gradient(105deg,#ecfbf3,#f2f8ff);color:#123d33;text-decoration:none;box-shadow:0 8px 24px #1b5f4a12;transition:transform .2s,border-color .2s}.visit-alert:hover{transform:translateY(-1px);border-color:#7fcfac}
+.visit-alert.soon{border-color:#f1d6a6;background:linear-gradient(105deg,#fff7e8,#f5f8ff);color:#5c3a05}.visit-dot{width:12px;height:12px;border-radius:50%;background:#1aa772;box-shadow:0 0 0 5px #1aa77226;flex:none}.visit-alert.soon .visit-dot{background:#d58a0b;box-shadow:0 0 0 5px #d58a0b26}
+.visit-copy{flex:1;min-width:0}.visit-copy strong{display:block;font-size:16px;line-height:1.45;overflow-wrap:anywhere}.visit-copy small{display:block;font-size:14px;color:#3f5a52}.visit-alert.soon .visit-copy small{color:#6b5226}
+.visit-go{flex:none;font-weight:700;font-size:15px;padding:8px 14px;border-radius:11px;background:#127a55;color:#fff}.visit-alert.soon .visit-go{background:#a96407}
+@media(max-width:640px){.visit-alert{flex-wrap:wrap;gap:10px;padding:12px 14px}.visit-go{width:100%;text-align:center}}
+/* Modern refresh shared with the volunteer start page and the admin console. */
+body{color:#0f1f3d;background:radial-gradient(900px 500px at 100% -10%,#dbeafe 0,transparent 60%),radial-gradient(700px 420px at -10% 30%,#ccfbf1 0,transparent 55%),#f3f6fb;-webkit-font-smoothing:antialiased}
+main{width:min(1080px,calc(100% - 48px))}.brand,.hero{max-width:1080px}
+.brand{position:relative;top:0;z-index:5;margin:0 auto;padding:12px 0;background:#f3f6fbcc;-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px)}
+.center-logo{width:46px;height:46px;border-color:#d6e2ef;box-shadow:none}.brand-title strong{font-size:16px;letter-spacing:-.3px;color:#0f1f3d}.brand-title p{margin-top:0;font-size:12.5px;color:#56657f}
+.top-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex:none}.top-nav a{padding:8px 14px;border-radius:11px;font-size:14px;font-weight:700;text-decoration:none;white-space:nowrap}
+.top-nav .home-link{background:#0a1a36;color:#fff}.top-nav .home-link:hover{background:#13284d}.top-nav .center-link{margin:0;border:1px solid #d5e0ec;background:#fff;color:#22406b}
+.hero{border:0;border-radius:28px;background:#0a1a36;box-shadow:0 30px 70px -40px #0a1a36}
+.poster-head{color:#fff;background:radial-gradient(520px 340px at 0% 120%,#1d4ed8cc 0,transparent 60%),radial-gradient(460px 320px at 100% 0%,#0d9488aa 0,transparent 60%),#0a1a36}
+.poster-head:after{border-color:#ffffff1f;box-shadow:0 0 0 25px #ffffff06,0 0 0 26px #ffffff14,0 0 0 85px #ffffff05,0 0 0 86px #ffffff10}
+.kicker{color:#bfe3ff}.kicker:before{background:linear-gradient(90deg,#5eead4 60%,transparent 60% 69%,#93c5fd 69%)}
+.hero h1,.hero h1 span:first-child{color:#fff}.hero h1 span{background:linear-gradient(90deg,#5eead4,#93c5fd);-webkit-background-clip:text;background-clip:text;color:transparent}.hero h1 span:first-child{background:none;-webkit-text-fill-color:#fff}
+.hero-copy p{color:#cfdcf3}.hero-cta{background:#fff;color:#0a1a36;box-shadow:0 10px 24px -12px #000}.hero-cta:hover{background:#eef4ff}
+.banner-art{background:linear-gradient(90deg,#13274a 25%,#1d3a68 50%,#13274a 75%);background-size:200% 100%;animation:bannerWait 1.4s infinite}.banner-art.loaded{animation:none}@keyframes bannerWait{to{background-position:-200% 0}}
+.activity-banner figcaption{background:#0d2042}
+.visit-alert{border-radius:18px;box-shadow:0 1px 2px #0f1f3d0d,0 12px 30px -20px #0f1f3d40}
+.application-card{border:1px solid #e1e8f1;border-radius:26px;background:#fff;box-shadow:0 1px 2px #0f1f3d0d,0 18px 44px -26px #0f1f3d47}
+.application-heading h2,.review-heading{letter-spacing:-.03em;color:#0f1f3d}.badge{background:#eff6ff;border-color:#dbeafe;color:#1d4ed8;font-weight:700}
+.progress-track{background:#e8eef5}.progress-fill{background:linear-gradient(90deg,#3b82f6,#14b8a6)}
+.form-section{color:#0f1f3d}.form-section span{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border-radius:10px}.form-section:after{background:#e4ebf3}
+form input:not([type=checkbox]):not(.visually-hidden),form select{border-radius:14px;border-color:#d3deea;background-color:#f8fafd;transition:border-color .15s,box-shadow .15s,background-color .15s}
+form input:not([type=checkbox]):not(.visually-hidden):focus,form select:focus{border-color:#60a5fa;box-shadow:0 0 0 4px #3b82f61f;background-color:#fff}
+form .interest-option{border-radius:14px;border-color:#d8e3ef;background:#fff}.interest-option:has(input:checked){background:#eff6ff;border-color:#3b82f6;box-shadow:0 0 0 3px #3b82f61a}.option-copy strong{color:#1d4ed8}
+.photo-box{border-radius:20px;border-color:#d8e3ef;background:linear-gradient(120deg,#f4f8ff,#fff 70%)}.file-button{border-radius:11px;border-color:#c7d8ee;color:#1d4ed8;font-weight:700}
+.application-card .submit,.success .submit{border-radius:14px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 12px 24px -12px #1d4ed8}.back-to-form{border-radius:14px}
+.review-id{border-radius:20px;background:linear-gradient(120deg,#eef4ff,#ecfdf8);border-color:#dbe7f3}.success .check{background:#ecfdf5;border-color:#a7f3d0;color:#10b981}.success .ref{border-radius:14px;background:#f4f8ff}
+footer{max-width:1080px;padding:22px 2px 28px;border-top:1px solid #e1e8f1;margin-top:30px;color:#56657f;font-size:13.5px}footer a{color:#29466f;font-weight:600}
+@media(max-width:900px){.top-nav .center-link{display:none}}
+@media(max-width:640px){main{width:calc(100% - 24px)}.brand{padding:10px 0}.top-nav a{padding:7px 11px;font-size:13px}.hero{border-radius:22px}.application-card{border-radius:20px}}
+@media(prefers-reduced-motion:reduce){.banner-art{animation:none}}
+/* Bright theme shared with the volunteer page: floating glass header, light hero and soft cards. */
+:root{--ink:#0b1b3f;--ink2:#2d3d5f;--muted:#66758f;--line:#e4e9f2;--soft:#f5f7fb;--brand:#2f5bea;--brand2:#5b7cff;--brand-d:#2244c4;--brand-soft:#edf2ff;--sh-sm:0 1px 2px #0b1b3f0d;--sh:0 1px 2px #0b1b3f0a,0 12px 32px -18px #2f5bea38;--sh-lg:0 2px 4px #0b1b3f08,0 34px 64px -34px #2f5bea52}
+body{color:var(--ink);background:radial-gradient(760px 460px at 6% -4%,#dfe8ff 0,transparent 70%),radial-gradient(700px 480px at 96% 0,#d8f4ee 0,transparent 70%),radial-gradient(620px 420px at 50% 40%,#efeaff 0,transparent 70%),#f5f7fc;font-family:'Anuphan','Noto Sans Thai',Tahoma,sans-serif}
+.brand{top:10px;margin-top:10px;padding:8px 10px 8px 12px;border:1px solid #ffffffe6;border-radius:22px;background:#ffffffd1;-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px);box-shadow:var(--sh)}
+.center-logo{width:46px;height:46px;padding:3px;border-radius:15px;border-color:var(--line)}.center-logo img{border-radius:12px}
+.brand-title{min-width:0}.brand-title strong,.brand-title p{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.brand-title strong{font-family:inherit;font-size:16.5px;font-weight:700;letter-spacing:0;color:var(--ink)}.brand-title p{font-size:12.5px;color:var(--muted)}.brand-title p b{display:none}
+.top-nav .home-link{background:var(--ink);font-weight:600;box-shadow:0 10px 20px -12px #0b1b3f}.top-nav .home-link:hover{background:#17295a}.top-nav .center-link{font-weight:600;border-color:var(--line);color:var(--ink2)}
+.hero{margin-top:16px;border:1px solid #fff;border-radius:34px;background:#fff;box-shadow:var(--sh-lg)}
+.poster-head{color:var(--ink);background:radial-gradient(440px 300px at 0 0,#e2eaff,transparent 72%),radial-gradient(420px 300px at 100% 100%,#d9f5ef,transparent 72%),#fff}
+.poster-head:after{border-color:#2f5bea24;box-shadow:0 0 0 25px #2f5bea05,0 0 0 26px #2f5bea14,0 0 0 85px #2f5bea04,0 0 0 86px #2f5bea0f}
+.kicker{color:var(--brand);font-family:'Plus Jakarta Sans',sans-serif}.kicker:before{background:linear-gradient(90deg,var(--brand) 60%,transparent 60% 69%,#14b8a6 69%)}
+.hero h1{font-weight:700;letter-spacing:-.015em}.hero h1,.hero h1 span:first-child{color:var(--ink);-webkit-text-fill-color:currentColor}
+.hero h1 span{background:linear-gradient(90deg,var(--brand) 5%,#7c5cff 55%,#14b8a6 95%);-webkit-background-clip:text;background-clip:text}.hero h1 span:not(:first-child){-webkit-text-fill-color:transparent}
+.hero-copy p{color:var(--ink2)}
+.hero-cta{background:linear-gradient(135deg,var(--brand2),var(--brand) 55%,var(--brand-d));color:#fff;font-weight:600;box-shadow:inset 0 1px 0 #ffffff40,0 12px 24px -12px var(--brand)}.hero-cta:hover{background:linear-gradient(135deg,var(--brand2),var(--brand) 55%,var(--brand-d));filter:brightness(1.05)}
+.banner-art{background:linear-gradient(90deg,#e7edf8 25%,#f3f6fc 50%,#e7edf8 75%);background-size:200% 100%}
+.activity-banner figcaption{background:#fff;color:var(--ink2);border-top:1px solid var(--line)}.band-title:before{background:#14b8a6}.band-index{color:var(--muted)}
+.visit-alert{border-radius:20px;border-color:#c6ebd8;box-shadow:var(--sh)}.visit-go{border-radius:12px;font-weight:600;box-shadow:0 8px 16px -10px currentColor}
+.application-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:30px;box-shadow:var(--sh)}.application-card:before{content:'';position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--brand),#7c5cff 50%,#14b8a6)}
+.application-heading h2,.review-heading{font-weight:700;letter-spacing:-.01em}.badge{background:var(--brand-soft);border-color:#dbe4fb;color:var(--brand-d);font-weight:600}
+.progress-fill{background:linear-gradient(90deg,var(--brand2),#14b8a6)}
+.form-section{font-weight:700}.form-section span{background:linear-gradient(135deg,var(--brand2),var(--brand-d));box-shadow:0 8px 16px -10px var(--brand)}
+form input:not([type=checkbox]):not(.visually-hidden),form select{border-radius:15px;border-color:#d6dfec;background-color:var(--soft)}
+form input:not([type=checkbox]):not(.visually-hidden):focus,form select:focus{border-color:var(--brand2);box-shadow:0 0 0 4px #2f5bea1f;background-color:#fff}
+form .interest-option{border-radius:15px;border-color:#d9e2ef;transition:border-color .15s,background .15s,box-shadow .15s}.interest-option:has(input:checked){background:var(--brand-soft);border-color:var(--brand2);box-shadow:0 0 0 3px #2f5bea1a}.option-copy strong{color:var(--brand-d)}
+.photo-box{border-radius:22px;border-color:#d9e2ef;background:linear-gradient(120deg,var(--brand-soft),#fff 70%)}.file-button{border-radius:12px;color:var(--brand-d);font-weight:600}
+.application-card .submit,.success .submit{border-radius:15px;font-weight:600;background:linear-gradient(135deg,var(--brand2),var(--brand) 55%,var(--brand-d));box-shadow:inset 0 1px 0 #ffffff40,0 14px 26px -12px var(--brand)}
+.review-id{border-radius:22px;background:linear-gradient(120deg,var(--brand-soft),#f4f1ff 55%,#e4f7f4);border-color:#dfe6f6}
+footer{border-top-color:var(--line);color:var(--muted)}footer a{color:var(--ink2);font-weight:600}footer a:hover{color:var(--brand-d)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.hero,.visit-alert,.application-card{animation:rise .55s cubic-bezier(.2,.7,.2,1) backwards}.visit-alert{animation-delay:.07s}.application-card{animation-delay:.12s}
+/* Google Sites: blend into the white page and keep the header in the flow. */
+.embedded{background:#fff}.embedded .brand{position:static;margin-top:10px;background:#fff;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-color:var(--line)}
+.embedded .hero,.embedded .application-card,.embedded .visit-alert{box-shadow:none}.embedded .hero{border-color:var(--line)}
+@media(max-width:640px){.brand-title .long,.top-nav .long{display:none}.brand{top:8px;margin-top:8px;padding:6px 8px 6px 10px;border-radius:18px}.center-logo{width:40px;height:40px}.brand-title strong{font-size:14.5px}.brand-title p{font-size:11.5px}.hero{border-radius:26px}.application-card{border-radius:24px}}
+@media(prefers-reduced-motion:reduce){.hero,.visit-alert,.application-card{animation:none}}
+/* Showcase layer shared with the volunteer page: aurora light, a turning hero halo, flowing gradients and scroll-in motion (script at the end of the page). */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+:root{--ease:cubic-bezier(.22,1,.36,1);--grad:linear-gradient(120deg,#4f46e5,#2563eb 45%,#0891b2);--flow:linear-gradient(100deg,#4f46e5,#2563eb 22%,#0891b2 45%,#8b5cf6 72%,#4f46e5);--ring:linear-gradient(140deg,#c7d2fe,#eef0f7 45%,#bae6fd);--ring-hot:linear-gradient(140deg,#818cf8,#c4b5fd 45%,#22d3ee);--halo:conic-gradient(from var(--ang),#818cf8,#22d3ee,#a78bfa,#f0abfc,#818cf8)}
+body{position:relative;background:#f4f6fc}
+.aurora{position:absolute;z-index:-1;top:0;left:0;right:0;height:min(1600px,100%);overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.aurora i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;will-change:transform}
+.aurora i:nth-child(1){left:-20vmax;top:-28vmax;background:radial-gradient(closest-side,#a5b4fccc,transparent);animation:drift-a 24s ease-in-out infinite alternate}
+.aurora i:nth-child(2){right:-22vmax;top:-20vmax;background:radial-gradient(closest-side,#99f6e4b3,transparent);animation:drift-b 28s ease-in-out infinite alternate}
+.aurora i:nth-child(3){left:18%;top:14vmax;width:46vmax;height:46vmax;background:radial-gradient(closest-side,#f5d0fe99,transparent);animation:drift-c 32s ease-in-out infinite alternate}
+.aurora:after{content:'';position:absolute;inset:0;background:radial-gradient(#4f46e514 1px,transparent 1.5px) 0 0/28px 28px;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent);mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent)}
+.embedded .aurora{display:none}
+@keyframes drift-a{to{transform:translate(16vmax,12vmax) scale(1.18)}}@keyframes drift-b{to{transform:translate(-14vmax,16vmax) scale(.9)}}@keyframes drift-c{to{transform:translate(-10vmax,-8vmax) scale(1.2)}}
+@keyframes ang{to{--ang:360deg}}@keyframes flow{to{background-position:200% 0}}@keyframes up{from{opacity:0;transform:translateY(24px)}}
+@keyframes sheen{0%,55%{background-position:150% 0}100%{background-position:-50% 0}}@keyframes swirl{to{transform:rotate(22deg) scale(1.12)}}@keyframes kb{to{transform:scale(1.07)}}
+@keyframes pop{0%{opacity:0;transform:scale(.3)}60%{transform:scale(1.12)}100%{transform:none}}@keyframes ping{to{box-shadow:0 0 0 18px #10b98100}}@keyframes dot{70%{box-shadow:0 0 0 10px #1aa77200}}
+.motion .rv{opacity:0;transform:translateY(30px) scale(.98);transition:opacity .8s var(--ease) var(--d,0s),transform .9s var(--ease) var(--d,0s)}
+.motion .rv.in{opacity:1;transform:none}
+@media print{.rv{opacity:1!important;transform:none!important}.aurora{display:none}}
+
+/* Header and hero */
+.brand{background:#ffffffe6;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:inset 0 1px 0 #fff,0 10px 30px -18px #4f46e540;transition:box-shadow .4s var(--ease),background .4s}
+.scrolled .brand{background:#ffffffeb;box-shadow:inset 0 1px 0 #fff,0 18px 40px -20px #312e8159}
+.brand:after{content:'';position:absolute;left:22px;right:22px;bottom:-1px;height:2px;border-radius:2px;background:var(--grad);transform:scaleX(var(--sp,0));transform-origin:left}
+.embedded .brand:after{display:none}
+.center-logo img{transition:transform .5s var(--ease)}.center-logo:hover img{transform:rotate(-8deg) scale(1.06)}
+.top-nav .home-link{background:linear-gradient(120deg,#1e1b4b,#312e81 55%,#1e3a8a);box-shadow:0 12px 24px -12px #312e81;transition:transform .25s var(--ease),box-shadow .25s}.top-nav .home-link:hover{background:linear-gradient(120deg,#1e1b4b,#3730a3 55%,#1d4ed8);transform:translateY(-1px)}
+.hero{border:1.5px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--halo) border-box;box-shadow:0 40px 90px -50px #4f46e580;animation:rise .8s var(--ease) backwards,ang 10s linear infinite}
+.poster-head:before{content:'';position:absolute;z-index:-1;inset:-40%;background:radial-gradient(28% 38% at 22% 30%,#c7d2fe99,transparent 70%),radial-gradient(28% 38% at 78% 70%,#a5f3fc80,transparent 70%),radial-gradient(22% 30% at 55% 20%,#f5d0fe66,transparent 70%);animation:swirl 18s ease-in-out infinite alternate}
+.kicker,.hero-copy>*,.hero-cta{animation:up .9s var(--ease) backwards}.hero-copy h1{animation-delay:.08s}.hero-copy p{animation-delay:.16s}.hero-cta{animation-delay:.26s}
+.hero h1 span:not(:first-child){background-image:var(--flow);background-size:200% 100%;animation:flow 7s linear infinite}
+.campus-banner{transform-origin:center;animation:kb 22s ease-in-out infinite alternate}
+.band-title:before{animation:dot 2s infinite;box-shadow:0 0 0 0 #14b8a666}
+.hero-cta,.application-card .submit,.success .submit{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(120deg,#4f46e5,#2563eb 40%,#0891b2 80%,#4f46e5) 0 0/220% 100%;box-shadow:inset 0 1px 0 #ffffff47,0 14px 28px -14px #4f46e5;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background-position .6s var(--ease)}
+.hero-cta:after,.application-card .submit:after,.success .submit:after{content:'';position:absolute;z-index:-1;top:0;bottom:0;left:-75%;width:50%;background:linear-gradient(100deg,transparent,#ffffff59,transparent);transform:skewX(-20deg);transition:left .8s var(--ease)}
+.hero-cta:hover,.application-card .submit:hover:enabled,.success .submit:hover{background:linear-gradient(120deg,#4f46e5,#2563eb 40%,#0891b2 80%,#4f46e5) 100% 0/220% 100%;transform:translateY(-2px);filter:none;box-shadow:inset 0 1px 0 #ffffff47,0 20px 34px -14px #4f46e5}
+.hero-cta:hover:after,.application-card .submit:hover:enabled:after,.success .submit:hover:after{left:130%}
+.hero-cta:active,.application-card .submit:active:enabled{transform:scale(.97)}
+.hero-cta svg{transition:transform .3s var(--ease)}.hero-cta:hover svg{transform:translateX(4px)}
+
+/* Upcoming-visit banner and the application card */
+.visit-dot{animation:dot 2s infinite}.visit-alert{transition:transform .35s var(--ease),box-shadow .35s var(--ease)}.visit-alert:hover{transform:translateY(-2px);box-shadow:0 22px 40px -26px #0f5f4a80}
+.application-card{border:1px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--ring) border-box;box-shadow:0 40px 80px -50px #4f46e566}
+.application-card:before{height:5px;background:var(--flow);background-size:200% 100%;animation:flow 6s linear infinite}
+.badge{background:linear-gradient(120deg,#eef2ff,#ecfeff);border-color:#c7d2fe;color:#4338ca}
+.form-section span{background:var(--grad);box-shadow:0 10px 18px -10px #4f46e5}.form-section:after{background:linear-gradient(90deg,#c7d2fe,transparent)}
+.progress-fill{position:relative;overflow:hidden;background:linear-gradient(90deg,#6366f1,#8b5cf6 50%,#06b6d4)}
+.progress-fill:after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,#ffffff8c 50%,transparent 70%) 0 0/200% 100%;animation:sheen 2.6s linear infinite}
+form input:not([type=checkbox]):not(.visually-hidden),form select{transition:border-color .2s,box-shadow .3s var(--ease),background-color .2s,transform .3s var(--ease)}
+form input:not([type=checkbox]):not(.visually-hidden):hover,form select:hover{border-color:#c7d2fe}
+form input:not([type=checkbox]):not(.visually-hidden):focus,form select:focus{border-color:#818cf8;box-shadow:0 0 0 4px #6366f11f,0 12px 24px -18px #4f46e5;transform:translateY(-1px)}
+form .interest-option{transition:border-color .2s,background .2s,box-shadow .3s var(--ease),transform .3s var(--ease)}.interest-option:hover{transform:translateX(4px);border-color:#c7d2fe}
+.interest-option:has(input:checked){border-color:transparent;background:linear-gradient(#f5f7ff,#f5f7ff) padding-box,var(--ring-hot) border-box;box-shadow:0 12px 24px -18px #4f46e5}
+.interest-option input[type=checkbox]{accent-color:#4f46e5}
+.photo-box{transition:border-color .3s,box-shadow .3s var(--ease)}.photo-box:hover{border-color:#a5b4fc;box-shadow:0 16px 30px -24px #4f46e5}
+.photo-preview{transition:transform .4s var(--ease)}.photo-box:hover .photo-preview{transform:rotate(-2deg) scale(1.03)}
+.file-button{transition:transform .25s var(--ease),background .2s,box-shadow .25s}.file-button:hover{box-shadow:0 10px 18px -12px #4f46e5}
+.review-id{background:linear-gradient(120deg,#eef2ff,#f5f3ff 55%,#ecfeff)}
+#reviewSection:not([hidden]),#success:not([hidden]){animation:up .6s var(--ease)}
+.success .check{background:linear-gradient(135deg,#34d399,#059669);border:0;color:#fff;box-shadow:0 0 0 0 #10b98166;animation:pop .7s var(--ease) backwards,ping 1.4s ease-out .6s 2}
+footer a{transition:color .2s}
+@media(prefers-reduced-motion:reduce){.aurora i,.poster-head:before,.campus-banner{animation:none}.rv{opacity:1!important;transform:none!important}}
+/* Larger centre logo */
+.center-logo{width:66px;height:66px;padding:4px;border-radius:19px;box-shadow:0 0 0 3px #eef2ff,0 12px 24px -12px #4f46e5}.center-logo img{border-radius:15px}
+.brand{gap:14px}.brand-title strong{font-size:17.5px}
+@media(max-width:640px){.center-logo{width:50px;height:50px;border-radius:15px}.center-logo img{border-radius:12px}}
+/* Smoothness: loops pause off screen (.idle) and low-power devices get a still version (.lite). */
+.idle,.idle *,.idle::before,.idle::after,.idle *::before,.idle *::after{animation-play-state:paused!important}
+.lite .aurora i,.lite .hero,.lite .poster-head:before,.lite .campus-banner,.lite .hero h1 span,.lite .application-card:before,.lite .progress-fill:after,.lite .band-title:before,.lite .visit-dot{animation:none}
+/* Banner: a bento grid of the centre's photos with captions, a slow zoom on the large tile and a lift on hover;
+   the heading above becomes a pill label, a larger title and a glowing call to action. */
+.poster-head{padding:clamp(22px,3vw,40px) clamp(20px,3.4vw,44px) clamp(20px,2.6vw,30px)}
+.kicker{display:inline-flex;padding:6px 14px 6px 10px;border:1px solid #e0e7ff;border-radius:99px;background:#ffffffd9;font-size:12px;box-shadow:0 6px 16px -12px #4f46e5}
+.kicker:before{width:22px;height:6px}
+.hero h1{margin:14px 0 6px;font-size:clamp(32px,4.2vw,54px)}
+.hero-copy p{font-size:clamp(15px,1.3vw,17px)}
+.hero-cta{min-height:52px;padding:12px 24px;border-radius:16px;font-size:16px;box-shadow:inset 0 1px 0 #ffffff47,0 18px 34px -14px #4f46e5}
+.activity-banner{padding:0 clamp(12px,2vw,22px) clamp(12px,2vw,20px)}
+.banner-art.bento{display:grid;grid-template-columns:1.55fr 1fr 1fr;grid-template-rows:clamp(130px,15vw,190px) clamp(130px,15vw,190px);gap:clamp(8px,1vw,12px);aspect-ratio:auto;overflow:visible;background:none;animation:none}
+.shot{position:relative;isolation:isolate;overflow:hidden;border-radius:22px;background:linear-gradient(90deg,#e7edf8 25%,#f3f6fc 50%,#e7edf8 75%) 0 0/200% 100%;animation:bannerWait 1.4s infinite;box-shadow:0 18px 34px -24px #1e1b4b99;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.shot:has(img.ready){animation:none}
+.s1{grid-row:1/3}.s2{grid-column:2/4}.s2 img{object-position:center 30%}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.1);transition:opacity .9s var(--ease),transform 1.4s var(--ease)}
+.shot img.ready{opacity:1;transform:scale(1)}
+.s1 img.ready{animation:kb 18s ease-in-out 1.4s infinite alternate}
+.shot:after{content:'';position:absolute;inset:45% 0 0;background:linear-gradient(transparent,#0b1b3fb3);pointer-events:none}
+.shot span{position:absolute;z-index:1;left:14px;bottom:12px;display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1px solid #ffffff59;border-radius:99px;background:#ffffff26;color:#fff;font-size:13px;font-weight:600;text-shadow:0 1px 6px #0b1b3f80}
+.shot span:before{content:'';width:7px;height:7px;border-radius:50%;background:#5eead4}
+.s1 span{left:18px;bottom:16px;font-size:15px;padding:7px 16px}
+.shot:hover{transform:translateY(-4px);box-shadow:0 28px 44px -24px #312e81b3}
+.shot:hover img.ready{transform:scale(1.06)}
+.activity-banner figcaption{padding:12px 6px 0;background:none;border:0}
+@media(max-width:640px){.banner-art.bento{grid-template-columns:1fr 1fr;grid-template-rows:190px 130px 130px}.s1{grid-row:auto;grid-column:1/3}.s2{grid-column:1/3}.shot{border-radius:16px}.shot span{font-size:11.5px;left:10px;bottom:9px;padding:4px 10px}.s1 span{font-size:13px}.hero h1{font-size:clamp(28px,8vw,38px)}}
+@media(hover:none){.shot:hover{transform:none}}
+.lite .s1 img.ready,.lite .shot{animation:none}</style></head><body class=""><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><main>
+<header class="brand"><a class="center-logo" href="https://nst-ai-23203.netlify.app/" target="_blank" rel="noopener" aria-label="เว็บไซต์ศูนย์"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt="โลโก้ศูนย์นวัตกรรม AI"></a><div class="brand-title"><strong>ระบบอาสาสมัครนักเรียน<span class="long">ต้อนรับคณะดูงาน</span></strong><p><b>·</b> AI & Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก</p></div><nav class="top-nav" aria-label="เมนู"><a class="center-link" href="https://nst-ai-23203.netlify.app/" target="_blank" rel="noopener">เว็บไซต์ศูนย์ ↗</a></nav></header>
+<section class="hero" aria-labelledby="heroTitle"><div class="poster-head"><div class="kicker" lang="en">STUDENT STAFF PROGRAM</div><div class="hero-intro"><div class="hero-copy"><h1 id="heroTitle"><span>ลงทะเบียน</span><span>นักเรียนสตราฟ</span></h1><p>ร่วมเป็นทีมดูแลห้องเรียน AI และกิจกรรมโลกเสมือนจริงของโรงเรียน</p></div><button class="hero-cta" id="startApplication" type="button">เริ่มกรอกใบสมัคร <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div></div><figure class="activity-banner"><div class="banner-art bento" role="group" aria-label="ภาพกิจกรรมของศูนย์"><div class="shot s1"><img id="campusImage0" alt="นักเรียนสตราฟนำเสนอผลงาน STP Metaverse ให้คณะดูงาน" decoding="async"><span>นำเสนอผลงาน Metaverse</span></div><div class="shot s2"><img id="campusImage1" alt="นักเรียนแนะนำการใช้คอมพิวเตอร์ในห้องปฏิบัติการ AI" decoding="async"><span>ห้องปฏิบัติการ AI</span></div><div class="shot s3"><img id="campusImage2" alt="นักเรียนสตราฟต้อนรับและพูดคุยกับคณะดูงาน" decoding="async"><span>ต้อนรับคณะดูงาน</span></div><div class="shot s4"><img id="campusImage3" alt="นักเรียนสาธิตแอปพลิเคชันและแว่น VR ให้ผู้มาเยือน" decoding="async"><span>สาธิตเทคโนโลยี VR</span></div></div><figcaption><span class="band-title">บรรยากาศกิจกรรมของศูนย์</span><span class="band-index" lang="en">AI &amp; METAVERSE INNOVATION CENTER</span></figcaption></figure></section>
+<a class="visit-alert" id="visitAlert" href="./" target="_self" rel="noopener" hidden><span class="visit-dot" aria-hidden="true"></span><span class="visit-copy"><strong id="visitAlertTitle"></strong><small id="visitAlertText"></small></span><span class="visit-go" id="visitGo"></span></a>
+<div class="application-card" id="application">
+<div id="formSection"><div class="application-heading"><div><h2>ใบสมัครนักเรียนสตราฟ</h2><p>เตรียมรหัสนักเรียน อีเมล เบอร์โทรศัพท์ ID LINE และรูปถ่ายหน้าตรง</p></div><span class="badge">นักเรียน (Student)</span></div><div class="form-progress"><span>ข้อมูลที่กรอกครบ</span><div class="progress-track" role="progressbar" aria-label="ข้อมูลที่กรอกครบ" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="formProgress"><span class="progress-fill" id="progressFill"></span></div><span id="progressCount">0 / 10</span></div><form id="registration" novalidate>
+<h3 class="form-section"><span>01</span> ข้อมูลนักเรียน</h3>
+<div><label for="studentId">รหัสประจำตัวนักเรียน</label><input id="studentId" name="studentId" inputmode="numeric" pattern="[0-9]{1,20}" maxlength="20" placeholder="กรอกรหัสนักเรียน" required autocomplete="off"></div>
+<div class="two name-row"><div><label for="prefix">คำนำหน้า</label><select id="prefix" name="prefix" required><option value="">เลือกคำนำหน้า</option><option>เด็กชาย</option><option>เด็กหญิง</option><option>นาย</option><option>นางสาว</option></select></div>
+<div><label for="fullName">ชื่อ–นามสกุล</label><input id="fullName" name="fullName" minlength="2" placeholder="กรอกชื่อและนามสกุล" required maxlength="120" autocomplete="name"></div></div>
+<div class="two"><div><label for="classroom">ระดับชั้น / ห้อง</label><select id="classroom" name="classroom" required><option value="">เลือกระดับชั้น / ห้อง</option><optgroup label="มัธยมศึกษาปีที่ 1"><option value="101">ม.101</option><option value="102">ม.102</option><option value="103">ม.103</option><option value="104">ม.104</option><option value="105">ม.105</option><option value="106">ม.106</option></optgroup><optgroup label="มัธยมศึกษาปีที่ 2"><option value="201">ม.201</option><option value="202">ม.202</option><option value="203">ม.203</option><option value="204">ม.204</option><option value="205">ม.205</option><option value="206">ม.206</option></optgroup><optgroup label="มัธยมศึกษาปีที่ 3"><option value="301">ม.301</option><option value="302">ม.302</option><option value="303">ม.303</option><option value="304">ม.304</option><option value="305">ม.305</option><option value="306">ม.306</option></optgroup><optgroup label="มัธยมศึกษาปีที่ 4"><option value="401">ม.401</option><option value="402">ม.402</option><option value="403">ม.403</option><option value="404">ม.404</option><option value="405">ม.405</option></optgroup><optgroup label="มัธยมศึกษาปีที่ 5"><option value="501">ม.501</option><option value="502">ม.502</option><option value="503">ม.503</option><option value="504">ม.504</option><option value="505">ม.505</option></optgroup><optgroup label="มัธยมศึกษาปีที่ 6"><option value="601">ม.601</option><option value="602">ม.602</option><option value="603">ม.603</option><option value="604">ม.604</option><option value="605">ม.605</option></optgroup></select></div><div><label for="number">เลขที่</label><input id="number" name="number" inputmode="numeric" pattern="[0-9]{1,3}" maxlength="3" placeholder="เช่น 12" required></div></div>
+<h3 class="form-section" id="interestsTitle"><span>02</span> สำรวจทักษะและความสนใจ</h3>
+<fieldset class="interest-group" aria-labelledby="interestsTitle" aria-describedby="interestHelp interestError"><div class="interest-meta"><p id="interestHelp">เลือกอย่างน้อย 1 สาย เลือกได้มากกว่า 1 สาย</p><span class="interest-count" id="interestCount" aria-live="polite">เลือกแล้ว 0 สาย</span></div>
+<p class="field-note" id="interestError" role="alert" hidden>กรุณาเลือกทักษะหรือความสนใจอย่างน้อย 1 สาย</p>
+<div class="interest-list"><label class="interest-option"><input type="checkbox" id="firstInterest" aria-describedby="interestHelp interestError" name="interests" value="สายพูด"><span class="option-copy"><strong>สายพูด</strong> ชอบพรีเซนต์ กล้าแสดงออก อธิบายหรือเล่าเรื่อง และพูดคุยกับผู้อื่น</span></label>
+<label class="interest-option"><input type="checkbox" name="interests" value="สายเทค AI"><span class="option-copy"><strong>สายเทค AI</strong> สนใจเขียนพรอมต์และใช้เครื่องมืออย่าง ChatGPT, Gemini หรือ NotebookLM</span></label>
+<label class="interest-option"><input type="checkbox" name="interests" value="สายครีเอทีฟ"><span class="option-copy"><strong>สายครีเอทีฟ</strong> ชอบออกแบบ ทำกราฟิก หรือตัดต่อวิดีโอด้วย Canva หรือ CapCut</span></label>
+<label class="interest-option"><input type="checkbox" name="interests" value="สายสร้างโลกสมมติ 3D"><span class="option-copy"><strong>สายสร้างโลกสมมติ 3D</strong> สนใจสร้างพื้นที่เสมือนจริงใน Spatial.io หรือขึ้นรูป 3D ด้วย Blender</span></label>
+<label class="interest-option"><input type="checkbox" name="interests" value="สายจัดการ ซัพพอร์ต"><span class="option-copy"><strong>สายจัดการ ซัพพอร์ต</strong> ชอบดูแลความเรียบร้อย จัดเอกสาร คุมคิว หรือช่วยทีมหลังบ้าน</span></label></div></fieldset>
+<h3 class="form-section"><span>03</span> ช่องทางติดต่อ</h3>
+<div class="two"><div><label for="email">อีเมล <span class="required-mark" aria-hidden="true">*</span></label><input id="email" name="email" type="email" maxlength="200" placeholder="example@school.ac.th" autocomplete="email" required></div>
+<div><label for="phone">เบอร์โทรศัพท์ <span class="required-mark" aria-hidden="true">*</span></label><input id="phone" name="phone" type="tel" inputmode="tel" pattern="0[0-9]{8,9}" maxlength="10" placeholder="เช่น 0812345678" required autocomplete="tel"></div></div>
+<div class="two"><div><label for="lineId">ID LINE <span class="required-mark" aria-hidden="true">*</span></label><input id="lineId" name="lineId" maxlength="100" placeholder="กรอก ID LINE" autocomplete="off" required></div><div><label for="facebook">Facebook (ไม่บังคับ)</label><input id="facebook" name="facebook" maxlength="200" placeholder="ชื่อบัญชีหรือ URL Facebook" autocomplete="off"></div></div>
+<h3 id="photoLabel" class="form-section"><span>04</span> รูปถ่ายนักเรียน</h3><div><div class="photo-box" role="group" aria-labelledby="photoLabel"><div class="photo-preview"><span id="photoIcon" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke-width="1.5" aria-hidden="true"><circle cx="20" cy="13" r="7"/><path d="M7 35v-3a13 13 0 0 1 26 0v3"/></svg></span><img id="preview" hidden alt="ตัวอย่างรูปนักเรียนที่เลือก"></div><div class="photo-actions"><strong class="photo-state" id="photoTitle">แนบรูปถ่ายหน้าตรง</strong><p class="hint" id="photoHint">JPG, PNG หรือ WebP ขนาดไม่เกิน 10 MB</p><label class="file-button" for="photo"><span id="photoChoose">เลือกรูปถ่าย</span><input class="visually-hidden" id="photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="photoHint" required></label><button class="remove" type="button" id="removePhoto" hidden>นำรูปออก</button><p class="hint" id="photoName" aria-live="polite">ยังไม่ได้เลือกรูป</p></div></div></div>
+<input type="text" name="website" id="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+<div id="error" class="status" role="alert" hidden></div><button class="submit" id="submit" type="submit"><span id="submitText">ตรวจทานใบสมัคร</span><span aria-hidden="true">→</span></button></form></div>
+
+<section id="reviewSection" aria-labelledby="reviewTitle" hidden>
+  <h2 id="reviewTitle" class="review-heading" tabindex="-1">ตรวจทานใบสมัคร</h2>
+  <p class="review-intro">ตรวจข้อมูลนักเรียน ทักษะ ช่องทางติดต่อ และรูปถ่ายก่อนยืนยัน</p>
+  <div class="review-id">
+    <img id="reviewPhoto" alt="รูปถ่ายที่จะแนบกับใบสมัคร">
+    <div><strong id="reviewName"></strong><p id="reviewClass"></p></div>
+  </div>
+  <dl class="review-data" id="reviewDetails"></dl>
+  <div class="review-actions">
+    <button id="editApplication" class="back-to-form" type="button">กลับไปแก้ไข</button>
+    <button id="confirmRegistration" class="submit" type="button"><span id="confirmText">ลงทะเบียนนักเรียนสตราฟ</span><span aria-hidden="true">→</span></button>
+  </div>
+  <div id="reviewError" class="status" role="alert" hidden></div>
+</section>
+<section id="success" class="success" aria-live="polite" hidden><div class="check">✓</div><h2 id="successTitle" tabindex="-1">ส่งใบสมัครเรียบร้อยแล้ว</h2><p>บันทึกข้อมูลและรูปถ่ายของคุณแล้ว<br>กรุณารอผู้ดูแลตรวจสอบและอนุมัติการเป็นสมาชิก</p><div class="ref">เลขอ้างอิง <strong id="reference"></strong></div><button class="submit" onclick="resetRegistration()">ลงทะเบียนนักเรียนสตราฟคนถัดไป →</button></section></div>
+<script type="application/json" id="boot">null</script>
+<footer><span>AI & Metaverse Innovation Center</span><a class="admin-entry" href="./" target="_self" rel="noopener">อาสาสมัครต้อนรับคณะดูงาน</a><a href="./?page=admin" target="_self" rel="noopener">สำหรับผู้ดูแลระบบ</a><a href="https://nst-ai-23203.netlify.app/" target="_blank" rel="noopener">เว็บไซต์ศูนย์ ↗</a></footer></main>
+<script>
+const el = id => document.getElementById(id);
+el('startApplication').addEventListener('click', () => { el('application').scrollIntoView({behavior:'smooth',block:'start'}); });
+const form = el('registration');
+const requiredFields = ['studentId','prefix','fullName','classroom','number','email','phone','lineId'];
+const requiredTotal = requiredFields.length + 2; // one interest group and one portrait
+const fieldMessages = {
+  studentId: 'กรอกรหัสนักเรียนด้วยตัวเลข 1–20 หลัก',
+  prefix: 'เลือกคำนำหน้าชื่อ',
+  fullName: 'กรอกชื่อและนามสกุล อย่างน้อย 2 ตัวอักษร',
+  classroom: 'เลือกชั้นและห้องเรียนของคุณ',
+  number: 'กรอกเลขที่ตั้งแต่ 1 ถึง 999',
+  phone: 'กรอกตัวเลข 9–10 หลัก โดยขึ้นต้นด้วย 0',
+  lineId: 'กรอก ID LINE ของคุณ',
+  email: 'กรอกอีเมลให้ครบ เช่น name@school.ac.th'
+};
+const touched = new Set();
+let photoData = '';
+let processing = false;
+let sending = false;
+let reviewedApplication = null;
+
+function showError(id, message = '') {
+  const box = el(id);
+  box.textContent = message;
+  box.hidden = !message;
+}
+
+function issueFor(id) {
+  const input = el(id);
+  const value = input.value.trim();
+  if (!value && !input.required) return '';
+  if (!value || !input.validity.valid) return fieldMessages[id];
+  if (id === 'number' && Number(value) < 1) return fieldMessages.number;
+  if (id === 'fullName' && value.length < 2) return fieldMessages.fullName;
+  if (id === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return fieldMessages.email;
+  return '';
+}
+
+function paintField(id) {
+  const input = el(id);
+  const issue = issueFor(id);
+  const displayIssue = touched.has(id) && Boolean(issue);
+  input.setAttribute('aria-invalid', String(displayIssue));
+  const note = el(id + 'Note');
+  note.textContent = displayIssue ? issue : '';
+  note.hidden = !displayIssue;
+  el(id + 'Check').hidden = !input.value.trim() || Boolean(issue);
+}
+
+for (const id of Object.keys(fieldMessages)) {
+  const input = el(id);
+  const check = document.createElement('i');
+  check.className = 'field-checked';
+  check.id = id + 'Check';
+  check.textContent = '✓';
+  check.hidden = true;
+  check.setAttribute('aria-hidden','true');
+  input.labels[0].append(check);
+  const note = document.createElement('p');
+  note.id = id + 'Note';
+  note.className = 'field-note';
+  note.hidden = true;
+  input.after(note);
+  input.setAttribute('aria-describedby',note.id);
+  input.addEventListener('blur',() => {
+    touched.add(id);
+    input.value = input.value.trim();
+    paintField(id);
+    updateProgress();
+  });
+}
+
+const sectionFields = [
+  ['studentId','prefix','fullName','classroom','number'],
+  ['interests'],
+  ['email','phone','lineId'],
+  ['photo']
+];
+const sectionStates = Array.from(form.querySelectorAll('.form-section'), heading => {
+  const badge = document.createElement('small');
+  badge.className = 'section-state';
+  badge.textContent = '✓ ครบแล้ว';
+  badge.hidden = true;
+  heading.append(badge);
+  return badge;
+});
+
+function selectedInterests() {
+  return Array.from(form.querySelectorAll('input[name="interests"]:checked'), box => box.value);
+}
+
+function updateProgress() {
+  const choices = selectedInterests().length;
+  el('interestCount').textContent = 'เลือกแล้ว ' + choices + ' สาย';
+  const missingInterests = touched.has('interests') && choices === 0;
+  el('interestError').hidden = !missingInterests;
+  el('firstInterest').setAttribute('aria-invalid', String(missingInterests));
+  const count = requiredFields.filter(id => !issueFor(id)).length + Number(choices > 0) + Number(Boolean(photoData));
+  el('progressFill').style.width = (count / requiredTotal * 100) + '%';
+  el('progressCount').textContent = count + ' / ' + requiredTotal;
+  el('formProgress').setAttribute('aria-valuemax',String(requiredTotal));
+  el('formProgress').setAttribute('aria-valuenow',String(count));
+  sectionFields.forEach((ids,index) => {
+    const badge = sectionStates[index];
+    if (ids[0] === 'interests') {
+      badge.hidden = choices === 0;
+      return;
+    }
+    badge.hidden = !ids.every(id => id === 'photo' ? Boolean(photoData) : !issueFor(id));
+  });
+}
+
+function handleEdit(event) {
+  if (event.target.name === 'interests') {
+    if (event.type === 'change') {
+      touched.add('interests');
+      updateProgress();
+    }
+    return;
+  }
+  const id = event.target.id;
+  if (!Object.hasOwn(fieldMessages,id)) return;
+  if (event.type === 'change' && event.target.tagName === 'SELECT') touched.add(id);
+  paintField(id);
+  updateProgress();
+}
+form.addEventListener('input',handleEdit);
+form.addEventListener('change',handleEdit);
+
+function setWorkingState() {
+  el('photo').disabled = processing;
+  el('removePhoto').disabled = processing;
+  el('submit').disabled = processing || sending;
+  el('submitText').textContent = processing ? 'กำลังเตรียมรูปถ่าย…' : 'ตรวจทานใบสมัคร';
+  el('confirmRegistration').disabled = sending;
+  el('editApplication').disabled = sending;
+  el('confirmText').textContent = sending ? 'กำลังส่งใบสมัคร…' : 'ลงทะเบียนนักเรียนสตราฟ';
+}
+
+function clearPhoto() {
+  photoData = '';
+  el('preview').removeAttribute('src');
+  el('preview').hidden = true;
+  el('photoIcon').hidden = false;
+  el('photoTitle').textContent = 'แนบรูปถ่ายหน้าตรง';
+  el('photoTitle').classList.remove('ready');
+  el('photoChoose').textContent = 'เลือกรูปถ่าย';
+  el('removePhoto').hidden = true;
+  el('photoName').textContent = 'ยังไม่ได้เลือกรูป';
+}
+
+async function preparePhoto(file) {
+  if (!['image/jpeg','image/png','image/webp'].includes(file.type)) throw Error('กรุณาเลือกไฟล์ JPG, PNG หรือ WebP');
+  if (file.size > 10 * 1024 * 1024) throw Error('รูปถ่ายต้องมีขนาดไม่เกิน 10 MB');
+  const url = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = url;
+    try { await image.decode(); }
+    catch { throw Error('อ่านรูปนี้ไม่ได้ กรุณาเลือกรูปใหม่'); }
+    const scale = Math.min(1,800 / Math.max(image.width,image.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1,Math.round(image.width * scale));
+    canvas.height = Math.max(1,Math.round(image.height * scale));
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#fff';
+    context.fillRect(0,0,canvas.width,canvas.height);
+    context.drawImage(image,0,0,canvas.width,canvas.height);
+    const jpeg = canvas.toDataURL('image/jpeg',.85);
+    if (jpeg.length > 2100000) throw Error('รูปนี้มีขนาดใหญ่เกินไป กรุณาเลือกรูปใหม่');
+    return jpeg;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+el('photo').addEventListener('change',async event => {
+  const file = event.target.files[0];
+  clearPhoto();
+  updateProgress();
+  if (!file) return;
+  processing = true;
+  setWorkingState();
+  showError('error');
+  el('photoName').textContent = 'กำลังเตรียมรูปถ่าย…';
+  try {
+    photoData = await preparePhoto(file);
+    el('preview').src = photoData;
+    el('preview').hidden = false;
+    el('photoIcon').hidden = true;
+    el('photoTitle').textContent = '✓ รูปถ่ายพร้อมแนบ';
+    el('photoTitle').classList.add('ready');
+    el('photoChoose').textContent = 'เปลี่ยนรูป';
+    el('removePhoto').hidden = false;
+    el('photoName').textContent = file.name;
+  } catch (err) {
+    el('photo').value = '';
+    clearPhoto();
+    showError('error',err.message);
+  } finally {
+    processing = false;
+    setWorkingState();
+    updateProgress();
+  }
+});
+el('removePhoto').addEventListener('click',() => {
+  el('photo').value = ''; clearPhoto(); updateProgress(); showError('error'); el('photo').focus();
+});
+
+function readApplication() {
+  const values = {};
+  for (const id of [...requiredFields,'facebook','website']) {
+    values[id] = el(id).value.trim();
+  }
+  values.interests = selectedInterests();
+  values.photo = photoData;
+  return values;
+}
+
+function showReview(values) {
+  el('reviewName').textContent = values.prefix + values.fullName;
+  el('reviewClass').textContent = 'ม.' + values.classroom + ' · เลขที่ ' + values.number;
+  el('reviewPhoto').src = values.photo;
+  const rows = [
+    ['รหัสนักเรียน',values.studentId], ['เบอร์โทรศัพท์',values.phone],
+    ['อีเมล',values.email], ['ID LINE',values.lineId], ['Facebook',values.facebook],
+    ['ทักษะและความสนใจ',values.interests.join(' · ')]
+  ];
+  const details = el('reviewDetails');
+  details.replaceChildren();
+  for (const [label,value] of rows) {
+    const term = document.createElement('dt');
+    const description = document.createElement('dd');
+    term.textContent = label;
+    description.textContent = value || 'ไม่ได้ระบุ';
+    details.append(term,description);
+  }
+  showError('reviewError');
+  el('formSection').hidden = true;
+  el('reviewSection').hidden = false;
+  el('reviewTitle').focus();
+}
+
+form.addEventListener('submit',event => {
+  event.preventDefault();
+  if (processing || sending || reviewedApplication) return;
+  showError('error');
+  touched.add('interests');
+  for (const id of Object.keys(fieldMessages)) {
+    el(id).value = el(id).value.trim();
+    touched.add(id);
+    paintField(id);
+  }
+  updateProgress();
+  const firstInvalid = form.querySelector('[aria-invalid="true"]');
+  if (firstInvalid) {
+    firstInvalid.focus();
+    return;
+  }
+  if (!photoData) {
+    showError('error','กรุณาแนบรูปถ่ายนักเรียนก่อนตรวจทานใบสมัคร');
+    el('photo').focus();
+    return;
+  }
+  reviewedApplication = readApplication();
+  showReview(reviewedApplication);
+});
+
+el('editApplication').addEventListener('click',() => {
+  if (sending) return;
+  reviewedApplication = null;
+  el('reviewSection').hidden = true;
+  el('formSection').hidden = false;
+  el('studentId').focus();
+});
+
+function sendFailed(message) {
+  sending = false;
+  setWorkingState();
+  showError('reviewError',message);
+}
+
+el('confirmRegistration').addEventListener('click',() => {
+  if (sending || !reviewedApplication) return;
+  sending = true;
+  setWorkingState();
+  showError('reviewError');
+  const failure = 'ติดต่อระบบไม่สำเร็จ กรุณาลองอีกครั้ง ข้อมูลในใบสมัครยังอยู่';
+  // Many applicants at once: a BUSY answer (nothing saved) or a call Google refused is sent again after a short random pause.
+  let attempt = 0;
+  const retry = () => { attempt++; setTimeout(send, (800 << attempt) + Math.random() * 1200); return true; };
+  const crowded = error => attempt < 3 && /simultaneous|too many|invoked too many|rate limit|try again later/i.test(String(error && error.message || error)) && retry();
+  const send = () => {
+  try {
+    google.script.run.withSuccessHandler(result => {
+      if (result && result.code === 'BUSY' && attempt < 3 && retry()) return;
+      if (!result || !result.success) {
+        sendFailed(result?.message || failure);
+        return;
+      }
+      sending = false;
+      reviewedApplication = null;
+      setWorkingState();
+      el('reference').textContent = result.data.reference;
+      el('reviewSection').hidden = true;
+      el('success').hidden = false;
+      el('successTitle').focus();
+    }).withFailureHandler(error => { if (!crowded(error)) sendFailed(failure); }).registerStudent(reviewedApplication);
+  } catch {
+    sendFailed(failure);
+  }
+  };
+  send();
+});
+
+function resetRegistration() {
+  form.reset();
+  touched.clear();
+  reviewedApplication = null;
+  clearPhoto();
+  el('reviewPhoto').removeAttribute('src');
+  el('reviewDetails').replaceChildren();
+  showError('error');
+  showError('reviewError');
+  el('success').hidden = true;
+  el('reviewSection').hidden = true;
+  el('formSection').hidden = false;
+  for (const id of Object.keys(fieldMessages)) paintField(id);
+  updateProgress();
+  setWorkingState();
+  el('studentId').focus();
+}
+
+// แจ้งเตือนเมื่อมีคณะดูงานเปิดรับหรือใกล้เปิดรับอาสาสมัคร
+function showVisitAlert(result) {
+  if (!result || !result.success || !Array.isArray(result.visits)) return;
+  const stamp = text => Date.parse(text + ':00+07:00');
+  const at = result.now;
+  const open = result.visits.find(v => stamp(v.openAt) <= at && at < stamp(v.closeAt) && v.count < v.needed);
+  const visit = open || result.visits.find(v => at < stamp(v.openAt));
+  if (!visit) return;
+  const when = text => {
+    const d = new Date(stamp(text) + 25200000);
+    const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    return d.getUTCDate() + ' ' + months[d.getUTCMonth()] + ' ' + (d.getUTCFullYear() + 543) + ' เวลา ' + text.slice(11).replace(':','.') + ' น.';
+  };
+  el('visitAlert').classList.toggle('soon',!open);
+  el('visitAlertTitle').textContent = (open ? 'เปิดรับอาสาสมัครต้อนรับ ' : 'เร็ว ๆ นี้: รับอาสาสมัครต้อนรับ ') + visit.title;
+  el('visitAlertText').textContent = open
+    ? 'ปิดรับ ' + when(visit.closeAt) + ' · ว่าง ' + (visit.needed - visit.count) + ' ที่'
+    : 'เปิดลงทะเบียน ' + when(visit.openAt);
+  el('visitGo').textContent = open ? 'ลงทะเบียนอาสาสมัคร →' : 'ดูกำหนดการ →';
+  el('visitAlert').hidden = false;
+}
+google.script.run.withSuccessHandler(showVisitAlert).withFailureHandler(()=>{}).volunteerBoard();
+
+// รูปกิจกรรมโหลดหลังหน้าเว็บแสดงผลแล้ว หน้าใบสมัครจึงเปิดได้ทันที
+// Lines of BannerData.html in tile order: presentation (large), AI lab, welcoming visitors, VR demo.
+const BANNER_PHOTOS = [6, 4, 3, 5];
+setTimeout(() => {
+  try {
+    google.script.run.withSuccessHandler(list => {
+      (list || []).forEach((src, i) => {
+        const img = el('campusImage' + i);
+        if (!src || !img) return;
+        img.onload = () => img.classList.add('ready');
+        img.src = src;
+      });
+    }).withFailureHandler(() => {}).campusPhotos(BANNER_PHOTOS);
+  } catch {}
+}, 150);
+</script>
+<script>
+// Motion: scroll progress, scroll-in reveal, count-up numbers, cursor glow and photo tilt. Purely visual; the page works without it.
+((REVEAL, SPOT, TILT) => {
+  'use strict';
+  const root = document.documentElement;
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const max = root.scrollHeight - innerHeight;
+      root.style.setProperty('--sp', max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+      root.classList.toggle('scrolled', scrollY > 8);
+    });
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Low-power devices (few cores, little memory, data saver) get the still version of the decorations.
+  const conn = navigator.connection || {};
+  if ((navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 || conn.saveData) root.classList.add('lite');
+  // Looping decorations pause while they are off screen, so scrolling a long page stays smooth.
+  if ('IntersectionObserver' in window) {
+    const idle = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('idle', !e.isIntersecting)));
+    document.querySelectorAll('.aurora,.hero,.login-card,.board').forEach(el => idle.observe(el));
+  }
+
+  // Numbers count up to each new value the page writes.
+  const countUp = el => {
+    const text = el.textContent.trim(), m = /^\d+(?:\.(\d+))?$/.exec(text);
+    if (text === el.dataset.shown || !m) return;
+    const to = parseFloat(text), from = parseFloat(el.dataset.shown) || 0, places = (m[1] || '').length, start = performance.now();
+    cancelAnimationFrame(el.countFrame);
+    const step = now => {
+      const p = Math.min(1, (now - start) / 900), shown = p < 1 ? (from + (to - from) * (1 - Math.pow(1 - p, 3))).toFixed(places) : text;
+      el.dataset.shown = shown;
+      el.textContent = shown;
+      if (p < 1) el.countFrame = requestAnimationFrame(step);
+    };
+    el.countFrame = requestAnimationFrame(step);
+  };
+  document.querySelectorAll('[data-count]').forEach(el => {
+    countUp(el);
+    new MutationObserver(() => countUp(el)).observe(el, { childList: true, characterData: true, subtree: true });
+  });
+
+  // Reveal blocks as they scroll in. A list the page rebuilds later (refresh, filter) appears at once instead of replaying.
+  if (REVEAL && 'IntersectionObserver' in window) {
+    root.classList.add('motion');
+    const io = new IntersectionObserver(entries => {
+      entries.filter(e => e.isIntersecting).map(e => e.target)
+        .sort((a, b) => (a.compareDocumentPosition(b) & 4 ? -1 : 1))
+        .forEach((el, i) => {
+          const delay = Math.min(i, 8) * 70;
+          io.unobserve(el);
+          el.style.setProperty('--d', delay + 'ms');
+          el.classList.add('in');
+          setTimeout(() => { el.classList.remove('rv', 'in'); el.style.removeProperty('--d'); }, 1000 + delay);
+        });
+    }, { rootMargin: '0px 0px -6% 0px' });
+    const seen = new WeakSet();
+    const scan = () => {
+      const fresh = [...document.querySelectorAll(REVEAL)].filter(el => !seen.has(el));
+      fresh.forEach(el => {
+        seen.add(el);
+        if (el.parentElement && el.parentElement.dataset.revealed) return;
+        el.classList.add('rv');
+        io.observe(el);
+      });
+      fresh.forEach(el => { if (el.parentElement) el.parentElement.dataset.revealed = '1'; });
+    };
+    scan();
+    let queued = false;
+    new MutationObserver(list => {
+      if (queued || !list.some(m => [...m.addedNodes].some(n => n.nodeType === 1))) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; scan(); });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
+  // A soft glow follows the pointer over cards, and the hero photo tilts toward it.
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let frame = 0, last = null, tilted = null;
+  document.addEventListener('pointermove', e => {
+    last = e;
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      const t = last.target instanceof Element ? last.target : null;
+      const card = SPOT && t && t.closest(SPOT);
+      if (card) {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', last.clientX - r.left + 'px');
+        card.style.setProperty('--my', last.clientY - r.top + 'px');
+      }
+      const tilt = TILT && t && t.closest(TILT);
+      if (tilted && tilted !== tilt) { tilted.style.removeProperty('--rx'); tilted.style.removeProperty('--ry'); }
+      tilted = tilt || null;
+      if (tilt) {
+        const r = tilt.getBoundingClientRect(), x = (last.clientX - r.left) / r.width - .5, y = (last.clientY - r.top) / r.height - .5;
+        tilt.style.setProperty('--ry', (x * 10).toFixed(2) + 'deg');
+        tilt.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg');
+      }
+    });
+  }, { passive: true });
+})('.visit-alert,.application-heading,.form-progress,#registration>h3,#registration>div,#registration>fieldset,.interest-option,#submit,footer', '', '');
+</script></body></html>

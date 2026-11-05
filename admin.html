@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="th"><head><title>ระบบอาสาสมัครนักเรียน | AI & Metaverse</title><script src="./bridge.js?v=1"></script><meta charset="utf-8"><base target="_self"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&amp;family=Plus+Jakarta+Sans:wght@600..800&amp;display=swap" media="print" onload="this.media='all'">
+<style>
+:root{color-scheme:light;--bg:#f3f6fb;--ink:#0f1f3d;--muted:#5a6a84;--line:#e2e9f2;--card:#fff;--blue:#2563eb;--blue-d:#1d4ed8;--navy:#0a1a36;--mint:#2dd4bf;--sans:'Noto Sans Thai','Plus Jakarta Sans',system-ui,sans-serif;--display:'Plus Jakarta Sans','Noto Sans Thai',sans-serif;--mono:ui-monospace,Consolas,monospace;--shadow:0 1px 2px #0f1f3d0d,0 12px 30px -18px #0f1f3d33}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;min-height:100vh;color:var(--ink);background:var(--bg);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,dl,dd{margin:0}button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:default}a{color:var(--blue-d)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #93c5fd;outline-offset:3px}
+.sprites{position:absolute;width:0;height:0;overflow:hidden}.ico{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:8px 15px;border:1px solid transparent;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,filter .15s}
+.btn.primary{background:linear-gradient(135deg,#3b82f6,var(--blue-d));color:#fff;box-shadow:0 8px 18px -10px #1d4ed8}.btn.primary:hover:enabled{filter:brightness(1.08)}
+.btn.ghost{background:#fff;color:#22406b;border-color:#d5e0ec}.btn.ghost:hover:enabled{background:#f5f9ff;border-color:#a9c0dc}
+.btn.danger{background:#fff;color:#b42335;border-color:#f3c9cf}.btn.danger:hover:enabled{background:#fff1f3}.btn.danger.confirm{background:#be2338;color:#fff;border-color:#be2338}
+.btn.small{min-height:34px;padding:4px 11px;font-size:13px;border-radius:10px}
+.kicker{font:800 11px/1.4 var(--display);letter-spacing:.14em;color:#3b6fb0}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;background:#eef2f7;color:#475569;font-size:12.5px;font-weight:700;white-space:nowrap}.tag:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.pending,.upcoming{background:#fef3c7!important;color:#b45309!important}.approved,.open{background:#d1fae5!important;color:#047857!important}.rejected,.closed{background:#fee2e2!important;color:#b91c1c!important}.full{background:#e0e7ff!important;color:#4338ca!important}
+.notice{font-size:14px;color:#9a3412}.notice:not(:empty){margin:0 0 14px;padding:10px 14px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa}
+.spinner{width:16px;height:16px;border:2px solid #c9d7ea;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.working{display:flex;align-items:center;gap:9px;padding:18px;color:var(--muted);font-size:14px}
+.skeleton{height:62px;margin-top:8px;border-radius:14px;background:linear-gradient(90deg,#eef2f7 25%,#f7f9fc 50%,#eef2f7 75%);background-size:200% 100%;animation:shimmer 1.2s infinite}@keyframes shimmer{to{background-position:-200% 0}}
+
+/* Sign-in */
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:28px 16px;background:radial-gradient(800px 500px at 0% 0%,#dbeafe,transparent 60%),radial-gradient(700px 500px at 100% 100%,#ccfbf1,transparent 60%),var(--bg)}
+.login-card{display:grid;grid-template-columns:minmax(0,1fr);width:min(980px,100%);overflow:hidden;border-radius:30px;background:#fff;border:1px solid var(--line);box-shadow:0 40px 90px -50px #0f1f3d80}
+.login-cover{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:clamp(26px,4vw,46px);color:#fff;background:radial-gradient(500px 340px at 0% 110%,#1d4ed8cc,transparent 60%),radial-gradient(420px 300px at 100% 0%,#0d9488aa,transparent 60%),var(--navy)}
+.login-cover:before{content:'';position:absolute;inset:0;z-index:-1;opacity:.13;background-image:linear-gradient(#bfdbfe 1px,transparent 1px),linear-gradient(90deg,#bfdbfe 1px,transparent 1px);background-size:34px 34px;-webkit-mask-image:linear-gradient(130deg,transparent,#000 70%);mask-image:linear-gradient(130deg,transparent,#000 70%)}
+.cover-brand{display:flex;align-items:center;gap:11px}.cover-brand img{width:44px;height:44px;border-radius:50%;background:#fff;object-fit:contain}.cover-brand strong{display:block;font:800 15px/1.2 var(--display)}.cover-brand small{color:#b9cbe6;font-size:12px}
+.cover-title{font-size:clamp(30px,3.6vw,44px);line-height:1.2;letter-spacing:-.04em}.cover-title span{display:block;background:linear-gradient(90deg,#5eead4,#93c5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover-list{display:grid;gap:10px;padding:0;margin:0;list-style:none;color:#d6e2f5;font-size:14px}.cover-list li{display:flex;align-items:center;gap:10px}.cover-list .ico{color:var(--mint)}
+.login-form{display:flex;flex-direction:column;justify-content:center;padding:clamp(26px,4vw,50px)}
+.login-form h1{margin:6px 0 4px;font-size:clamp(26px,3vw,32px);letter-spacing:-.03em}.login-form .lead{color:var(--muted);font-size:14px}
+.credentials{display:grid;gap:14px;margin-top:22px}
+label{display:block;margin-bottom:6px;font-weight:650;font-size:14px}
+.field{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 12px;border:1px solid #d3deea;border-radius:13px;background:#f8fafd;color:#6b7c94;transition:border-color .15s,box-shadow .15s,background .15s}.field:focus-within{border-color:#60a5fa;box-shadow:0 0 0 4px #3b82f61f;background:#fff}
+.field input{display:block;width:100%;min-width:0;min-height:46px;border:0;outline:0;background:transparent;color:var(--ink);font-size:16px}.field input::placeholder{color:#8a99ae;font-size:14px}
+.icon-btn{display:grid;place-items:center;min-width:40px;min-height:40px;margin-right:-6px;border:0;border-radius:10px;background:transparent;color:#526683}.icon-btn:hover{background:#e9f0f9}
+.credentials .btn{min-height:48px;margin-top:4px;justify-content:space-between;font-size:15px}
+.login-note{margin-top:14px;font-size:14px;color:#9a3412}.login-note:not(:empty){padding:9px 12px;border-radius:11px;background:#fff7ed}
+.back-home{display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-size:13.5px;font-weight:600;text-decoration:none}
+
+/* App shell */
+.app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;display:flex;flex-direction:column;gap:22px;height:100vh;padding:22px 16px;color:#cbd8ec;background:linear-gradient(180deg,#0a1a36,#0e2547)}
+.side-brand{display:flex;align-items:center;gap:11px;padding:0 6px}.side-brand img{width:40px;height:40px;border-radius:50%;background:#fff;object-fit:contain}.side-brand strong{display:block;color:#fff;font:800 15px/1.2 var(--display)}.side-brand small{font-size:12px;color:#8fa6c6}
+.side-nav{display:grid;gap:4px}
+.nav-item{position:relative;display:flex;align-items:center;gap:11px;width:100%;padding:11px 12px;border:0;border-radius:12px;background:transparent;color:#bccbe2;font-weight:650;font-size:14.5px;text-align:left}
+.nav-item:hover{background:#ffffff0d;color:#fff}.nav-item[aria-selected=true]{background:#ffffff17;color:#fff}.nav-item[aria-selected=true]:before{content:'';position:absolute;left:-16px;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:var(--mint)}
+.nav-item .badge{margin-left:auto;min-width:22px;padding:1px 7px;border-radius:99px;background:#2dd4bf26;color:#5eead4;font-size:12px;font-weight:800;text-align:center}.nav-item .badge:empty{display:none}
+.side-links{display:grid;gap:2px;margin-top:4px;padding-top:16px;border-top:1px solid #ffffff14}.side-links span{padding:0 12px 6px;font-size:11px;letter-spacing:.12em;color:#7f95b6;font-weight:700}
+.side-links a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;color:#bccbe2;font-size:13.5px;text-decoration:none}.side-links a:hover{background:#ffffff0d;color:#fff}
+.side-user{display:flex;align-items:center;gap:10px;margin-top:auto;padding:12px;border-radius:14px;background:#ffffff0d}
+.side-user .avatar{width:36px;height:36px;font-size:14px}.side-user b{display:block;color:#fff;font-size:14px}.side-user small{color:#8fa6c6;font-size:12px}.side-user .icon-btn{margin-left:auto;color:#bccbe2}.side-user .icon-btn:hover{background:#ffffff1a;color:#fff}
+.workspace{min-width:0;padding:26px clamp(18px,3vw,38px) 40px}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+.topbar h1{margin-top:2px;font-size:clamp(24px,2.6vw,32px);letter-spacing:-.03em;line-height:1.3}.topbar p:last-child{color:var(--muted);font-size:14px}
+.top-actions{display:flex;align-items:center;gap:10px}.sync{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.panel{padding:clamp(16px,2.4vw,24px);border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.panel-head h2{font-size:17px}
+.link-btn{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border:0;border-radius:8px;background:none;color:var(--blue-d);font-size:13.5px;font-weight:700}.link-btn:hover{background:#eff6ff}
+.avatar{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;background:linear-gradient(135deg,#3b82f6,#14b8a6);color:#fff;font-weight:800;font-size:16px}
+.applicant-avatar{display:flex;align-items:center;justify-content:center;width:48px;height:56px;overflow:hidden;background:#edf3f9;color:#6582a2;border:1px solid #d7e3ef;border-radius:12px}.applicant-avatar img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 25%}.applicant-avatar .ico{width:23px;height:23px}.mini .applicant-avatar{width:42px;height:48px}
+
+/* Overview */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.kpi{position:relative;overflow:hidden;padding:18px;border-radius:20px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.kpi .k-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#e8f0ff;color:var(--blue)}.kpi:nth-child(2) .k-icon{background:#fef3c7;color:#b45309}.kpi:nth-child(3) .k-icon{background:#d1fae5;color:#047857}.kpi:nth-child(4) .k-icon{background:#ede9fe;color:#6d28d9}
+.kpi b{display:block;margin-top:12px;font:800 32px/1 var(--display);letter-spacing:-.02em}.kpi span{display:block;margin-top:6px;color:var(--muted);font-size:13.5px}
+.ov-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px}
+.mini{display:flex;align-items:center;gap:12px;width:100%;padding:11px 4px;border:0;border-top:1px solid #eef2f7;background:none;text-align:left}.mini:first-child{border-top:0}.mini:hover{background:#f8fafd}
+.mini .who{flex:1;min-width:0}.mini b{display:block;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mini small{display:block;color:var(--muted);font-size:12.5px}
+.mini-date{display:grid;place-items:center;width:46px;height:48px;flex:none;border-radius:12px;background:#f1f5fb;border:1px solid #e1e8f1;line-height:1.1}.mini-date b{font:800 18px/1 var(--display)}.mini-date small{font-size:11px}
+.empty{padding:26px 14px;border:1px dashed #cbd8e6;border-radius:16px;background:#f8fbfe;text-align:center}.empty h3{font-size:15.5px}.empty p{margin-top:3px;color:var(--muted);font-size:13px}.empty .btn{margin-top:12px}
+
+/* Applications */
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}.toolbar .field{flex:1 1 280px;background:#f8fafd}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{padding:7px 12px;border:1px solid #d8e2ee;border-radius:99px;background:#fff;color:#3c5170;font-size:13px;font-weight:700}.chip:hover{border-color:#a9c0dc}.chip[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.table-head,.row{display:grid;grid-template-columns:minmax(0,2.2fr) 90px 130px 120px 24px;align-items:center;gap:12px}
+.table-head{padding:8px 14px;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.04em;border-bottom:1px solid var(--line)}
+.row{width:100%;padding:11px 14px;margin-top:6px;border:1px solid transparent;border-radius:14px;background:#fff;text-align:left}.row:hover{background:#f6f9fe;border-color:#dbe6f3}
+.row .person-cell{display:flex;align-items:center;gap:12px;min-width:0}.row .who{min-width:0}.row b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row small{display:block;color:var(--muted);font-size:12.5px}
+.row .cell{color:#3c5170;font-size:13.5px}.row .arrow{color:#7d93b3}
+.pager{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:14px;font-size:13px;color:var(--muted)}
+.back{margin-bottom:14px}
+.person{display:flex;align-items:center;gap:18px;padding:20px;border-radius:20px;background:linear-gradient(120deg,#eef4ff,#ecfdf8);border:1px solid #dbe7f3;overflow-wrap:anywhere}
+.person h2{font-size:22px;line-height:1.4}.person .tag{margin-top:6px}
+.portrait{width:86px;height:104px;object-fit:contain;border-radius:12px;background:#fff;flex:none}.no-photo{display:grid;place-items:center;color:#6b81a0}
+.photo-trigger{display:grid;gap:3px;flex:none;padding:4px;border:1px solid #c7d8ea;border-radius:14px;background:#fff;color:var(--blue-d);cursor:zoom-in}.photo-trigger:hover{border-color:#7aa2d6}.zoom-hint{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11.5px;font-weight:700}.zoom-hint .ico{width:13px;height:13px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:16px}
+.info{padding:16px 18px;border-radius:18px;background:#fff;border:1px solid var(--line);min-width:0}.info h3{display:flex;align-items:center;gap:8px;margin-bottom:6px;color:#1e4b7a;font-size:15px}
+.info dl>div{display:grid;grid-template-columns:minmax(80px,.8fr) minmax(0,1.4fr);gap:8px;padding:8px 0;border-top:1px solid #eef2f7;font-size:14px;overflow-wrap:anywhere}.info dt{color:var(--muted)}.info dd{font-weight:600}
+
+/* Visits */
+.visit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.vcard{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;padding:16px;border:1px solid var(--line);border-radius:20px;background:#fff;text-align:left;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}.vcard:hover{border-color:#a9c3e6;transform:translateY(-1px)}
+.date-block{align-self:start;width:60px;overflow:hidden;border-radius:14px;text-align:center;background:#f5f8fc;border:1px solid #dfe7f1}.date-block small{display:block;padding:3px 0;background:linear-gradient(135deg,#3b82f6,var(--blue-d));color:#fff;font-size:11.5px;font-weight:700}.date-block b{display:block;padding-top:3px;font:800 24px/1.15 var(--display)}.date-block span{display:block;padding-bottom:5px;color:var(--muted);font-size:11px}
+.vcard h3{font-size:15.5px;line-height:1.45;overflow-wrap:anywhere}.vcard .meta{margin-top:4px;color:var(--muted);font-size:12.5px}.vcard .tag{margin-top:8px}
+.meter{display:block;height:7px;margin-top:10px;border-radius:9px;background:#e8eef5;overflow:hidden}.meter i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#3b82f6,#14b8a6)}
+.count-line{display:flex;justify-content:space-between;margin-top:5px;color:var(--muted);font-size:12px}
+.visit-card{padding:20px;border-radius:20px;background:linear-gradient(120deg,#eef4ff,#ecfdf8);border:1px solid #dbe7f3}.visit-card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.visit-card .top>div{min-width:0}.visit-card h2{font-size:22px;line-height:1.4;overflow-wrap:anywhere}.visit-card .muted{color:var(--muted);font-size:14px}.visit-card .tag{margin-top:8px}
+.duty-sum{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.duty-sum .tag{background:#fff;border:1px solid #dbe6f2}.duty-sum .tag:before{display:none}
+.details-note{margin-top:14px;padding:12px 14px;border-radius:14px;background:#f6f9fd;border:1px solid #e3ebf5;white-space:pre-line;font-size:14px;overflow-wrap:anywhere}
+.roster-head{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 6px}.roster-head h3{font-size:16px}.count{padding:3px 11px;border-radius:99px;background:#eaf1fa;color:#2d547e;font-size:12.5px;font-weight:700}.count:empty{display:none}
+.vol{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px;margin-top:6px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.vol .num{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#eef3fb;color:#365ab1;font:700 13px var(--mono)}.vol .who b{display:block}.vol .who small{display:block;color:var(--muted);font-size:12.5px}.vol .who a{color:inherit}
+.vol .side{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
+.vform{display:grid;gap:14px;margin-top:6px}.vform .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.vform .grid3{grid-template-columns:1.3fr 1fr 1fr}.vform label small{margin-left:6px;color:var(--muted);font-size:12px;font-weight:400}
+.vform input,.vform select,.vform textarea{display:block;width:100%;min-width:0;min-height:46px;padding:9px 12px;border:1px solid #d3deea;border-radius:12px;background:#f8fafd;font-size:15.5px}.vform textarea{min-height:92px;resize:vertical;line-height:1.6}
+.vform input:focus,.vform select:focus,.vform textarea:focus{outline:0;border-color:#60a5fa;box-shadow:0 0 0 4px #3b82f61f;background:#fff}
+.legend{padding-top:12px;border-top:1px solid var(--line);color:#1e4b7a;font-size:15px;font-weight:700}.form-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:4px}
+
+.photo-dialog{width:min(860px,94vw);max-height:94vh;padding:0;border:1px solid var(--line);border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 30px 90px #0f1f3d66;overflow:auto}.photo-dialog::backdrop{background:#0a1a36d9}
+.photo-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}.photo-head h2{font-size:17px}.photo-actions{display:flex;gap:6px}
+.photo-stage{height:min(66vh,620px);overflow:auto;background:#0f1f3d}.photo-stage img{display:block;width:100%;height:100%;object-fit:contain}.photo-stage.enlarged img{width:200%;height:200%}body:has(.photo-dialog[open]){overflow:hidden}
+
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ov-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:960px){.app{grid-template-columns:minmax(0,1fr)}.sidebar{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px}.side-brand{padding:0}.side-nav{order:3;display:flex;width:100%;overflow-x:auto}.nav-item{width:auto;white-space:nowrap;padding:9px 12px}.nav-item[aria-selected=true]:before{display:none}.side-links{display:none}.side-user{margin:0 0 0 auto;padding:6px 8px}.side-user div{display:none}.workspace{padding:20px 14px 32px}}
+@media(max-width:760px){.login-card{grid-template-columns:minmax(0,1fr)}.login-cover{padding:24px}.cover-list,.login-cover svg{display:none}.table-head{display:none}.row{grid-template-columns:minmax(0,1fr) auto}.row .cell,.row .arrow{display:none}.topbar{flex-direction:column;align-items:flex-start}.vform .grid,.vform .grid3{grid-template-columns:minmax(0,1fr)}.vol{grid-template-columns:minmax(0,1fr)}.vol .num{display:none}.vol .side{justify-content:flex-start}.visit-card .top{flex-direction:column}.person{flex-direction:column;align-items:flex-start}}
+@media(max-width:520px){.kpis{gap:10px}.kpi{padding:14px}.kpi b{font-size:26px}.visit-grid{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.spinner,.skeleton{animation:none}}
+
+.crud-dialog{width:min(800px,94vw);max-width:94vw;max-height:92vh;max-height:92dvh;padding:24px;border:1px solid #d8e3f1;border-radius:22px;background:#fff;color:var(--ink);overflow:auto;box-shadow:0 30px 100px #0d234a40}
+.crud-dialog::backdrop{background:#0d203cc9}.crud-dialog .vform{margin:0}.crud-dialog .panel-head{gap:12px}.crud-dialog .panel-head h2{font-size:23px}.crud-dialog .form-actions{display:flex;gap:9px;flex-wrap:wrap}.crud-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.crud-fields>div{min-width:0}.crud-wide{grid-column:1/-1}.crud-skills{display:grid;gap:7px;padding:14px;border:1px solid #d5e1ef;border-radius:13px;margin:0}.crud-skills label{display:flex;align-items:center;gap:8px;margin:0;font-weight:500}.crud-skills input{width:18px;height:18px;min-height:18px;padding:0;flex:none}.crud-dialog img.preview{display:block;width:105px;height:125px;object-fit:contain;border:1px solid #d3e0ee;border-radius:10px;margin:8px 0}.crud-dialog input[type=file]{height:auto;padding:10px}.record-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.trash-row{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #dce5ef;padding:14px 0}.trash-row small{display:block}.crud-dialog .form-actions{margin-top:15px}body:has(.crud-dialog[open]){overflow:hidden}
+@media(max-width:600px){.crud-dialog{padding:17px}.crud-fields{grid-template-columns:minmax(0,1fr)}.crud-wide{grid-column:auto}.panel-head,.roster-head,.top-actions{flex-wrap:wrap}.top-actions{max-width:100%}.panel-head .sync{white-space:normal}.trash-row{align-items:flex-start}.form-actions{flex-wrap:wrap}}
+
+/* Applications: larger portraits and an explicit review action. */
+.application-list .panel-head{align-items:center;margin-bottom:21px}.application-list .panel-head h2{font-size:21px}.list-help{font-size:14px;color:var(--muted);margin-top:5px}.application-tools{display:grid;gap:14px;margin-bottom:22px}.application-tools .field{max-width:860px;min-height:52px}.filter-line{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.filter-line>span{font-size:13px;color:var(--muted);font-weight:650}.application-head,.applicant-row{display:grid;grid-template-columns:minmax(260px,2.3fr) minmax(70px,.55fr) minmax(100px,.8fr) minmax(116px,.85fr) 142px;gap:20px;align-items:center}.application-head{padding:0 16px 12px;font-size:13px;font-weight:700;color:#536783;border-bottom:1px solid var(--line)}.applicant-row{padding:20px 16px;border:1px solid #dfe7f1;border-radius:16px;margin-top:12px;background:#fff;transition:border-color .15s,box-shadow .15s}.applicant-row:hover{border-color:#b7cbed;box-shadow:0 5px 19px #1d4ed80b}.applicant-person{display:flex;align-items:center;gap:18px;min-width:0}.applicant-person h3{font-size:18px;font-weight:750;line-height:1.5;overflow-wrap:anywhere}.applicant-person .identity{font-size:14px;color:#476184;margin-top:5px}.applicant-person .reference{font:11px/1.6 var(--mono);color:#61748d;margin-top:4px;overflow-wrap:anywhere}.list-photo{position:relative;display:block;flex:none;padding:0;border:0;border-radius:13px;background:#edf3f9;cursor:zoom-in;text-align:center}.list-photo .applicant-avatar{width:84px;height:104px;border-radius:13px 13px 0 0;border-bottom:0}.photo-caption{display:flex;justify-content:center;align-items:center;gap:3px;background:#eef4ff;color:#2853a0;padding:4px;font-size:11px;border:1px solid #d7e3ef;border-top:0;border-radius:0 0 13px 13px}.photo-caption .ico{width:12px;height:12px}.applicant-meta{font-size:15px;font-weight:550;color:#344c6e}.applicant-meta .mobile-label{display:none}.applicant-row .tag{font-size:13px;justify-content:center;padding:5px 11px}.applicant-row .review-button{min-height:46px;font-size:14px;padding:9px 12px;width:100%}.applicant-row .review-button .ico{width:15px}.review-panel{margin:17px 0;padding:22px 24px;border:1px solid #c5d8f6;border-radius:18px;background:linear-gradient(110deg,#f1f6ff,#fbfdff)}.review-panel h3{font-size:20px}.review-panel p{font-size:14px;color:#4c6282;margin:7px 0 15px}.review-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.review-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.review-buttons .btn{min-height:46px;padding:10px 18px;font-size:15px}.btn.approve{background:#087f61;color:#fff;border-color:#087f61}.btn.approve:hover:enabled{background:#07664f}.review-buttons .btn[disabled]{opacity:.6}.photo-trigger .portrait{width:116px;height:140px}.photo-trigger .zoom-hint{padding:4px 0}.person{gap:21px}.person h2{font-size:26px}
+@media(max-width:1300px){.application-head,.applicant-row{grid-template-columns:minmax(230px,2fr) 76px 108px minmax(100px,.8fr) 130px;gap:13px}.applicant-person{gap:13px}}
+@media(max-width:1120px){.application-head{display:none}.applicant-row{grid-template-columns:1fr 1fr 1fr;gap:16px;padding:19px}.applicant-person{grid-column:1/-1}.applicant-row .review-button{grid-column:1/-1}.applicant-meta .mobile-label{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-bottom:3px}.applicant-row .tag{font-size:12px}.applicant-person h3{font-size:19px}}
+/* Bright theme shared with the volunteer page: light sidebar, gradient KPI tiles and visit cards coloured by state. */
+:root{--bg:#f5f7fc;--ink:#0b1b3f;--ink2:#2d3d5f;--muted:#66758f;--line:#e4e9f2;--soft:#f5f7fb;--blue:#2f5bea;--blue2:#5b7cff;--blue-d:#2244c4;--blue-soft:#edf2ff;--navy:#0b1b3f;--sans:'Anuphan','Noto Sans Thai',system-ui,sans-serif;--display:'Plus Jakarta Sans','Anuphan',sans-serif;--shadow:0 1px 2px #0b1b3f0a,0 12px 32px -18px #2f5bea38}
+body{background:radial-gradient(760px 460px at 100% -6%,#dfe8ff 0,transparent 70%),radial-gradient(640px 440px at 30% 108%,#d8f4ee 0,transparent 70%),var(--bg);font-size:15.5px;line-height:1.65}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline-color:#9db4ff}
+.kicker{color:var(--blue)}
+.btn{border-radius:13px;font-weight:600}.btn.primary{background:linear-gradient(135deg,var(--blue2),var(--blue) 55%,var(--blue-d));box-shadow:inset 0 1px 0 #ffffff40,0 12px 24px -12px var(--blue)}
+.btn.ghost{color:var(--ink2);border-color:var(--line);box-shadow:0 1px 2px #0b1b3f0d}.btn.ghost:hover:enabled{border-color:#c4d0e8;background:#fbfcff}
+.login-wrap{background:radial-gradient(800px 500px at 0 0,#dfe8ff,transparent 60%),radial-gradient(700px 500px at 100% 100%,#d8f4ee,transparent 60%),var(--bg)}
+.login-card{border-radius:32px;border-color:#fff;box-shadow:0 2px 4px #0b1b3f08,0 40px 80px -40px #2f5bea66}
+.login-cover{background:radial-gradient(420px 300px at 100% 0,#ffffff33,transparent 70%),radial-gradient(360px 280px at 0 100%,#14b8a659,transparent 70%),linear-gradient(150deg,var(--blue2),var(--blue) 45%,#5536e0)}
+.login-cover:before{opacity:.16;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)}
+.cover-brand img{border-radius:14px;padding:2px}.cover-brand strong{font-family:var(--sans);font-weight:700}.cover-brand small{color:#dfe6ff}
+.cover-title{font-size:clamp(28px,3vw,38px);font-weight:700;letter-spacing:-.01em;line-height:1.3}.cover-title span{background:linear-gradient(90deg,#d6fff6,#e2e8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover-list{color:#eef2ff}.cover-list .ico{color:#a7fff0}
+.field{border-color:#d6dfec;border-radius:15px;background:var(--soft)}.field:focus-within{border-color:var(--blue2);box-shadow:0 0 0 4px #2f5bea1f}
+.sidebar{color:var(--ink2);background:#ffffffd9;border-right:1px solid var(--line);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.side-brand img{border:1px solid var(--line);border-radius:14px;padding:2px}.side-brand strong{color:var(--ink);font-family:var(--sans);font-weight:700;font-size:15.5px}.side-brand small{color:var(--muted)}
+.nav-item{color:#40506f;font-weight:600;transition:background .15s,color .15s}.nav-item:hover{background:var(--soft);color:var(--ink)}
+.nav-item[aria-selected=true]{background:var(--blue-soft);color:var(--blue-d)}.nav-item[aria-selected=true]:before{background:var(--blue)}.nav-item[aria-selected=true] .ico{color:var(--blue)}
+.nav-item .badge{background:var(--blue);color:#fff}
+.side-links{border-top-color:var(--line)}.side-links span{color:#8a97ad}.side-links a{color:#40506f}.side-links a:hover{background:var(--soft);color:var(--ink)}
+.side-user{background:var(--soft);border:1px solid var(--line)}.side-user b{color:var(--ink)}.side-user small{color:var(--muted)}.side-user .icon-btn{color:#5a6c8a}.side-user .icon-btn:hover{background:#e9eef8;color:var(--ink)}
+.topbar h1{font-weight:700;letter-spacing:-.01em}
+.panel{border-radius:24px;border-color:var(--line);box-shadow:var(--shadow)}.panel-head h2{font-weight:700}
+.kpi{--k:#2f5bea;--k2:#7b96ff;isolation:isolate;border-radius:22px;border-color:var(--line);transition:transform .2s,box-shadow .2s}.kpi:nth-child(2){--k:#d97706;--k2:#fbbf24}.kpi:nth-child(3){--k:#0e9f6e;--k2:#34d399}.kpi:nth-child(4){--k:#6d4cff;--k2:#a78bfa}
+.kpi:after{content:'';position:absolute;z-index:-1;right:-56px;top:-56px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--k2),transparent 70%);opacity:.22;pointer-events:none}
+.kpis .kpi .k-icon{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--k2),var(--k));color:#fff;box-shadow:0 12px 22px -12px var(--k)}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 1px 2px #0b1b3f0a,0 26px 44px -30px #2f5bea73}.kpi b{font-size:34px}
+.mini{padding-inline:8px;border-radius:12px;transition:background .15s}.mini:hover{background:var(--soft)}.mini-date{background:var(--blue-soft);border-color:#dbe4fb}.mini-date b{color:var(--blue-d)}
+.chip{border-color:var(--line);color:var(--ink2);font-weight:600}.chip[aria-pressed=true]{background:var(--blue);border-color:var(--blue)}
+.vcard{--accent:#94a3b8;position:relative;overflow:hidden;border-color:var(--line);border-radius:22px}.vcard:before{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:var(--accent)}
+.vcard:has(.tag.open){--accent:#16a34a}.vcard:has(.tag.upcoming){--accent:#f59e0b}.vcard:has(.tag.closed){--accent:#e11d48}.vcard:has(.tag.full){--accent:#7c5cff}
+.vcard:hover{transform:translateY(-2px);box-shadow:0 1px 2px #0b1b3f0a,0 24px 40px -28px #2f5bea73}
+.date-block{background:#fff;border-color:var(--line)}.date-block small{background:linear-gradient(135deg,var(--blue2),var(--blue-d))}
+.applicant-row{border-color:var(--line);border-radius:18px}.applicant-row:hover{border-color:#bccbee;box-shadow:0 18px 34px -26px #2f5bea59}
+.person,.visit-card{border-radius:22px;background:linear-gradient(120deg,var(--blue-soft),#f4f1ff 55%,#e4f7f4);border-color:#dfe6f6}
+.info{border-radius:20px;border-color:var(--line)}.info h3{color:var(--blue-d)}
+.vform input,.vform select,.vform textarea{border-color:#d6dfec;border-radius:13px;background:var(--soft)}.vform input:focus,.vform select:focus,.vform textarea:focus{border-color:var(--blue2);box-shadow:0 0 0 4px #2f5bea1f}
+.crud-dialog,.photo-dialog{border-radius:24px}.crud-dialog::backdrop,.photo-dialog::backdrop{background:#0b1b3fb3;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+.login-card{animation:rise .5s cubic-bezier(.2,.7,.2,1) backwards}.panel,.kpi{animation:rise .4s cubic-bezier(.2,.7,.2,1) backwards}.kpi:nth-child(2){animation-delay:.04s}.kpi:nth-child(3){animation-delay:.08s}.kpi:nth-child(4){animation-delay:.12s}
+.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:18px}
+.quick-btn{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:18px;background:#fff;color:var(--ink);text-align:left;text-decoration:none;box-shadow:0 1px 2px #0b1b3f0d;transition:border-color .15s,transform .15s,box-shadow .15s}.quick-btn:hover{border-color:#c4d0e8;transform:translateY(-1px);box-shadow:var(--shadow)}
+.q-ico{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:14px;background:var(--blue-soft);color:var(--blue)}.quick-btn:first-child .q-ico{background:#fff4dc;color:#c06a05}
+.quick-btn b{display:block;font-size:14.5px;line-height:1.4}.quick-btn small{display:block;color:var(--muted);font-size:12.5px;line-height:1.4}
+@media(max-width:960px){.sidebar{background:#fffffff2;border-right:0;border-bottom:1px solid var(--line)}
+.side-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible}.nav-item{flex-direction:column;justify-content:center;gap:3px;padding:9px 6px;border:1px solid var(--line);background:#fff;font-size:13.5px;text-align:center;white-space:normal}
+.nav-item .long{display:none}.nav-item .badge{position:absolute;top:5px;right:6px;margin:0}.nav-item[aria-selected=true]{border-color:#c9d6f8}}
+@media(max-width:520px){.quick{grid-template-columns:minmax(0,1fr)}}
+/* PDF export: A4 sheets (794 × 1123 px) laid out off screen, then drawn into the PDF. */
+.person .pdf-btn{margin-left:auto;align-self:flex-start}
+/* Attendance, waitlist, QR check-in and email settings. */
+.roster-head{flex-wrap:wrap;gap:8px}.roster-head .count{margin-right:auto}.roster-actions{display:flex;flex-wrap:wrap;gap:6px}.roster-head .sync{flex-basis:100%}
+.att{display:inline-flex;padding:3px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.att-btn{min-height:30px;padding:3px 12px;border:0;border-radius:9px;background:none;color:var(--muted);font-size:13px;font-weight:700}.att-btn:hover{color:var(--ink)}
+.att-btn.present[aria-pressed=true]{background:#16a34a;color:#fff}.att-btn.absent[aria-pressed=true]{background:#e11d48;color:#fff}
+.vol.waiting{background:#faf8ff;border-color:#e4dcfd}.vol.waiting .num{background:#f1edff;color:#6d4cff}
+.qr-box{display:flex;flex-wrap:wrap;align-items:center;gap:22px}.qr-img{width:260px;height:260px;flex:none;border:1px solid var(--line);border-radius:16px;image-rendering:pixelated}
+.qr-box>div{flex:1;min-width:220px}.qr-code{display:block;margin:2px 0 8px;font:800 44px/1.1 var(--display);letter-spacing:.12em;color:var(--blue-d)}
+.qr-help{color:var(--ink2);font-size:14px}.qr-url{margin:8px 0 12px;padding:8px 10px;border-radius:10px;background:var(--soft);color:var(--muted);font:12px/1.5 var(--mono);overflow-wrap:anywhere}
+.mail-list legend{padding:0 6px;font-weight:700}.mail-status{display:grid;gap:4px;margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--soft);color:var(--ink2);font-size:13.5px}.mail-status .btn{justify-self:start;margin-top:6px}
+.cert{width:1123px;height:794px;padding:34px;background:#fff;color:#0b1b3f;font-family:var(--sans)}
+.cert-frame{display:flex;flex-direction:column;align-items:center;height:100%;padding:30px 70px 22px;border:3px solid #2f5bea;border-radius:26px;text-align:center;background:radial-gradient(520px 300px at 0 0,#eef3ff,#eef3ff00 70%),radial-gradient(520px 300px at 100% 100%,#e6f8f4,#e6f8f400 70%)}
+.cert-frame img{width:74px;height:74px;padding:3px;border:1px solid #dfe6f2;border-radius:20px;background:#fff;object-fit:contain}
+.cert-org{margin-top:8px;color:#4f5f7c;font-size:15px}.cert h1{margin:4px 0 2px;color:#2244c4;font-size:50px;font-weight:700;line-height:1.3}
+.cert-lead{color:#2d3d5f;font-size:17px}.cert h2{margin:4px 0 0;font-size:36px;font-weight:700;line-height:1.4}.cert-line{color:#4f5f7c;font-size:16px}
+.cert h3{margin:4px 0 0;font-size:22px;font-weight:700;line-height:1.45}.cert-when{margin-top:10px;padding:6px 18px;border-radius:99px;background:#edf2ff;color:#2244c4;font-size:15px;font-weight:700}
+.cert-sign{margin-top:auto;font-size:15px}.cert-sign span{color:#8a97ad}.cert-sign p{margin-top:4px}.cert-ref{margin-top:10px;color:#8a97ad;font-size:12px}
+.pdf-host{position:fixed;left:-12000px;top:0;width:794px;pointer-events:none}
+.pdf-sheet{display:flex;flex-direction:column;width:794px;height:1123px;padding:46px 52px 36px;overflow:hidden;background:#fff;color:#0b1b3f;font:13.5px/1.6 var(--sans)}
+.pdf-head{display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:3px solid #2f5bea}.pdf-head img{width:50px;height:50px;padding:2px;border:1px solid #e4e9f2;border-radius:14px;object-fit:contain}
+.pdf-head b{display:block;font-size:16px;line-height:1.4}.pdf-head small{display:block;color:#66758f;font-size:12px}
+.pdf-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:20px 0 16px}.pdf-title h1{margin:0;font-size:24px;line-height:1.35}.pdf-title p{margin:2px 0 0;color:#4f5f7c;font-size:13px}
+.pdf-badge{flex:none;padding:4px 14px;border-radius:99px;background:#eef2f7;color:#475569;font-size:13px;font-weight:700}
+.pdf-body{flex:1;min-height:0;overflow:hidden}
+.pdf-foot{display:flex;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid #e4e9f2;color:#66758f;font-size:11.5px}
+.pdf-profile{display:flex;align-items:center;gap:22px;padding:16px;border:1px solid #e4e9f2;border-radius:16px;background:#f7f9fd}
+.pdf-photo{width:128px;height:160px;flex:none;border:3px solid #fff;border-radius:12px;background:#e8eef6;object-fit:cover;box-shadow:0 0 0 1px #dfe6f0}.pdf-nophoto{display:grid;place-items:center;color:#8a97ad;font-size:12px}
+.pdf-profile small{color:#2f5bea;font-size:12px;font-weight:700}.pdf-profile h2{margin:2px 0 4px;font-size:22px;line-height:1.4}.pdf-profile p{margin:0;color:#2d3d5f}
+.pdf-section{margin-top:14px}.pdf-section h3{margin:0 0 6px;color:#2244c4;font-size:14px}
+.pdf-table{width:100%;border-collapse:separate;border-spacing:0;border-top:1px solid #dfe6f0;border-left:1px solid #dfe6f0;table-layout:fixed;font-size:12.5px;line-height:1.5}.pdf-table th,.pdf-table td{padding:6px 8px;border-right:1px solid #dfe6f0;border-bottom:1px solid #dfe6f0;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.pdf-table thead th{background:#eef3fd;color:#2d3d5f;font-weight:700}.pdf-kv th{width:32%;background:#f7f9fd;font-weight:600}.pdf-roster td{height:36px}
+.pdf-sign{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px;text-align:center;font-size:13px}.pdf-sign p{margin:4px 0 0}.pdf-sign span{color:#8a97ad}
+@media(prefers-reduced-motion:reduce){.login-card,.panel,.kpi{animation:none}.kpi:hover,.vcard:hover{transform:none}}
+@media(max-width:560px){.application-list .panel-head{align-items:flex-start}.application-list .panel-head h2{font-size:18px}.list-help{font-size:13px}.application-list .panel-head>.form-actions{gap:5px}.application-list .panel-head>.form-actions .btn{padding:7px 9px;font-size:12px}.application-list .panel-head>.form-actions .ico{display:none}.filter-line{gap:6px}.filter-line .chips{flex-wrap:wrap}.filter-line .chip{font-size:12px;padding:6px 10px}.applicant-row{padding:15px;gap:14px 9px}.applicant-person{gap:13px}.applicant-person h3{font-size:17px}.list-photo .applicant-avatar{width:76px;height:94px}.applicant-person .identity{font-size:13px}.applicant-person .reference{font-size:10px}.applicant-meta{font-size:13px}.applicant-row .tag{font-size:11px;padding:5px 7px}.review-panel{padding:17px}.review-buttons .btn{flex:1 1 140px;padding:9px 12px;font-size:14px}.person h2{font-size:22px}.photo-trigger .portrait{width:104px;height:128px}}
+.semester-panel{margin-bottom:18px}.semester-table{overflow-x:auto;margin-top:14px}.semester-table table{border-collapse:collapse;width:100%;min-width:680px}.semester-table th,.semester-table td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}.semester-table th{background:#f5f8fe}.semester-panel select{padding:8px;border:1px solid #d3deea;border-radius:9px;background:white}.semester-panel .filter-line{margin-top:18px}
+/* Showcase layer shared with the public pages: aurora light, gradient-ringed panels with a cursor glow, animated sign-in cover and smooth view changes (script at the end of the page). */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+:root{--ease:cubic-bezier(.22,1,.36,1);--grad:linear-gradient(120deg,#4f46e5,#2563eb 45%,#0891b2);--flow:linear-gradient(100deg,#4f46e5,#2563eb 22%,#0891b2 45%,#8b5cf6 72%,#4f46e5);--ring:linear-gradient(140deg,#c7d2fe,#eef0f7 45%,#bae6fd);--ring-hot:linear-gradient(140deg,#818cf8,#c4b5fd 45%,#22d3ee);--halo:conic-gradient(from var(--ang),#818cf8,#22d3ee,#a78bfa,#f0abfc,#818cf8);--spot:radial-gradient(520px circle at var(--mx,50%) var(--my,-60%),rgb(99 102 241/var(--sa,0)),transparent 45%)}
+body{position:relative;background:#f4f6fc}
+.aurora{position:absolute;z-index:-1;top:0;left:0;right:0;height:min(1600px,100%);overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.aurora i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;will-change:transform}
+.aurora i:nth-child(1){left:-20vmax;top:-28vmax;background:radial-gradient(closest-side,#a5b4fccc,transparent);animation:drift-a 24s ease-in-out infinite alternate}
+.aurora i:nth-child(2){right:-22vmax;top:-20vmax;background:radial-gradient(closest-side,#99f6e4b3,transparent);animation:drift-b 28s ease-in-out infinite alternate}
+.aurora i:nth-child(3){left:18%;top:14vmax;width:46vmax;height:46vmax;background:radial-gradient(closest-side,#f5d0fe99,transparent);animation:drift-c 32s ease-in-out infinite alternate}
+.aurora:after{content:'';position:absolute;inset:0;background:radial-gradient(#4f46e514 1px,transparent 1.5px) 0 0/28px 28px;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent);mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent)}
+@keyframes drift-a{to{transform:translate(16vmax,12vmax) scale(1.18)}}@keyframes drift-b{to{transform:translate(-14vmax,16vmax) scale(.9)}}@keyframes drift-c{to{transform:translate(-10vmax,-8vmax) scale(1.2)}}
+@keyframes ang{to{--ang:360deg}}@keyframes flow{to{background-position:200% 0}}@keyframes up{from{opacity:0;transform:translateY(20px)}}
+@keyframes pan{to{background-position:0 0,0 0,100% 50%}}@keyframes orb{50%{transform:translate(-30px,24px) scale(1.15)}}
+@keyframes dlg{from{opacity:0;transform:translateY(16px) scale(.96)}}@keyframes fade{from{opacity:0}}
+.motion .rv{opacity:0;transform:translateY(26px) scale(.98);transition:opacity .75s var(--ease) var(--d,0s),transform .85s var(--ease) var(--d,0s)}
+.motion .rv.in{opacity:1;transform:none}
+.motion .kpi,.motion .ov-grid>.panel{animation:none}
+@media print{.rv{opacity:1!important;transform:none!important}.aurora{display:none}}
+
+/* Sign-in */
+.login-wrap{background:none}
+.login-card{border:1.5px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--halo) border-box;box-shadow:0 50px 100px -50px #4f46e599;animation:rise .7s var(--ease) backwards,ang 10s linear infinite}
+.login-cover{background:radial-gradient(420px 300px at 100% 0,#ffffff33,transparent 70%),radial-gradient(360px 280px at 0 100%,#22d3ee59,transparent 70%),linear-gradient(130deg,#4f46e5,#2563eb 30%,#0891b2 55%,#7c3aed 80%,#4f46e5);background-size:100% 100%,100% 100%,300% 300%;background-position:0 0,0 0,0 50%;animation:pan 16s ease-in-out infinite alternate}
+.login-cover:after{content:'';position:absolute;z-index:-1;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffffff66,#ffffff00 65%);animation:orb 9s ease-in-out infinite}
+.cover-title span{background:linear-gradient(90deg,#a5f3fc,#e0e7ff,#f5d0fe,#a5f3fc);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;animation:flow 6s linear infinite}
+.cover-list li{animation:up .7s var(--ease) backwards}.cover-list li:nth-child(1){animation-delay:.25s}.cover-list li:nth-child(2){animation-delay:.35s}.cover-list li:nth-child(3){animation-delay:.45s}
+.login-form>*{animation:up .7s var(--ease) backwards}.login-form>:nth-child(2){animation-delay:.06s}.login-form>:nth-child(3){animation-delay:.12s}.login-form>:nth-child(4){animation-delay:.18s}.login-form>:nth-child(5){animation-delay:.24s}.login-form>:nth-child(6){animation-delay:.3s}
+.field{transition:border-color .2s,box-shadow .3s var(--ease),background .2s}.field:focus-within{border-color:#818cf8;box-shadow:0 0 0 4px #6366f11f,0 12px 24px -18px #4f46e5}
+
+/* Buttons */
+.btn{transition:transform .25s var(--ease),box-shadow .25s var(--ease),background-position .6s var(--ease),filter .2s,border-color .2s,background-color .2s}
+.btn.primary{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(120deg,#4f46e5,#2563eb 40%,#0891b2 80%,#4f46e5) 0 0/220% 100%;box-shadow:inset 0 1px 0 #ffffff47,0 14px 28px -14px #4f46e5}
+.btn.primary:after{content:'';position:absolute;z-index:-1;top:0;bottom:0;left:-75%;width:50%;background:linear-gradient(100deg,transparent,#ffffff59,transparent);transform:skewX(-20deg);transition:left .8s var(--ease)}
+.btn.primary:hover:enabled{background-position:100% 0;transform:translateY(-2px);filter:none;box-shadow:inset 0 1px 0 #ffffff47,0 20px 34px -14px #4f46e5}.btn.primary:hover:enabled:after{left:130%}
+.btn.ghost:hover:enabled{transform:translateY(-1px);border-color:#c7d2fe;box-shadow:0 10px 20px -14px #4f46e566}
+.btn.approve{background:linear-gradient(120deg,#059669,#10b981);border-color:transparent;box-shadow:0 12px 24px -14px #059669}.btn.approve:hover:enabled{background:linear-gradient(120deg,#047857,#059669);transform:translateY(-2px)}
+.btn:active:enabled{transform:scale(.97)}
+
+/* Sidebar */
+.sidebar{background:#ffffffe0;-webkit-backdrop-filter:none;backdrop-filter:none}
+.side-brand img{transition:transform .5s var(--ease)}.side-brand:hover img{transform:rotate(-8deg) scale(1.06)}
+.nav-item{transition:background .25s,color .25s,transform .3s var(--ease),box-shadow .25s}.nav-item:hover{transform:translateX(3px)}
+.nav-item[aria-selected=true]{background:linear-gradient(120deg,#eef2ff,#e0f2fe);color:#3730a3;box-shadow:inset 0 0 0 1px #c7d2fe,0 10px 20px -16px #4f46e5}
+.nav-item[aria-selected=true]:before{background:var(--grad)}.nav-item[aria-selected=true] .ico{color:#4f46e5}
+.nav-item .badge{background:var(--grad);box-shadow:0 6px 12px -6px #4f46e5}
+.side-user .avatar{background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#14b8a6)}
+.kicker{background:var(--flow);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+
+/* Views slide in when they change */
+[role=tabpanel]:not([hidden]),#listView:not([hidden]),#detailView:not([hidden]),#visitListView:not([hidden]),#visitEditView:not([hidden]),#visitDetailView:not([hidden]){animation:up .55s var(--ease)}
+.crud-dialog[open],.photo-dialog[open]{animation:dlg .45s var(--ease)}.crud-dialog[open]::backdrop,.photo-dialog[open]::backdrop{animation:fade .35s ease}
+
+/* Panels and cards: gradient hairline ring with a cursor-following glow */
+.panel,.kpi,.vcard,.quick-btn,.applicant-row{border:1px solid transparent;background:var(--spot) padding-box,linear-gradient(#fff,#fff) padding-box,var(--ring) border-box}
+.panel:hover,.kpi:hover,.vcard:hover,.quick-btn:hover,.applicant-row:hover{--sa:.07}
+.application-list:hover,.semester-panel:hover{--sa:.04}
+.kpi,.vcard,.quick-btn,.applicant-row{transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.kpi:hover,.vcard:hover,.quick-btn:hover,.applicant-row:hover{border-color:transparent;background:var(--spot) padding-box,linear-gradient(#fff,#fff) padding-box,var(--ring-hot) border-box;box-shadow:0 28px 48px -32px #4f46e599}
+.kpi:hover,.vcard:hover,.quick-btn:hover{transform:translateY(-3px)}
+.kpi b{background:linear-gradient(120deg,var(--k),var(--k2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpis .kpi .k-icon{transition:transform .45s var(--ease)}.kpi:hover .k-icon{transform:rotate(-8deg) scale(1.08)}
+.q-ico{background:linear-gradient(135deg,#eef2ff,#e0f2fe);color:#4f46e5;transition:transform .45s var(--ease)}.quick-btn:hover .q-ico{transform:scale(1.1) rotate(-6deg)}
+.vcard .date-block{transition:transform .45s var(--ease)}.vcard:hover .date-block{transform:scale(1.06) rotate(-2deg)}
+.date-block small{background:var(--grad)}
+.meter i{background:linear-gradient(90deg,#6366f1,#8b5cf6 50%,#06b6d4)}
+.chip{transition:background .2s,border-color .2s,color .2s,transform .25s var(--ease)}.chip:hover{transform:translateY(-1px)}.chip[aria-pressed=true]{background:var(--grad);border-color:transparent;box-shadow:0 8px 16px -10px #4f46e5}
+.mini{transition:background .2s,transform .3s var(--ease)}.mini:hover{transform:translateX(3px)}
+.person,.visit-card,.review-panel{background:linear-gradient(120deg,#eef2ff,#f5f3ff 55%,#ecfeff)}
+.vol{transition:border-color .2s,box-shadow .3s var(--ease)}.vol:hover{border-color:#c7d2fe;box-shadow:0 14px 28px -22px #4f46e5}
+.att-btn{transition:background .25s,color .25s,transform .25s var(--ease)}.att-btn[aria-pressed=true]{animation:dlg .35s var(--ease)}
+.semester-table tbody tr{transition:background .2s}.semester-table tbody tr:hover{background:#f5f7ff}.semester-table th{background:linear-gradient(120deg,#eef2ff,#ecfeff)}
+.list-photo .applicant-avatar img,.photo-trigger img{transition:transform .5s var(--ease)}.list-photo:hover .applicant-avatar img,.photo-trigger:hover img{transform:scale(1.06)}
+@media(hover:none){.kpi:hover,.vcard:hover,.quick-btn:hover,.nav-item:hover,.mini:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.rv{opacity:1!important;transform:none!important}}
+/* Larger centre logo */
+.side-brand{gap:12px}.side-brand img{width:58px;height:58px;padding:3px;border-radius:17px;box-shadow:0 0 0 3px #eef2ff,0 10px 22px -12px #4f46e5}
+.cover-brand{gap:14px}.cover-brand img{width:72px;height:72px;padding:4px;border-radius:20px;box-shadow:0 14px 30px -14px #0b1b3f}
+@media(max-width:960px){.side-brand img{width:46px;height:46px;border-radius:14px}}
+@media(max-width:760px){.cover-brand img{width:56px;height:56px;border-radius:16px}}
+/* Smoothness: loops pause off screen (.idle), low-power devices get a still version (.lite), long lists render lazily. */
+.idle,.idle *,.idle::before,.idle::after,.idle *::before,.idle *::after{animation-play-state:paused!important}
+.lite .aurora i,.lite .login-card,.lite .login-cover,.lite .login-cover:after,.lite .cover-title span,.lite .kicker{animation:none}
+.lite .panel,.lite .kpi,.lite .vcard,.lite .quick-btn,.lite .applicant-row{--sa:0!important}
+.applicant-row{content-visibility:auto;contain-intrinsic-size:auto 150px}
+/* Sign-in, refreshed: a deep gradient cover with orbiting rings and floating icon tiles around a glowing badge,
+   and a roomier form with a pill label. */
+.login-wrap{padding:32px 18px}
+.login-card{width:min(1060px,100%);border-radius:38px}
+@media(min-width:801px) and (min-height:501px){.login-card{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);min-height:580px}}
+.login-cover{justify-content:space-between;gap:10px;padding:clamp(28px,4vw,48px);background:radial-gradient(520px 380px at 88% 8%,#22d3ee73,transparent 70%),radial-gradient(480px 380px at 0 100%,#c084fc80,transparent 70%),linear-gradient(140deg,#312e81,#4338ca 30%,#2563eb 62%,#0891b2 85%,#312e81)}
+.login-cover:before{opacity:.1;-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000,transparent 75%);mask-image:radial-gradient(ellipse at 50% 45%,#000,transparent 75%)}
+.login-cover:after{right:auto;left:-80px;bottom:-110px;width:300px;height:300px;background:radial-gradient(circle at 40% 40%,#ffffff40,#ffffff00 65%)}
+.cover-brand img{background:#fff;box-shadow:0 0 0 4px #ffffff26,0 16px 30px -14px #0b1b3f}
+.cover-brand strong{font-size:17px}.cover-brand small{font-size:13px;color:#e0e7ff}
+.cover-art{position:relative;flex:1;min-height:230px;margin:6px 0}
+.cover-art .ring{position:absolute;left:50%;top:50%;border:1.5px solid #ffffff59;border-radius:50%;transform:translate(-50%,-50%);animation:orbit 18s linear infinite}
+.cover-art .ring:before{content:'';position:absolute;top:-5px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#a5f3fc;box-shadow:0 0 14px #67e8f9}
+.cover-art .r1{width:130px;height:130px;animation-duration:12s}.cover-art .r2{width:220px;height:220px;animation-direction:reverse}.cover-art .r3{width:310px;height:310px;animation-duration:26s;border-style:dashed;border-color:#ffffff40}
+.cover-art .r2:before{background:#f0abfc;box-shadow:0 0 14px #e879f9}.cover-art .r3:before{background:#c7d2fe;box-shadow:0 0 14px #a5b4fc}
+@keyframes orbit{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.cover-art .hub{position:absolute;left:50%;top:50%;display:grid;place-items:center;width:78px;height:78px;border-radius:26px;transform:translate(-50%,-50%);background:linear-gradient(140deg,#ffffff,#e0e7ff);color:#4338ca;box-shadow:0 0 0 10px #ffffff1f,0 0 50px #a5b4fccc,0 20px 40px -16px #0b1b3f}
+.cover-art .hub .ico{width:36px;height:36px;stroke-width:1.7}
+.cover-art .tile{position:absolute;display:grid;place-items:center;width:54px;height:54px;border:1px solid #ffffff59;border-radius:18px;background:linear-gradient(140deg,#ffffff40,#ffffff14);color:#fff;box-shadow:0 18px 30px -16px #0b1b3fb3;animation:bob 6s ease-in-out infinite}
+.cover-art .tile .ico{width:24px;height:24px}
+.cover-art .t1{left:12%;top:10%}.cover-art .t2{right:12%;top:16%;animation-delay:-1.5s}.cover-art .t3{left:18%;bottom:6%;animation-delay:-3s}.cover-art .t4{right:16%;bottom:10%;animation-delay:-4.5s}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.cover-title{font-size:clamp(28px,3vw,40px);line-height:1.28}
+.login-form{padding:clamp(28px,4.4vw,56px)}
+.login-form .kicker{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:6px 14px;border:1px solid #c7d2fe;border-radius:99px;font-size:11.5px}
+.login-form h1{margin:16px 0 6px;font-size:clamp(28px,3vw,36px);letter-spacing:-.02em}.login-form .lead{font-size:14.5px}
+.credentials{gap:18px;margin-top:28px}.credentials label{font-size:14.5px}
+.credentials .field{min-height:56px;border-radius:17px;padding:0 16px}.credentials .field input{min-height:54px}
+.credentials .btn{min-height:56px;margin-top:8px;border-radius:17px;font-size:16px;padding:0 22px}
+.back-home{align-self:flex-start;margin-top:22px;padding:8px 14px;border-radius:12px;transition:background .2s}.back-home:hover{background:#eef2ff}
+/* In Sites the admin frame can be narrower or shorter than the device screen. */
+@media(max-width:800px),(max-height:500px){
+  .login-wrap{min-height:100dvh;grid-template-columns:minmax(0,1fr);align-content:start;padding:clamp(10px,3vw,22px)}
+  .login-card{width:min(100%,540px);border-radius:22px}
+  .login-cover{padding:14px 18px;overflow:hidden}
+  .cover-art,.cover-title,.login-cover:after{display:none}
+  .cover-brand img{width:44px;height:44px;border-radius:13px;flex:none}
+  .cover-brand small{display:block;line-height:1.4}
+  .login-form{min-width:0;padding:clamp(16px,4vw,26px)}
+  .login-form h1{font-size:clamp(23px,5vw,28px);line-height:1.35;margin:10px 0 4px}
+  .credentials{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px}
+  .credentials .field,.credentials .btn{min-height:48px;padding-inline:12px}
+  .credentials .field input{min-height:46px}
+  .credentials .icon-btn{min-width:44px;min-height:44px}
+  .login-note:empty{display:none}
+  .back-home{margin-top:10px}
+}
+.lite .cover-art .ring,.lite .cover-art .tile{animation:none}/* Annual statistics: KPI tiles, one-measure column charts with a hover tooltip, grade bars and the monthly table. */
+.stats-tools{align-items:center;flex-wrap:wrap}.stats-tools label{margin:0;color:var(--muted);font-size:13px}
+.stats-tools select{min-height:38px;padding:6px 32px 6px 12px;border:1px solid #d6dfec;border-radius:12px;background:var(--soft);font-weight:600}
+.stat-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:6px 0 16px}
+.skpi{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:2px 12px;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.skpi-ico{grid-row:1/3;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#eef2ff;color:#4f46e5}
+.skpi>span:not(.skpi-ico){color:var(--muted);font-size:13px}.skpi b{font:800 26px/1.15 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}.skpi b small{font:600 12.5px var(--sans);color:var(--muted)}
+.chart-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.chart-card{min-width:0;padding:16px 18px 14px;border:1px solid var(--line);border-radius:20px;background:#fff}
+.chart-card h3{font-size:15px;line-height:1.4}
+.chart-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}.chart-total{color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap}
+.plot{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;height:190px;margin-left:34px;border-bottom:1px solid #cbd5e1}
+.gl{position:absolute;left:0;right:0;border-top:1px dashed #e5e9f2;pointer-events:none}.gl span{position:absolute;left:-34px;top:-8px;width:28px;text-align:right;color:#8a97ad;font-size:10.5px;font-variant-numeric:tabular-nums}
+.col{position:relative;display:flex;align-items:flex-end;justify-content:center;height:100%;outline:none}
+.bar{position:relative;width:min(70%,26px);min-height:2px;border-radius:4px 4px 0 0;background:var(--c);transform-origin:bottom;animation:grow .8s var(--ease) backwards}
+.bar.zero{min-height:0}.col:nth-child(n){animation-delay:0s}
+@keyframes grow{from{transform:scaleY(0)}}
+.peak{position:absolute;left:50%;bottom:100%;margin-bottom:4px;transform:translateX(-50%);color:var(--ink);font-size:11.5px;font-weight:700;white-space:nowrap}
+.col:hover .bar,.col:focus-visible .bar{filter:brightness(1.12)}.col:hover,.col:focus-visible{background:#f5f7ff;border-radius:6px}
+.tip{position:absolute;z-index:3;bottom:calc(100% + 8px);left:50%;display:none;min-width:120px;padding:8px 10px;transform:translateX(-50%);border-radius:10px;background:#0b1b3f;color:#fff;font-size:12px;line-height:1.5;box-shadow:0 12px 24px -12px #0b1b3f;pointer-events:none}
+.tip b,.tip span,.tip small{display:block;white-space:nowrap}.tip small{color:#c7d2fe}
+.col:hover .tip,.col:focus-visible .tip{display:block}.col:nth-child(-n+7) .tip{left:0;transform:none}.col:nth-last-child(-n+3) .tip{left:auto;right:0;transform:none}
+.xaxis{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin:6px 0 0 34px;color:var(--muted);font-size:11px;text-align:center}
+.hbars{display:grid;gap:9px}
+.hrow{display:grid;grid-template-columns:42px minmax(0,1fr) 64px;align-items:center;gap:4px 10px;padding:4px 6px;border-radius:10px;outline:none}.hrow:hover,.hrow:focus-visible{background:#f5f7ff}
+.hrow b{font-size:14px}.htrack{height:14px;border-radius:0 4px 4px 0;background:#f1f4f9}.hbar{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:#0d9488;transform-origin:left;animation:grow-x .8s var(--ease) backwards}
+@keyframes grow-x{from{transform:scaleX(0)}}
+.hval{font-weight:700;font-size:13px;text-align:right;font-variant-numeric:tabular-nums}.hsub{grid-column:2/4;margin-top:-4px;color:var(--muted);font-size:11.5px}
+.stat-table{margin-top:4px;max-height:420px}.stat-table table{min-width:0}.stat-table td,.stat-table th{padding:7px 10px;font-size:13px}.stat-table td:not(:first-child),.stat-table th:not(:first-child){text-align:right}
+.stat-table tr.total td{font-weight:700;border-top:2px solid #cbd5e1;background:#f8fafd}
+.pdf-stats .stat-kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:4px 0 12px}.pdf-stats .skpi{padding:10px;border-radius:12px;gap:2px 8px}.pdf-stats .skpi-ico{width:32px;height:32px;border-radius:10px}.pdf-stats .skpi b{font-size:20px}
+.pdf-stats .chart-row{gap:10px;margin-bottom:10px}.pdf-stats .chart-card{padding:12px;border-radius:12px}.pdf-stats .plot{height:170px}
+.pdf-host .bar,.pdf-host .hbar{animation:none}.pdf-host .tip{display:none}
+/* The PDF sheet is always A4 wide, so it keeps the two-column report layout whatever the screen size. */
+.pdf-stats .chart-row{grid-template-columns:repeat(2,minmax(0,1fr))}.pdf-stats .skpi{grid-template-columns:minmax(0,1fr)}.pdf-stats .skpi-ico{display:none}.pdf-stats .plot{gap:4px;margin-left:34px}.pdf-stats .xaxis{gap:4px;margin-left:34px;font-size:10.5px}.pdf-stats .gl span{left:-34px;width:28px}.pdf-stats .chart-head{margin-bottom:8px}.pdf-stats .hbars{gap:5px}.pdf-stats .hrow{padding:2px 6px}
+@media(max-width:1100px){.stat-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-row{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:520px){.plot{height:160px;margin-left:28px;gap:2px}.xaxis{margin-left:28px;gap:2px;font-size:9.5px}.gl span{left:-30px;width:24px}.skpi b{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.bar,.hbar{animation:none}}
+@media(max-width:560px){#statsPanel .panel-head{flex-direction:column;align-items:stretch}.stats-tools{justify-content:flex-start}.stats-tools select{flex:1 1 140px}.stats-tools .btn{flex:1 1 100%}.skpi{padding:12px}.skpi-ico{width:36px;height:36px}}
+</style></head><body data-public-url="https://stpphoto.github.io/staffai/"><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<svg class="sprites" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5m6 6-6-6 6-6"/></symbol><symbol id="i-next" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21v-2a7.5 7.5 0 0 1 15 0v2"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol><symbol id="i-hide" viewBox="0 0 24 24"><path d="m3 3 18 18M9 5.5a12 12 0 0 1 3-.5c6 0 10 7 10 7a21 21 0 0 1-3 3.6M6.1 6.5A23 23 0 0 0 2 12s4 7 10 7a12 12 0 0 0 5-1.3"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 8V6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v2M3 9h17l-2 10H5L3 9Z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></symbol><symbol id="i-exit" viewBox="0 0 24 24"><path d="M11 4H5v16h6m-1-8h11m-4-4 4 4-4 4"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5zM14 3v6h5M8 13h8m-8 4h6"/></symbol><symbol id="i-badge" viewBox="0 0 24 24"><path d="m12 2 8 3v6c0 5-3.5 8-8 11-4.5-3-8-6-8-11V5l8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4m8-4v4M3.5 10h17"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></symbol>
+<symbol id="i-out" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5L4 8m0-4v4h4M4 13a8 8 0 0 0 14.6 4.5L20 16m0 4v-4h-4"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5.5a3 3 0 0 1 0 5.6M18 14.5a5.5 5.5 0 0 1 3 4.9V20"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5m5 5V7m5 9v-8"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+</defs></svg>
+
+<main id="login" class="login-wrap">
+<section class="login-card" aria-labelledby="loginTitle">
+<div class="login-cover"><div class="cover-brand"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt=""><div><strong>ระบบอาสาสมัครนักเรียน</strong><small>AI &amp; Metaverse Innovation Center · ผู้ดูแล</small></div></div>
+<div class="cover-art" aria-hidden="true"><span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span><span class="hub"><svg class="ico"><use href="#i-badge"/></svg></span>
+<span class="tile t1"><svg class="ico"><use href="#i-folder"/></svg></span><span class="tile t2"><svg class="ico"><use href="#i-calendar"/></svg></span><span class="tile t3"><svg class="ico"><use href="#i-users"/></svg></span><span class="tile t4"><svg class="ico"><use href="#i-clock"/></svg></span></div>
+<p class="cover-title">ระบบอาสาสมัครนักเรียน<span>ต้อนรับคณะดูงาน</span></p></div>
+<div class="login-form"><p class="kicker">ADMIN ACCESS</p><h1 id="loginTitle">เข้าสู่ระบบผู้ดูแล</h1><p class="lead">สำหรับครูและผู้ดูแลศูนย์ AI &amp; Metaverse เท่านั้น</p>
+<form id="credentials" class="credentials"><div><label for="username">ชื่อผู้ใช้</label><div class="field"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><input id="username" placeholder="กรอกชื่อผู้ใช้" autocomplete="username" maxlength="32" required></div></div>
+<div><label for="password">รหัสผ่าน</label><div class="field"><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg><input type="password" id="password" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" maxlength="128" required><button class="icon-btn" type="button" id="toggle" aria-label="แสดงรหัสผ่าน" aria-pressed="false"><svg class="ico" aria-hidden="true"><use id="eyeIcon" href="#i-eye"/></svg></button></div></div>
+<button class="btn primary" id="signIn"><span>เข้าสู่ระบบ</span><svg class="ico" aria-hidden="true"><use href="#i-next"/></svg></button></form>
+<p class="login-note" id="loginNote" role="status"></p>
+<a class="back-home" href="./"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg>กลับหน้าแรก</a></div>
+</section></main>
+
+<div id="desk" class="app" hidden>
+<aside class="sidebar">
+<div class="side-brand"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt=""><div><strong>ระบบอาสาสมัครนักเรียน</strong><small>ต้อนรับคณะดูงาน · ผู้ดูแล</small></div></div>
+<nav class="side-nav" id="tabs" role="tablist" aria-label="เมนูผู้ดูแล" aria-orientation="vertical">
+<button class="nav-item" type="button" role="tab" id="tabOverview" aria-selected="true" aria-controls="overviewPanel"><svg class="ico" aria-hidden="true"><use href="#i-grid"/></svg><span>ภาพรวม</span></button>
+<button class="nav-item" type="button" role="tab" id="tabApps" aria-selected="false" aria-controls="appsPanel" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-folder"/></svg><span>ใบสมัคร<span class="long">สตาฟ</span></span><span class="badge" id="appsBadge"></span></button>
+<button class="nav-item" type="button" role="tab" id="tabSemester" aria-selected="false" aria-controls="semesterPanel" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg><span>สรุปชั่วโมง</span></button>
+<button class="nav-item" type="button" role="tab" id="tabStats" aria-selected="false" aria-controls="statsPanel" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg><span>สถิติ<span class="long">รายปี</span></span></button>
+<button class="nav-item" type="button" role="tab" id="tabVisits" aria-selected="false" aria-controls="visitsPanel" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg><span>คณะดูงาน<span class="long"> · อาสาสมัคร</span></span><span class="badge" id="visitsBadge"></span></button>
+</nav>
+<div class="side-links"><span>หน้าสาธารณะ</span><a href="./" target="_self"><svg class="ico" aria-hidden="true"><use href="#i-out"/></svg>หน้าระบบอาสาสมัคร</a><a href="./?page=apply" target="_self"><svg class="ico" aria-hidden="true"><use href="#i-out"/></svg>ใบสมัครนักเรียนสตราฟ</a></div>
+<div class="side-user"><span class="avatar">A</span><div><b>ผู้ดูแลระบบ</b><small id="sessionLeft"></small></div><button class="icon-btn" type="button" id="logout" aria-label="ออกจากระบบ" title="ออกจากระบบ"><svg class="ico" aria-hidden="true"><use href="#i-exit"/></svg></button></div>
+</aside>
+<main class="workspace">
+<header class="topbar"><div><p class="kicker" id="wsKicker">OVERVIEW</p><h1 id="deskTitle">ภาพรวม</h1><p id="deskLead">สรุปใบสมัครและรอบรับอาสาสมัครล่าสุด</p></div>
+<div class="top-actions"><span class="sync" id="syncText"></span><button class="btn ghost" type="button" id="refresh"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg>รีเฟรช</button></div></header>
+<p class="notice" role="status" id="deskNote"></p>
+
+<section id="overviewPanel" role="tabpanel" aria-labelledby="tabOverview">
+<div class="kpis"><div class="kpi"><span class="k-icon"><svg class="ico" aria-hidden="true"><use href="#i-folder"/></svg></span><b id="kApps" data-count>–</b><span>ใบสมัครสตาฟทั้งหมด</span></div><div class="kpi"><span class="k-icon"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><b id="kPending" data-count>–</b><span>รอตรวจสอบ</span></div><div class="kpi"><span class="k-icon"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><b id="kOpen" data-count>–</b><span>คณะที่เปิดรับอาสาตอนนี้</span></div><div class="kpi"><span class="k-icon"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg></span><b id="kVolunteers" data-count>–</b><span>อาสาสมัครที่ลงทะเบียน</span></div></div>
+<div class="quick" role="group" aria-label="ทางลัด"><button class="quick-btn" type="button" id="qaPending"><span class="q-ico"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><span><b>ตรวจใบสมัครที่รอ</b><small id="qaPendingText">ใบสมัครที่ยังไม่ตรวจ</small></span></button><button class="quick-btn" type="button" id="qaVisit"><span class="q-ico"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></span><span><b>เพิ่มคณะดูงาน</b><small>เปิดรอบรับอาสาสมัครใหม่</small></span></button><button class="quick-btn" type="button" id="qaApp"><span class="q-ico"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg></span><span><b>เพิ่มผู้สมัครสตาฟ</b><small>บันทึกใบสมัครแทนนักเรียน</small></span></button><a class="quick-btn" href="./" target="_self"><span class="q-ico"><svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></span><span><b>เปิดหน้านักเรียน</b><small>ดูหน้าที่นักเรียนเห็น</small></span></a><button class="quick-btn" type="button" id="qaMail"><span class="q-ico"><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg></span><span><b>แจ้งเตือนทางอีเมล</b><small id="qaMailText">ตั้งค่าการแจ้งเตือน</small></span></button></div>
+<div class="ov-grid"><section class="panel"><div class="panel-head"><h2>คณะดูงานที่กำลังจะมาถึง</h2><button class="link-btn" type="button" data-go="visits">ดูทั้งหมด<svg class="ico" aria-hidden="true"><use href="#i-next"/></svg></button></div><div id="ovVisits"></div></section>
+<section class="panel"><div class="panel-head"><h2>ใบสมัครล่าสุด</h2><button class="link-btn" type="button" data-go="apps">ดูทั้งหมด<svg class="ico" aria-hidden="true"><use href="#i-next"/></svg></button></div><div id="ovApps"></div></section></div>
+</section>
+
+<section id="semesterPanel" class="panel semester-panel" role="tabpanel" aria-labelledby="tabSemester" hidden>
+<div class="panel-head"><div><h2 id="semesterTitle">สรุปชั่วโมงจิตอาสาประจำภาคเรียน</h2><p class="list-help">กำหนดช่วงวันที่ครั้งเดียวเพื่อใช้ทั้งรายงานและใบรับรองของนักเรียน</p></div></div>
+<form id="semesterForm" class="vform"><div class="grid"><div><label for="semLabel">ชื่อภาคเรียน / ปีการศึกษา</label><input id="semLabel" maxlength="100" required placeholder="เช่น ภาคเรียนที่ 1 ปีการศึกษา 2569"></div><div><label for="semStart">วันที่เริ่ม</label><input id="semStart" type="date" required></div><div><label for="semEnd">วันที่สิ้นสุด</label><input id="semEnd" type="date" required></div></div><div class="form-actions"><button type="submit" class="btn primary" id="semSave">บันทึกภาคเรียนและโหลดรายงาน</button></div></form>
+<p class="notice" id="semNote" role="status"></p><div id="semReport" hidden><div class="filter-line"><label for="semGrade">ระดับชั้น</label><select id="semGrade"><option value="">ทุกระดับชั้น</option><option value="1">ม.1</option><option value="2">ม.2</option><option value="3">ม.3</option><option value="4">ม.4</option><option value="5">ม.5</option><option value="6">ม.6</option></select><label for="semRoom">ห้อง</label><select id="semRoom"><option value="">ทุกห้อง</option></select><button type="button" class="btn ghost small" id="semCsv">ดาวน์โหลด CSV สำหรับ Excel</button><button type="button" class="btn ghost small" id="semPdf">ดาวน์โหลด PDF</button></div><p id="semSummary" class="list-help"></p><div class="semester-table"><table><thead><tr><th>รหัสนักเรียน</th><th>ชื่อ–นามสกุล</th><th>ชั้น / ห้อง</th><th>เลขที่</th><th>จำนวนคณะ</th><th>ชั่วโมง</th></tr></thead><tbody id="semRows"></tbody></table></div></div></section>
+<section id="statsPanel" role="tabpanel" aria-labelledby="tabStats" hidden><div class="panel stats-panel">
+<div class="panel-head"><div><h2>สถิติอาสาสมัครประจำปีการศึกษา</h2><p class="list-help">นับเฉพาะอาสาสมัครที่เช็กชื่อว่ามาปฏิบัติหน้าที่ · ปีการศึกษาเริ่มพฤษภาคม สิ้นสุดเมษายน</p></div>
+<div class="form-actions stats-tools"><label for="statYear">ปีการศึกษา</label><select id="statYear"></select><button type="button" class="btn ghost small" id="statCsv" disabled><svg class="ico" aria-hidden="true"><use href="#i-file"/></svg>CSV สำหรับ Excel</button><button type="button" class="btn primary small" id="statPdf" disabled><svg class="ico" aria-hidden="true"><use href="#i-file"/></svg>PDF รายงานประจำปี</button></div></div>
+<p class="notice" id="statNote" role="status"></p>
+<div id="statBody" hidden><div class="stat-kpis" id="statKpis"></div><div class="chart-row" id="statMonthly"></div><div class="chart-row"><div id="statGrades"></div><div class="chart-card"><h3>ตารางรายเดือน</h3><div class="semester-table stat-table"><table><thead><tr><th>เดือน</th><th>คณะ</th><th>อาสา (คน-ครั้ง)</th><th>นักเรียน (คน)</th><th>ชั่วโมง</th></tr></thead><tbody id="statRows"></tbody></table></div></div></div></div>
+</div></section>
+<section id="appsPanel" role="tabpanel" aria-labelledby="tabApps" hidden><div id="listView" class="panel application-list">
+<div class="panel-head"><div><h2>จัดการใบสมัคร</h2><p class="list-help">กด “ตรวจใบสมัคร” เพื่อดูข้อมูลและเลือกผลการตรวจ</p></div><div class="form-actions"><button class="btn ghost small" type="button" id="pdfApps"><svg class="ico" aria-hidden="true"><use href="#i-file"/></svg>PDF รายชื่อ</button><button class="btn ghost small" type="button" id="deletedApps">รายการที่ลบ</button><button class="btn primary" type="button" id="newApp"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg>เพิ่มผู้สมัคร</button></div></div>
+<div class="application-tools"><form class="field" id="search" role="search"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><label class="sr" for="query" hidden>ค้นหาผู้สมัคร</label><input type="search" id="query" maxlength="100" placeholder="ค้นหาชื่อ รหัสนักเรียน ห้อง หรือเลขอ้างอิง" aria-label="ค้นหาผู้สมัคร"></form>
+<div class="filter-line"><span>กรองใบสมัคร</span><div class="chips" id="statusChips" role="group" aria-label="กรองตามสถานะ"><button class="chip" type="button" data-status="all" aria-pressed="true">ทั้งหมด</button><button class="chip" type="button" data-status="pending" aria-pressed="false">รอตรวจสอบ</button><button class="chip" type="button" data-status="approved" aria-pressed="false">อนุมัติแล้ว</button><button class="chip" type="button" data-status="rejected" aria-pressed="false">ไม่อนุมัติ</button></div></div></div>
+<div class="application-head" aria-hidden="true"><span>ผู้สมัคร · กดรูปเพื่อขยาย</span><span>ชั้น / ห้อง</span><span>วันที่สมัคร</span><span>สถานะใบสมัคร</span><span>การตรวจสอบ</span></div>
+<div id="results" aria-live="polite"></div>
+<div class="pager" id="pager" hidden><span id="count"></span><button class="btn ghost small" id="prev" type="button">ก่อนหน้า</button><span id="page"></span><button class="btn ghost small" id="next" type="button">ถัดไป</button></div></div>
+<div id="detailView" hidden><button class="btn ghost back" id="back" type="button"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg>กลับรายชื่อ</button><section id="person" aria-label="รายละเอียดผู้สมัคร"></section></div>
+</section>
+
+<section id="visitsPanel" role="tabpanel" aria-labelledby="tabVisits" hidden>
+<div id="visitListView"><div class="panel"><div class="panel-head"><div><h2>รายการคณะดูงาน</h2><p class="sync">หน้าลงทะเบียนเปิด–ปิดเองตามเวลาที่ตั้งไว้</p></div><div class="top-actions"><span class="count" id="visitTotal"></span><button class="btn ghost small" type="button" id="deletedVisits">รายการที่ลบ</button><button class="btn primary" id="newVisit" type="button"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg>เพิ่มคณะดูงาน</button></div></div>
+<div class="visit-grid" id="visitRows" aria-busy="false"></div></div></div>
+<div id="visitEditView" class="panel" hidden><button class="btn ghost back" id="editBack" type="button"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg>ย้อนกลับ</button><div class="panel-head"><div><p class="kicker">VISIT SETUP</p><h2 id="editTitle">เพิ่มคณะดูงาน</h2></div></div>
+<form id="visitForm" class="vform" novalidate>
+<div><label for="vTitle">ชื่อคณะดูงาน</label><input id="vTitle" maxlength="150" required placeholder="เช่น คณะครูโรงเรียนบ้านตัวอย่าง"></div>
+<div class="grid"><div><label for="vOrg">หน่วยงาน / ต้นสังกัด<small>ไม่บังคับ</small></label><input id="vOrg" maxlength="150" placeholder="เช่น สพป.นครศรีธรรมราช เขต 1"></div><div><label for="vVisitors">จำนวนผู้มาดูงาน (คน)<small>ไม่บังคับ</small></label><input id="vVisitors" type="number" min="0" max="99999" inputmode="numeric"></div></div>
+<div class="grid grid3"><div><label for="vDate">วันที่ดูงาน</label><input id="vDate" type="date" required></div><div><label for="vStart">เวลาเริ่ม</label><input id="vStart" type="time" required></div><div><label for="vEnd">เวลาสิ้นสุด</label><input id="vEnd" type="time" required></div></div>
+<p class="legend">การรับสมัครอาสาสมัคร</p>
+<div class="grid grid3"><div><label for="vOpen">เปิดรับสมัคร</label><input id="vOpen" type="datetime-local" required></div><div><label for="vClose">ปิดรับสมัคร</label><input id="vClose" type="datetime-local" required></div><div><label for="vNeeded">จำนวนที่รับ (คน)</label><input id="vNeeded" type="number" min="1" max="500" inputmode="numeric" required></div></div>
+<div><label for="vDuties">หน้าที่ของอาสาสมัคร<small>บรรทัดละ 1 หน้าที่ ไม่เกิน 12 รายการ · เว้นว่างได้</small></label><textarea id="vDuties" rows="4" placeholder="ต้อนรับและลงทะเบียน&#10;นำชมศูนย์&#10;สาธิตนวัตกรรม AI"></textarea></div>
+<div><label for="vDetails">รายละเอียด / การนัดหมาย<small>แสดงบนหน้าลงทะเบียน</small></label><textarea id="vDetails" rows="3" maxlength="1000" placeholder="เช่น แต่งกายชุดนักเรียน พบกันที่ห้อง AI เวลา 08.00 น."></textarea></div>
+<div class="visit-attachments"><label for="vFiles">หนังสือราชการและรูปภาพ <small>ไม่บังคับ</small></label><input id="vFiles" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" multiple><small class="muted">เลือกได้ครั้งละไม่เกิน 3 ไฟล์ รองรับ PDF, JPG, PNG, WebP ขนาดไม่เกิน 30 MB ต่อไฟล์ · ผู้ดูแลเท่านั้นที่เปิดดูได้</small><p class="muted" id="vFilesExisting"></p></div>
+<div><label for="vStatus">การแสดงผล</label><select id="vStatus"><option value="active">แสดงบนหน้าลงทะเบียน</option><option value="hidden">ซ่อนไว้ก่อน (ยังไม่ประกาศ)</option></select></div>
+<div class="form-actions"><button class="btn ghost" type="button" id="editCancel">ยกเลิก</button><button class="btn primary" id="saveVisit">บันทึกคณะดูงาน</button></div></form></div>
+<div id="visitDetailView" hidden><button class="btn ghost back" id="visitBack" type="button"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg>กลับรายการคณะดูงาน</button><section id="visitSummary" aria-label="ข้อมูลคณะดูงาน"></section>
+<div class="roster-head"><h3>รายชื่ออาสาสมัคร</h3><span id="volTotal" class="count" aria-live="polite"></span><div class="roster-actions"><button class="btn ghost small" type="button" id="qrCheckin" disabled><svg class="ico" aria-hidden="true"><use href="#i-grid"/></svg>QR เช็กชื่อ</button><button class="btn ghost small" type="button" id="allPresent" disabled><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>เช็กชื่อมาทุกคน</button><button class="btn ghost small" type="button" id="certAll" disabled><svg class="ico" aria-hidden="true"><use href="#i-badge"/></svg>เกียรติบัตร PDF</button><button class="btn ghost small" type="button" id="pdfRoster" disabled><svg class="ico" aria-hidden="true"><use href="#i-file"/></svg>PDF รายชื่อ</button><button class="btn primary small" type="button" id="newVolunteer">เพิ่มอาสาสมัคร</button></div></div><div id="volRows"></div>
+<div id="waitBlock" hidden><div class="roster-head"><h3>รายชื่อสำรอง</h3><span id="waitTotal" class="count"></span><p class="sync">เลื่อนเป็นตัวจริงอัตโนมัติตามลำดับเมื่อมีคนยกเลิกหรือเพิ่มจำนวนที่รับ</p></div><div id="waitRows"></div></div></div>
+<p class="notice" role="status" id="visitNote"></p>
+</section>
+</main>
+</div>
+<dialog id="photoDialog" class="photo-dialog" aria-labelledby="photoDialogTitle"><div class="photo-head"><h2 id="photoDialogTitle">รูปถ่ายผู้สมัคร</h2><div class="photo-actions"><button type="button" class="btn ghost small" id="photoZoom" aria-pressed="false">ขยาย 2 เท่า</button><button type="button" class="btn ghost small" id="photoClose" autofocus>ปิดรูป</button></div></div><div class="photo-stage" id="photoStage"><img id="largePhoto" alt="รูปถ่ายผู้สมัครขนาดใหญ่"></div></dialog>
+<dialog id="editDialog" class="crud-dialog" aria-labelledby="crudTitle"><form id="crudForm" class="vform">
+<div class="panel-head"><div><p class="kicker">MANAGE RECORD</p><h2 id="crudTitle"></h2></div><button type="button" class="btn ghost small" id="crudClose" aria-label="ปิดหน้าต่างจัดการข้อมูล">ปิด</button></div>
+<div id="crudBody"></div><p class="notice" id="crudNote" role="alert"></p><div class="form-actions"><button type="button" class="btn ghost" id="crudCancel">ยกเลิก</button><button type="submit" class="btn primary" id="crudSave">บันทึกข้อมูล</button></div></form></dialog>
+<script>
+'use strict';
+const by=id=>document.getElementById(id);
+const rpc=(name,...args)=>new Promise((resolve,reject)=>google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[name](...args));
+const PAGE_SIZE=20,SHORT_MONTHS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const STATUS={pending:'รอตรวจสอบ',approved:'อนุมัติแล้ว',rejected:'ไม่อนุมัติ'};
+const VISIT_TAGS={open:['เปิดรับสมัคร','open'],upcoming:['ยังไม่เปิดรับ','upcoming'],closed:['ปิดรับแล้ว','closed'],full:['ครบจำนวน','full'],hidden:['ซ่อนอยู่','']};
+const VFIELDS={vTitle:'title',vOrg:'organization',vVisitors:'visitorCount',vDate:'visitDate',vStart:'startTime',vEnd:'endTime',vOpen:'openAt',vClose:'closeAt',vNeeded:'needed',vDetails:'details',vStatus:'status'};
+const PANELS={stats:['ANNUAL STATISTICS','สถิติรายปี','กราฟจำนวนอาสาและชั่วโมงรายเดือน แยกระดับชั้น สำหรับรายงานประจำปี'],semester:['SEMESTER HOURS','สรุปชั่วโมงจิตอาสา','รายงานและใบรับรองประจำภาคเรียน'],overview:['OVERVIEW','ภาพรวม','สรุปใบสมัครและรอบรับอาสาสมัครล่าสุด'],apps:['APPLICATIONS','ใบสมัครนักเรียนสตราฟ','ค้นหาและเปิดดูรายละเอียดผู้สมัคร'],visits:['STUDY VISITS','คณะดูงานและอาสาสมัคร','เปิดรอบรับสมัคร กำหนดเวลา และดูรายชื่ออาสาสมัคร']};
+let token='',until=0,timer=0,clockTimer=0,serial=0,vSerial=0,dSerial=0,tab='overview',apps=[],visitList=[],loaded=false,page=1,term='',statusFilter='all',currentVisit=null,currentVolunteers=[],editingId='';
+
+function node(tag,txt,cls){const n=document.createElement(tag);if(txt!=null)n.textContent=txt;if(cls)n.className=cls;return n}
+function icon(name){const ns='http://www.w3.org/2000/svg',s=document.createElementNS(ns,'svg'),u=document.createElementNS(ns,'use');s.setAttribute('class','ico');s.setAttribute('aria-hidden','true');u.setAttribute('href','#i-'+name);s.append(u);return s}
+// Private images stay in this page's memory and are cleared on refresh or sign-out.
+let photoEpoch=0,photoObserver=null,photoTimer=0,photoBusy=false;
+const photoCache=new Map(),photoQueue=new Map();
+function clearApplicantPhotos(){photoEpoch++;clearTimeout(photoTimer);photoTimer=0;photoBusy=false;photoObserver?.disconnect();photoObserver=null;photoCache.clear();photoQueue.clear()}
+function paintApplicantPhoto(box,source){
+ box.replaceChildren(icon('user'));box.title=source?'รูปผู้สมัคร':'ไม่มีรูปถ่ายหรือไม่สามารถโหลดรูปได้';
+ if(!source)return;const img=node('img');img.alt='';img.decoding='async';img.onerror=()=>{box.replaceChildren(icon('user'));box.title='ไม่สามารถแสดงรูปถ่ายได้'};img.src=source;box.replaceChildren(img)}
+function queueApplicantPhoto(box,ref){
+ if(!token||!box.isConnected)return;
+ if(photoCache.has(ref)){paintApplicantPhoto(box,photoCache.get(ref));return}
+ if(!photoQueue.has(ref))photoQueue.set(ref,new Set());photoQueue.get(ref).add(box);
+ if(!photoBusy&&!photoTimer)photoTimer=setTimeout(loadApplicantPhotos,0)}
+function applicantAvatar(item){
+ const box=node('span',null,'avatar applicant-avatar');box.setAttribute('aria-hidden','true');box.append(icon('user'));box.dataset.applicantRef=item.ref;
+ if(photoCache.has(item.ref)){paintApplicantPhoto(box,photoCache.get(item.ref));return box}
+ if(!photoObserver&&'IntersectionObserver' in window){const observedEpoch=photoEpoch;photoObserver=new IntersectionObserver(entries=>{if(observedEpoch!==photoEpoch)return;for(const entry of entries)if(entry.isIntersecting){photoObserver.unobserve(entry.target);queueApplicantPhoto(entry.target,entry.target.dataset.applicantRef)}},{rootMargin:'120px'});}
+ if(photoObserver)photoObserver.observe(box);else setTimeout(()=>queueApplicantPhoto(box,item.ref),0);
+ return box}
+async function loadApplicantPhotos(){
+ photoTimer=0;if(photoBusy||!token)return;
+ for(const [ref,boxes] of photoQueue){for(const box of boxes)if(!box.isConnected)boxes.delete(box);if(!boxes.size)photoQueue.delete(ref)}
+ const refs=[...photoQueue.keys()].slice(0,4);if(!refs.length)return;
+ const epoch=photoEpoch,session=token;photoBusy=true;
+ try{const r=await rpc('adminApplicantPhotos',session,refs);if(epoch!==photoEpoch||session!==token)return;
+ if(r?.expired){reset('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง');return}
+ for(const ref of refs){const source=(r?.ok&&r.photos?.find(p=>p.ref===ref)?.portrait)||'';photoCache.set(ref,source);for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,source);photoQueue.delete(ref)}
+ while(photoCache.size>60)photoCache.delete(photoCache.keys().next().value);
+ }catch{if(epoch===photoEpoch&&session===token)for(const ref of refs){photoCache.set(ref,'');for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,'');photoQueue.delete(ref)}}
+ finally{if(epoch===photoEpoch){photoBusy=false;if(photoQueue.size)photoTimer=setTimeout(loadApplicantPhotos,0)}}}
+function badge(value){return node('span',STATUS[value]||value||'ไม่ได้ระบุ','tag '+(STATUS[value]?value:''))}
+function visitBadge(state){const t=VISIT_TAGS[state]||[state,''];return node('span',t[0],'tag '+t[1])}
+function initial(name){const bare=String(name||'').replace(/^(เด็กชาย|เด็กหญิง|นางสาว|นาย|นาง)/,'').trim();return [...bare].find(ch=>!'เแโใไ'.includes(ch))||'?'}
+function thDate(text){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(text||'');return m?Number(m[3])+' '+SHORT_MONTHS[m[2]-1]+' '+(Number(m[1])+543):''}
+function thStamp(text){return text?thDate(text)+' '+text.slice(11,16).replace(':','.')+' น.':''}
+function thTime(a,b){return String(a||'').replace(':','.')+'–'+String(b||'').replace(':','.')+' น.'}
+function prettyDate(value){if(!value)return '';const d=new Date(value);return isNaN(d)?value:d.toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'})}
+function shortDay(value){if(!value)return '—';const d=new Date(value);return isNaN(d)?value:d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit',timeZone:'Asia/Bangkok'})}
+function meter(v){const m=node('span',null,'meter'),fill=node('i');fill.style.width=Math.min(100,v.needed?v.count/v.needed*100:0)+'%';m.append(fill);return m}
+function dateBlock(text){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(text||'')||[0,'0','1','1'],box=node('div',null,'date-block');box.append(node('small',SHORT_MONTHS[m[2]-1]),node('b',String(Number(m[3]))),node('span',String(Number(m[1])+543)));return box}
+function loading(text='กำลังโหลด…'){const line=node('div',null,'working');line.setAttribute('role','status');line.append(node('span',null,'spinner'),node('span',text));return line}
+function skeletons(n){return Array.from({length:n},()=>node('div',null,'skeleton'))}
+function emptyBox(title,text,action){const box=node('div',null,'empty');box.append(node('h3',title),node('p',text));if(action)box.append(action);return box}
+function group(title,ico,rows){const card=node('section',null,'info'),h=node('h3'),dl=node('dl');h.append(icon(ico),node('span',title));for(const [label,value] of rows){const pair=node('div');pair.append(node('dt',label),node('dd',value||'ไม่ได้ระบุ'));dl.append(pair)}card.append(h,dl);return card}
+
+function passwordVisible(on){by('password').type=on?'text':'password';by('eyeIcon').setAttribute('href',on?'#i-hide':'#i-eye');by('toggle').setAttribute('aria-label',on?'ซ่อนรหัสผ่าน':'แสดงรหัสผ่าน');by('toggle').setAttribute('aria-pressed',String(on))}
+by('toggle').onclick=()=>passwordVisible(by('password').type==='password');
+function zoomPhoto(on){by('photoStage').classList.toggle('enlarged',on);by('photoZoom').setAttribute('aria-pressed',String(on));by('photoZoom').textContent=on?'พอดีจอ':'ขยาย 2 เท่า';by('photoStage').scrollTo(0,0)}
+function clearLargePhoto(){by('largePhoto').removeAttribute('src');zoomPhoto(false)}
+function closePhoto(){if(by('photoDialog').open)by('photoDialog').close();clearLargePhoto()}
+function openPhoto(source){if(!token||!source)return;zoomPhoto(false);by('largePhoto').src=source;by('photoDialog').showModal();by('photoClose').focus()}
+by('photoZoom').onclick=()=>zoomPhoto(by('photoZoom').getAttribute('aria-pressed')!=='true');
+by('photoClose').onclick=closePhoto;by('photoDialog').addEventListener('close',()=>{if(!by('photoDialog').open)clearLargePhoto()});
+by('photoDialog').addEventListener('click',e=>{if(e.target!==by('photoDialog'))return;const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closePhoto()});
+
+function reset(note=''){forgetSession();statsReport=null;++statSerial;by('statBody').hidden=true;by('statCsv').disabled=by('statPdf').disabled=true;semesterReport=null;++semSerial;by('semRows').replaceChildren();by('semReport').hidden=true;++serial;++vSerial;++dSerial;clearTimeout(timer);clearInterval(clockTimer);token='';until=0;clearApplicantPhotos();closePhoto();closeCrud(true);apps=[];visitList=[];loaded=false;page=1;term='';statusFilter='all';currentVisit=null;currentVolunteers=[];editingId='';
+ by('query').value='';by('credentials').reset();by('visitForm').reset();passwordVisible(false);by('signIn').disabled=false;
+ ['results','person','count','page','deskNote','visitRows','visitTotal','visitSummary','volRows','volTotal','visitNote','ovVisits','ovApps','syncText','appsBadge','visitsBadge'].forEach(k=>by(k).replaceChildren());
+ showTab('overview');by('desk').hidden=true;by('login').hidden=false;by('loginNote').textContent=note;by('username').focus()}
+function accept(r,noteId='deskNote'){if(r&&r.ok)return true;if(r&&r.expired){reset('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง');return false}by(noteId).textContent=(r&&r.message)||'โหลดข้อมูลไม่สำเร็จ';return false}
+function failed(noteId='deskNote'){by(noteId).textContent='ติดต่อระบบไม่ได้ กรุณาลองอีกครั้ง'}
+function sessionClock(){const left=Math.max(0,Math.round((until-Date.now())/60000)),h=Math.floor(left/60),m=left%60;by('sessionLeft').textContent=('หมดเวลาใน '+(h?h+' ชม. ':'')+(m||!h?m+' นาที':'')).trim()}
+by('credentials').onsubmit=async e=>{e.preventDefault();if(by('signIn').disabled)return;by('signIn').disabled=true;by('loginNote').textContent='กำลังตรวจสอบ…';
+ try{const r=await rpc('adminSignIn',by('username').value.trim(),by('password').value,true);by('password').value='';passwordVisible(false);
+ if(!r.ok){by('loginNote').textContent=r.message;by('password').focus();return}
+ startSession(r.token,r.until);loadDashboard(r.dashboard);
+ }catch{by('loginNote').textContent='ติดต่อระบบไม่ได้ กรุณาลองอีกครั้ง'}finally{by('signIn').disabled=false}};
+by('logout').onclick=()=>{const t=token;reset('ออกจากระบบแล้ว');rpc('adminSignOut',t).catch(()=>{})};
+
+// Navigation: every panel renders from data already in memory, so switching is instant.
+function showTab(which){tab=which;for(const [key,id] of [['overview','tabOverview'],['apps','tabApps'],['semester','tabSemester'],['stats','tabStats'],['visits','tabVisits']]){const on=key===which;by(id).setAttribute('aria-selected',String(on));by(id).tabIndex=on?0:-1;by(key+'Panel').hidden=!on}
+ const [kicker,title,lead]=PANELS[which];by('wsKicker').textContent=kicker;by('deskTitle').textContent=title;by('deskLead').textContent=lead;by('deskNote').textContent=''}
+by('tabOverview').onclick=()=>showTab('overview');
+by('tabApps').onclick=()=>{showTab('apps');showList()};
+by('tabSemester').onclick=()=>{showTab('semester');loadSemester()};
+by('tabStats').onclick=()=>{showTab('stats');loadStats()};
+by('tabVisits').onclick=()=>{showTab('visits');renderVisitList()};
+by('tabs').addEventListener('keydown',e=>{const order=['tabOverview','tabApps','tabSemester','tabStats','tabVisits'],i=order.indexOf(e.target.id);if(i<0||!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const next=by(order[(i+(e.key==='ArrowUp'||e.key==='ArrowLeft'?order.length-1:1))%order.length]);next.focus();next.click()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)by(b.dataset.go==='apps'?'tabApps':'tabVisits').click()});
+by('refresh').onclick=()=>{loadDashboard();if(tab==='stats')loadStats();else if(tab==='semester')loadSemester()};
+// Overview shortcuts reuse the tab and form handlers below.
+by('qaPending').onclick=()=>{statusFilter='pending';page=1;by('tabApps').click()};
+by('qaVisit').onclick=()=>{by('tabVisits').click();by('newVisit').click()};
+by('qaApp').onclick=()=>{by('tabApps').click();by('newApp').click()};
+
+// Sign-in hands over the first dashboard; later refreshes fetch a new one.
+async function loadDashboard(preloaded){const n=++dSerial;by('refresh').disabled=true;by('syncText').textContent='กำลังอัปเดต…';
+ if(!loaded&&!preloaded){by('ovVisits').replaceChildren(...skeletons(3));by('ovApps').replaceChildren(...skeletons(3));by('results').replaceChildren(...skeletons(4));by('visitRows').replaceChildren(...skeletons(2))}
+ try{const r=preloaded||await rpc('adminDashboard',token);if(n!==dSerial)return;if(!accept(r)){by('syncText').textContent='';return}
+ clearApplicantPhotos();
+ // Upcoming visits first (soonest at the top), past visits after them (most recent first).
+ const today=new Date(Date.now()+25200000).toISOString().slice(0,10),past=v=>v.visitDate<today?1:0;
+ apps=r.applications||[];mailConf=r.mail||null;visitList=(r.visits||[]).sort((a,b)=>past(a)-past(b)||(past(a)?-1:1)*(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime));loaded=true;const t=new Date();by('syncText').textContent='อัปเดต '+String(t.getHours()).padStart(2,'0')+'.'+String(t.getMinutes()).padStart(2,'0')+' น.';
+ renderOverview();if(by('detailView').hidden)renderApps();if(!by('visitListView').hidden)renderVisitList();
+ }catch{if(n===dSerial){failed();by('syncText').textContent=''}}finally{if(n===dSerial)by('refresh').disabled=false}}
+
+function renderOverview(){const pending=apps.filter(a=>a.status==='pending').length,open=visitList.filter(v=>v.state==='open').length;
+ by('kApps').textContent=apps.length;by('kPending').textContent=pending;by('kOpen').textContent=open;by('kVolunteers').textContent=visitList.reduce((s,v)=>s+v.count,0);
+ by('appsBadge').textContent=pending||'';by('visitsBadge').textContent=open||'';by('qaPendingText').textContent=pending?'รอตรวจ '+pending+' ใบ':'ไม่มีใบสมัครค้างตรวจ';const mailOn=mailConf?MAIL_KINDS.filter(([k])=>mailConf[k]).length:0;by('qaMailText').textContent=mailConf?(mailOn?'เปิด '+mailOn+' จาก '+MAIL_KINDS.length+' ประเภท':'ปิดทั้งหมด'):'ตั้งค่าการแจ้งเตือน';
+ const today=new Date(Date.now()+25200000).toISOString().slice(0,10),soon=visitList.filter(v=>v.visitDate>=today&&v.status==='active').sort((a,b)=>(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime)).slice(0,4);
+ by('ovVisits').replaceChildren(...(soon.length?soon.map(v=>{const b=node('button',null,'mini'),d=node('span',null,'mini-date'),m=/^(\d{4})-(\d{2})-(\d{2})/.exec(v.visitDate)||[0,0,1,1],who=node('span',null,'who');b.type='button';d.append(node('b',String(Number(m[3]))),node('small',SHORT_MONTHS[m[2]-1]));who.append(node('b',v.title),node('small','อาสา '+v.count+'/'+v.needed+' คน · '+thTime(v.startTime,v.endTime)));b.append(d,who,visitBadge(v.state));b.onclick=()=>{showTab('visits');openVisit(v.visitId)};return b}):[emptyBox('ยังไม่มีคณะที่กำลังจะมาถึง','เพิ่มคณะดูงานเพื่อเปิดรับอาสาสมัคร')]));
+ by('ovApps').replaceChildren(...(apps.length?apps.slice(0,5).map(a=>{const b=node('button',null,'mini'),who=node('span',null,'who');b.type='button';who.append(node('b',a.name||'ไม่ระบุชื่อ'),node('small','ม.'+(a.room||'—')+' · '+shortDay(a.createdAt)));b.append(applicantAvatar(a),who,badge(a.status));b.onclick=()=>{showTab('apps');detail(a.ref)};return b}):[emptyBox('ยังไม่มีใบสมัคร','เมื่อนักเรียนส่งใบสมัคร รายชื่อจะแสดงที่นี่')]))}
+
+// Applications: search and filter run locally on the list loaded with the dashboard.
+function filteredApps(){const q=term.toLowerCase();return apps.filter(r=>(statusFilter==='all'||r.status===statusFilter)&&(!q||[r.ref,r.studentId,r.name,r.room,'ม.'+r.room].some(v=>String(v||'').toLowerCase().includes(q))))}
+async function showListPhoto(ref,button){
+ if(button.disabled||!token)return;const session=token,epoch=photoEpoch;button.disabled=true;by('deskNote').textContent='';
+ try{const r=await rpc('adminApplicationDetail',session,ref);if(session!==token||epoch!==photoEpoch)return;if(!accept(r))return;
+ if(r.application?.portrait)openPhoto(r.application.portrait);else by('deskNote').textContent='ไม่พบรูปถ่ายของผู้สมัคร หรือรูปถูกย้ายออกจากโฟลเดอร์';
+ }catch{if(session===token)failed()}finally{if(button.isConnected)button.disabled=false}}
+function applicationRow(item){
+ const row=node('article',null,'applicant-row'),person=node('div',null,'applicant-person'),who=node('div',null,'who'),photo=node('button',null,'list-photo'),caption=node('span',null,'photo-caption');
+ photo.type='button';photo.setAttribute('aria-label','ขยายรูปของ '+(item.name||'ผู้สมัคร'));photo.setAttribute('aria-haspopup','dialog');photo.setAttribute('aria-controls','photoDialog');caption.append(icon('search'),node('span','ขยายรูป'));photo.append(applicantAvatar(item),caption);photo.onclick=()=>showListPhoto(item.ref,photo);
+ who.append(node('h3',item.name||'ไม่ระบุชื่อ'),node('p','รหัสนักเรียน '+item.studentId,'identity'),node('p',item.ref,'reference'));person.append(photo,who);
+ const meta=(label,value)=>{const box=node('div',null,'applicant-meta');box.append(node('span',label,'mobile-label'),typeof value==='string'?node('span',value):value);return box};
+ const action=node('button',null,'btn '+(item.status==='pending'?'primary':'ghost')+' review-button');action.type='button';action.append(node('span',item.status==='pending'?'ตรวจใบสมัคร':'ดูผลการตรวจ'),icon('next'));action.setAttribute('aria-label',(item.status==='pending'?'ตรวจใบสมัครของ ':'ดูผลการตรวจของ ')+(item.name||'ผู้สมัคร'));action.onclick=()=>detail(item.ref);
+ row.append(person,meta('ชั้น / ห้อง','ม.'+(item.room||'—')),meta('วันที่สมัคร',shortDay(item.createdAt)),meta('สถานะ',badge(item.status)),action);return row}
+function applicationReview(a){
+ const panel=node('section',null,'review-panel'),heading=node('div',null,'review-heading'),buttons=node('div',null,'review-buttons');panel.setAttribute('aria-label','ตรวจและบันทึกผลใบสมัคร');heading.append(node('h3','ผลการตรวจใบสมัคร'),badge(a.status));
+ panel.append(heading,node('p','ตรวจสอบรูปถ่ายและข้อมูลด้านล่าง แล้วเลือกผลการตรวจ ระบบจะขอให้ยืนยันก่อนบันทึก'));
+ for(const [status,label,cls] of [['approved','อนุมัติใบสมัคร','approve'],['rejected','ไม่อนุมัติ','danger'],['pending','ตั้งเป็นรอตรวจสอบ','ghost']]){
+ const button=node('button',label,'btn '+cls);button.type='button';button.disabled=a.status===status;button.onclick=()=>confirmApplicationReview(a,status);buttons.append(button)}
+ panel.append(buttons);return panel}
+function confirmApplicationReview(a,status){
+ const label=STATUS[status];if(!label||!token)return;
+ if(!openCrud('ยืนยันผลการตรวจใบสมัคร',async()=>{const r=await rpc('adminReviewApplication',token,{registrationId:a.registrationId,revision:a.revision,status});if(r.ok)r.after=()=>{showTab('apps');return detail(a.registrationId)};return r},'ยืนยัน'+(status==='approved'?'อนุมัติ':status==='rejected'?'ไม่อนุมัติ':'ตั้งรอตรวจสอบ')))return;
+ by('crudBody').append(node('h3',(a.prefix||'')+(a.fullName||'ผู้สมัคร')),node('p','รหัสนักเรียน '+a.studentId),node('p','เปลี่ยนผลการตรวจจาก “'+(STATUS[a.status]||a.status)+'” เป็น “'+label+'”'));
+ by('crudCancel').focus()}
+function showList(){++serial;by('detailView').hidden=true;by('listView').hidden=false;by('person').replaceChildren();if(loaded)renderApps()}
+function renderApps(){if(!loaded)return;const rows=filteredApps(),pages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));page=Math.min(Math.max(1,page),pages);
+ for(const chip of by('statusChips').children){const s=chip.dataset.status,n=s==='all'?apps.length:apps.filter(a=>a.status===s).length;chip.textContent=(s==='all'?'ทั้งหมด':STATUS[s])+' · '+n;chip.setAttribute('aria-pressed',String(s===statusFilter))}
+ if(!rows.length){const clear=node('button','ล้างการค้นหา','btn ghost small');clear.type='button';clear.onclick=()=>{term='';statusFilter='all';by('query').value='';renderApps();by('query').focus()};by('results').replaceChildren(apps.length?emptyBox('ไม่พบผู้สมัครที่ตรงกับเงื่อนไข','ลองค้นหาด้วยชื่อ รหัสนักเรียน หรือห้องอีกครั้ง',clear):emptyBox('ยังไม่มีใบสมัคร','เมื่อนักเรียนส่งใบสมัคร รายชื่อจะแสดงที่นี่'))}
+ else by('results').replaceChildren(...rows.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE).map(applicationRow));
+ by('pager').hidden=!rows.length;by('count').textContent=rows.length+' ใบสมัคร';by('page').textContent='หน้า '+page+' / '+pages;by('prev').disabled=page<=1;by('next').disabled=page>=pages}
+by('search').onsubmit=e=>e.preventDefault();
+by('query').addEventListener('input',()=>{term=by('query').value.trim();page=1;renderApps()});
+by('statusChips').addEventListener('click',e=>{const c=e.target.closest('[data-status]');if(!c)return;statusFilter=c.dataset.status;page=1;renderApps()});
+by('prev').onclick=()=>{page--;renderApps()};by('next').onclick=()=>{page++;renderApps()};by('back').onclick=()=>{showList();by('query').focus()};
+async function detail(ref){const n=++serial;by('listView').hidden=true;by('detailView').hidden=false;by('person').replaceChildren(...skeletons(2));by('deskNote').textContent='';by('back').focus();
+ try{const r=await rpc('adminApplicationDetail',token,ref);if(n!==serial)return;by('person').replaceChildren();if(!accept(r))return;const a=r.application,head=node('div',null,'person'),info=node('div');
+ if(a.portrait){const btn=node('button',null,'photo-trigger'),img=node('img',null,'portrait'),hint=node('span',null,'zoom-hint');btn.type='button';btn.setAttribute('aria-label','ดูรูปถ่ายผู้สมัครขนาดใหญ่');btn.setAttribute('aria-haspopup','dialog');btn.setAttribute('aria-controls','photoDialog');img.alt='รูปถ่ายผู้สมัคร';img.src=a.portrait;hint.append(icon('search'),node('span','ดูรูปใหญ่'));btn.append(img,hint);btn.onclick=()=>openPhoto(img.src);head.append(btn)}else{const no=node('span',null,'portrait no-photo');no.setAttribute('role','img');no.setAttribute('aria-label','ไม่มีรูปถ่าย');no.append(icon('user'));head.append(no)}
+ info.append(node('p','APPLICANT PROFILE','kicker'),node('h2',(a.prefix||'')+(a.fullName||'ไม่ระบุชื่อ')),badge(a.status));head.append(info,pdfButton('ดาวน์โหลด PDF',b=>savePdf(pdfName('ใบสมัคร',a.studentId,a.registrationId),host=>applicationSheets(host,a),b)));const groups=node('div',null,'detail-grid');groups.append(group('ข้อมูลนักเรียน','user',[['รหัสนักเรียน',a.studentId],['ชั้น / ห้อง',[a.classLevel,a.room].filter(Boolean).join(' / ')],['เลขที่',a.number]]),group('ช่องทางติดต่อ','mail',[['อีเมล',a.email],['เบอร์โทรศัพท์',a.phone],['ID LINE',a.lineId],['Facebook',a.facebook]]),group('ข้อมูลใบสมัคร','file',[['เลขอ้างอิง',a.registrationId],['วันที่สมัคร',prettyDate(a.createdAt)],['ทักษะและความสนใจ',a.interests],['ชั่วโมงจิตอาสา',serviceText(a)]]));by('person').append(head,applicationReview(a),groups,applicationActions(a));
+ }catch{if(n===serial){by('person').replaceChildren();failed()}}}
+
+
+let semesterReport=null,semSerial=0;
+async function loadSemester(){const serial=++semSerial,session=token;by('semNote').textContent='กำลังโหลดรายงาน…';try{const r=await rpc('adminSemesterHours',session);if(serial!==semSerial||session!==token)return;if(!accept(r,'semNote'))return;semesterReport=r;if(!r.period){by('semNote').textContent='กรุณากำหนดชื่อภาคเรียนและช่วงวันที่';by('semReport').hidden=true;return}by('semLabel').value=r.period.label;by('semStart').value=r.period.start;by('semEnd').value=r.period.end;by('semNote').textContent=r.missing?'มีรายการเช็กชื่อ '+r.missing+' รายการที่ไม่พบคณะหรือวันที่ กรุณาตรวจสอบข้อมูลในชีต':'';by('semReport').hidden=false;updateSemesterRooms();renderSemester()}catch{if(serial===semSerial)by('semNote').textContent='โหลดรายงานไม่สำเร็จ กรุณาลองอีกครั้ง'}}
+function updateSemesterRooms(){const grade=by('semGrade').value,previous=by('semRoom').value,rooms=[...new Set((semesterReport?.rows||[]).map(r=>r.room).filter(r=>r&&(!grade||r.charAt(0)===grade)))].sort();by('semRoom').replaceChildren(new Option('ทุกห้อง',''),...rooms.map(r=>new Option('ม.'+r,r)));by('semRoom').value=rooms.includes(previous)?previous:''}
+function filteredSemester(){const grade=by('semGrade').value,room=by('semRoom').value;return (semesterReport?.rows||[]).filter(r=>(!grade||r.room?.charAt(0)===grade)&&(!room||r.room===room)).sort((a,b)=>a.room.localeCompare(b.room,'th')||Number(a.number)-Number(b.number)||a.name.localeCompare(b.name,'th'))}
+function renderSemester(){const rows=filteredSemester();by('semRows').replaceChildren(...rows.map(r=>{const tr=node('tr');for(const x of [r.studentId,r.name,'ม.'+r.room,r.number,r.count,r.hours])tr.append(node('td',String(x??'')));return tr}));by('semSummary').textContent=semesterReport.period.label+' · '+semesterReport.period.start+' ถึง '+semesterReport.period.end+' · '+rows.length+' คน'}
+by('semGrade').onchange=()=>{updateSemesterRooms();renderSemester()};by('semRoom').onchange=renderSemester;
+by('semesterForm').onsubmit=async e=>{e.preventDefault();if(by('semSave').disabled)return;by('semSave').disabled=true;by('semNote').textContent='กำลังบันทึก…';try{const r=await rpc('adminSetSemester',token,{label:by('semLabel').value,start:by('semStart').value,end:by('semEnd').value});if(accept(r,'semNote'))await loadSemester()}catch{by('semNote').textContent='บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง'}finally{by('semSave').disabled=false}};
+by('semCsv').onclick=()=>{if(!semesterReport?.period)return;const quote=v=>{let s=String(v??'');if(/^[\s]*[=+@\-\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};const period=semesterReport.period;const rows=[['ภาคเรียน',period.label,'วันที่เริ่ม',period.start,'วันที่สิ้นสุด',period.end],['รหัสนักเรียน','ชื่อ–นามสกุล','ชั้น/ห้อง','เลขที่','จำนวนคณะ','ชั่วโมง'],...filteredSemester().map(r=>[r.studentId,r.name,'ม.'+r.room,r.number,r.count,r.hours])];const blob=new Blob(['\ufeff'+rows.map(r=>r.map(quote).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});const u=URL.createObjectURL(blob),a=node('a');a.href=u;a.download='สรุปชั่วโมงจิตอาสา.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+by('semPdf').onclick=()=>{if(!semesterReport?.period)return;const p=semesterReport.period,rows=filteredSemester();savePdf(pdfName('สรุปชั่วโมง',p.label),host=>pdfTableSheets(host,'สรุปชั่วโมงจิตอาสา',p.label+' · '+p.start+' ถึง '+p.end,['รหัสนักเรียน','ชื่อ–นามสกุล','ชั้น / ห้อง','เลขที่','จำนวนคณะ','ชั่วโมง'],rows,r=>[r.studentId,r.name,'ม.'+r.room,r.number,r.count,r.hours]),by('semPdf'),'semNote')};
+// Annual statistics. Charts are plain HTML bars (one measure per chart, one axis each), so the PDF export draws them exactly as on screen.
+let statsReport=null,statSerial=0;
+const fmtNum=n=>Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:1});
+const monthLabel=key=>{const [y,m]=key.split('-').map(Number);return SHORT_MONTHS[m-1]+' '+String(y+543).slice(-2)};
+// Gridline step: 1-2-2.5-5 x 10^n with four steps covering the largest value; counts keep whole-number steps.
+function niceStep(v,whole){const raw=Math.max(v/4,whole?1:.5),p=10**Math.floor(Math.log10(raw));for(const f of [1,2,2.5,5,10]){const st=f*p;if(st>=raw&&(!whole||Number.isInteger(st)))return st}return 10*p}
+function columnChart(title,unit,months,field,color,detail){
+ const card=node('div',null,'chart-card'),head=node('div',null,'chart-head'),total=months.reduce((n,m)=>n+m[field],0);
+ head.append(node('h3',title),node('span',fmtNum(total)+' '+unit,'chart-total'));
+ const max=Math.max(0,...months.map(m=>m[field])),step=niceStep(max,field!=='hours'),top=step*4,plot=node('div',null,'plot');
+ plot.style.setProperty('--c',color);
+ for(let k=1;k<=4;k++){const g=node('div',null,'gl');g.style.bottom=k*25+'%';g.append(node('span',fmtNum(step*k)));plot.append(g)}
+ const peak=max>0?months.findIndex(m=>m[field]===max):-1;
+ months.forEach((m,i)=>{const col=node('div',null,'col'),bar=node('div',null,'bar'),tip=node('div',null,'tip');
+  col.tabIndex=0;col.setAttribute('aria-label',monthLabel(m.month)+' '+fmtNum(m[field])+' '+unit+' · '+detail(m));
+  bar.style.height=m[field]/top*100+'%';if(!m[field])bar.classList.add('zero');
+  if(i===peak)bar.append(node('span',fmtNum(m[field]),'peak'));
+  tip.append(node('b',monthLabel(m.month)),node('span',fmtNum(m[field])+' '+unit),node('small',detail(m)));col.append(bar,tip);plot.append(col)});
+ const axis=node('div',null,'xaxis');months.forEach(m=>axis.append(node('span',SHORT_MONTHS[Number(m.month.slice(5))-1])));
+ card.append(head,plot,axis);return card}
+function gradeChart(grades){
+ const card=node('div',null,'chart-card'),head=node('div',null,'chart-head'),list=node('div',null,'hbars'),max=Math.max(0,...grades.map(g=>g.hours))||1;
+ head.append(node('h3','ชั่วโมงจิตอาสาแยกระดับชั้น'),node('span',fmtNum(grades.reduce((n,g)=>n+g.hours,0))+' ชั่วโมง','chart-total'));
+ grades.forEach(g=>{const row=node('div',null,'hrow'),track=node('div',null,'htrack'),bar=node('div',null,'hbar');bar.style.width=g.hours/max*100+'%';track.append(bar);
+  row.tabIndex=0;row.setAttribute('aria-label','ม.'+g.grade+' '+fmtNum(g.hours)+' ชั่วโมง · '+g.students+' คน · '+g.attended+' ครั้ง');
+  row.append(node('b','ม.'+g.grade),track,node('span',fmtNum(g.hours)+' ชม.','hval'),node('small',g.students+' คน · '+g.attended+' ครั้ง','hsub'));list.append(row)});
+ card.append(head,list);return card}
+function renderStats(r){
+ by('statYear').replaceChildren(...r.years.map(y=>new Option('ปีการศึกษา '+y,String(y))));by('statYear').value=String(r.year);
+ const t=r.totals;by('statKpis').replaceChildren(...[['calendar','คณะดูงาน',t.visits,'คณะ'],['check','อาสาที่มาปฏิบัติหน้าที่',t.attended,'คน-ครั้ง'],['users','นักเรียนที่ร่วมกิจกรรม',t.students,'คน'],['clock','ชั่วโมงจิตอาสารวม',t.hours,'ชั่วโมง']].map(([ic,label,v,unit])=>{const k=node('div',null,'skpi'),i=node('span',null,'skpi-ico'),b=node('b',fmtNum(v));i.append(icon(ic));b.append(node('small',' '+unit));k.append(i,node('span',label),b);return k}));
+ const detail=m=>m.visits+' คณะ · '+m.students+' คน · '+fmtNum(m.hours)+' ชม.';
+ by('statMonthly').replaceChildren(columnChart('อาสาสมัครที่มาปฏิบัติหน้าที่รายเดือน','คน-ครั้ง',r.months,'attended','#4f46e5',detail),columnChart('ชั่วโมงจิตอาสารายเดือน','ชั่วโมง',r.months,'hours','#0d9488',m=>m.visits+' คณะ · '+m.attended+' คน-ครั้ง'));
+ by('statGrades').replaceChildren(gradeChart(r.grades));
+ by('statRows').replaceChildren(...statTable(r).map((cells,i,all)=>{const tr=node('tr',null,i===all.length-1?'total':'');for(const c of cells)tr.append(node('td',String(c)));return tr}));
+ by('statBody').hidden=false;by('statCsv').disabled=by('statPdf').disabled=false}
+function statTable(r){return [...r.months.map(m=>[monthLabel(m.month),m.visits,m.attended,m.students,fmtNum(m.hours)]),['รวมทั้งปี',r.totals.visits,r.totals.attended,r.totals.students,fmtNum(r.totals.hours)]]}
+async function loadStats(year){const serial=++statSerial,session=token;by('statNote').textContent='กำลังโหลดสถิติ…';
+ try{const r=await rpc('adminStats',session,year||statsReport?.year||'');if(serial!==statSerial||session!==token)return;if(!accept(r,'statNote'))return;
+ statsReport=r;renderStats(r);by('statNote').textContent=r.totals.attended?'':'ยังไม่มีอาสาสมัครที่เช็กชื่อในปีการศึกษานี้'}catch{if(serial===statSerial)by('statNote').textContent='โหลดสถิติไม่สำเร็จ กรุณาลองอีกครั้ง'}}
+by('statYear').onchange=()=>loadStats(by('statYear').value);
+function downloadCsv(name,rows){const quote=v=>{let x=String(v??'');if(/^[\s]*[=+@\-\t\r]/.test(x))x="'"+x;return '"'+x.replace(/"/g,'""')+'"'};const blob=new Blob(['﻿'+rows.map(r=>r.map(quote).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});const u=URL.createObjectURL(blob),a=node('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+by('statCsv').onclick=()=>{const r=statsReport;if(!r)return;downloadCsv('สถิติอาสาสมัคร-ปีการศึกษา-'+r.year+'.csv',[['สถิติอาสาสมัครนักเรียน ปีการศึกษา',r.year],[],['เดือน','คณะดูงาน','อาสาที่มาปฏิบัติหน้าที่ (คน-ครั้ง)','นักเรียน (คน)','ชั่วโมง'],...statTable(r),[],['ระดับชั้น','อาสาที่มาปฏิบัติหน้าที่ (คน-ครั้ง)','นักเรียน (คน)','ชั่วโมง'],...r.grades.map(g=>['ม.'+g.grade,g.attended,g.students,g.hours])])};
+by('statPdf').onclick=()=>{const r=statsReport;if(!r)return;const clean=n=>{const c=n.cloneNode(true);c.removeAttribute('id');c.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));return c};
+ savePdf(pdfName('สถิติอาสาสมัคร','ปีการศึกษา',r.year),host=>{const p=pdfSheet(host,'รายงานสถิติอาสาสมัครนักเรียน','ปีการศึกษา '+r.year+' · พฤษภาคม '+r.year+' – เมษายน '+(r.year+1));p.body.classList.add('pdf-stats');p.body.append(clean(by('statKpis')),clean(by('statMonthly')),clean(by('statGrades')));
+ return [p.sheet,...pdfTableSheets(host,'ตารางสถิติรายเดือน','ปีการศึกษา '+r.year,['เดือน','คณะดูงาน','อาสา (คน-ครั้ง)','นักเรียน (คน)','ชั่วโมง'],statTable(r),c=>c)]},by('statPdf'),'statNote')};
+
+// The sign-in survives a refresh of this tab (sessionStorage is cleared with the tab); the server still checks the token on every call.
+const SESSION_KEY='adminSession';
+function startSession(t,u){token=t;until=u;clearTimeout(timer);clearInterval(clockTimer);timer=setTimeout(()=>reset('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง'),Math.max(0,u-Date.now()));sessionClock();clockTimer=setInterval(sessionClock,30000);
+ try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({token:t,until:u}))}catch{}
+ by('login').hidden=true;by('desk').hidden=false;showTab('overview')}
+function forgetSession(){try{sessionStorage.removeItem(SESSION_KEY)}catch{}}
+
+
+// PDF export: lays out A4 sheets off screen, draws each one with html2canvas and saves the file with jsPDF.
+// Thai text and photos come out exactly as the browser renders them. Both libraries load only on the first export.
+// Sheets are drawn at 4x (about 380 dpi on A4) so Thai text prints sharp; 2x looked soft on paper.
+const PDF_SCALE = 4;
+const PDF_LIBS=[['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js','sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H'],['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk']];
+const PDF_LOGO='https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png';
+let pdfLibs=null;
+function loadPdfLibs(){if(!pdfLibs)pdfLibs=Promise.all(PDF_LIBS.map(([src,sri])=>new Promise((ok,fail)=>{const s=document.createElement('script');s.src=src;s.integrity=sri;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>fail(Error('โหลดตัวสร้าง PDF ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง'));document.head.append(s)}))).catch(e=>{pdfLibs=null;throw e});return pdfLibs}
+const pdfName=(...parts)=>parts.filter(Boolean).join('-').replace(/[\\/:*?"<>|\s]+/g,'_')+'.pdf';
+function pdfButton(label,run){const b=node('button',null,'btn ghost small pdf-btn');b.type='button';b.append(icon('file'),node('span',label));b.onclick=()=>run(b);return b}
+async function savePdf(name,build,button,noteId='deskNote',landscape=false){
+ if(button.disabled)return;const kids=[...button.childNodes],host=node('div',null,'pdf-host');button.disabled=true;button.replaceChildren(node('span','กำลังสร้าง PDF…'));by(noteId).textContent='';host.setAttribute('aria-hidden','true');document.body.append(host);
+ try{await Promise.all([loadPdfLibs(),document.fonts.ready]);const sheets=build(host);
+ await Promise.all([...host.querySelectorAll('img')].map(img=>img.complete?null:new Promise(done=>{img.onload=img.onerror=done})));
+ sheets.forEach((s,i)=>{const n=s.querySelector('.pdf-page');if(n)n.textContent='หน้า '+(i+1)+' / '+sheets.length});
+ const pdf=new window.jspdf.jsPDF({orientation:landscape?'l':'p',unit:'mm',format:'a4',compress:true}),[w,h]=landscape?[297,210]:[210,297];
+ for(const [i,s] of sheets.entries()){const canvas=await window.html2canvas(s,{scale:PDF_SCALE,useCORS:true,backgroundColor:'#ffffff',logging:false});if(i)pdf.addPage('a4',landscape?'l':'p');pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,w,h)}
+ pdf.save(name)}catch(e){by(noteId).textContent=e.message||'สร้าง PDF ไม่สำเร็จ กรุณาลองอีกครั้ง'}finally{host.remove();button.replaceChildren(...kids);button.disabled=false}}
+function pdfSheet(host,title,subtitle,badgeEl){const sheet=node('div',null,'pdf-sheet'),head=node('header',null,'pdf-head'),logo=node('img'),brand=node('div'),top=node('div',null,'pdf-title'),words=node('div'),body=node('div',null,'pdf-body'),foot=node('footer',null,'pdf-foot');
+ logo.crossOrigin='anonymous';logo.alt='';logo.src=PDF_LOGO;brand.append(node('b','ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน'),node('small','AI & Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก'));head.append(logo,brand);
+ words.append(node('h1',title));if(subtitle)words.append(node('p',subtitle));top.append(words);if(badgeEl)top.append(badgeEl);
+ foot.append(node('span','พิมพ์จากระบบเมื่อ '+new Date().toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'})),node('span',null,'pdf-page'));sheet.append(head,top,body,foot);host.append(sheet);return {sheet,body}}
+function pdfSection(title,rows){const box=node('section',null,'pdf-section'),table=node('table',null,'pdf-table pdf-kv'),tbody=node('tbody');for(const [k,v] of rows){const tr=node('tr');tr.append(node('th',k),node('td',v||'—'));tbody.append(tr)}table.append(tbody);box.append(node('h3',title),table);return box}
+// Fills sheets row by row and starts a new sheet whenever the table no longer fits.
+function pdfTableSheets(host,title,subtitle,columns,rows,cells,opts={}){const sheets=[];let body=null,tbody=null;
+ const start=()=>{const s=pdfSheet(host,title,subtitle),table=node('table',null,'pdf-table '+(opts.cls||'')),thead=node('thead'),tr=node('tr');
+ if(opts.widths){const cols=node('colgroup');for(const w of opts.widths){const c=node('col');c.style.width=w;cols.append(c)}table.append(cols)}
+ for(const c of columns)tr.append(node('th',c));thead.append(tr);tbody=node('tbody');table.append(thead,tbody);s.body.append(table);body=s.body;sheets.push(s.sheet)};
+ start();
+ rows.forEach((r,i)=>{const tr=node('tr');for(const v of cells(r,i))tr.append(node('td',v==null?'':String(v)));tbody.append(tr);if(body.scrollHeight>body.clientHeight&&tbody.children.length>1){tr.remove();start();tbody.append(tr)}});
+ if(!rows.length){const tr=node('tr'),td=node('td','ไม่มีรายการ');td.colSpan=columns.length;tr.append(td);tbody.append(tr)}
+ return sheets}
+function applicationSheets(host,a){const name=(a.prefix||'')+(a.fullName||''),{sheet,body}=pdfSheet(host,'ใบสมัครนักเรียนสตราฟ','เลขอ้างอิง '+(a.registrationId||'—'),node('span',STATUS[a.status]||a.status||'—','pdf-badge '+(a.status||'')));
+ const profile=node('div',null,'pdf-profile'),who=node('div');
+ if(a.portrait){const img=node('img',null,'pdf-photo');img.alt='';img.src=a.portrait;profile.append(img)}else profile.append(node('div','ไม่มีรูปถ่าย','pdf-photo pdf-nophoto'));
+ who.append(node('small','ผู้สมัคร'),node('h2',name||'ไม่ระบุชื่อ'),node('p','รหัสนักเรียน '+(a.studentId||'—')+' · ชั้น ม.'+(a.room||'—')+' เลขที่ '+(a.number||'—')));profile.append(who);
+ const sign=node('div',null,'pdf-sign');for(const [role,person] of [['ผู้สมัคร',name],['ผู้ตรวจสอบ','']]){const box=node('div');box.append(node('span','ลงชื่อ ....................................................'),node('p','( '+(person||'....................................................')+' )'),node('p',role));sign.append(box)}
+ body.append(profile,pdfSection('ข้อมูลนักเรียน',[['รหัสนักเรียน',a.studentId],['ชื่อ–นามสกุล',name],['ระดับชั้น / ห้อง',[a.classLevel,a.room].filter(Boolean).join(' / ')],['เลขที่',a.number]]),pdfSection('ช่องทางติดต่อ',[['อีเมล',a.email],['เบอร์โทรศัพท์',a.phone],['ID LINE',a.lineId],['Facebook',a.facebook]]),pdfSection('ข้อมูลใบสมัคร',[['ทักษะและความสนใจ',a.interests],['วันที่สมัคร',prettyDate(a.createdAt)],['ผลการตรวจ',STATUS[a.status]||a.status],['ชั่วโมงจิตอาสา',serviceText(a)]]),sign);return [sheet]}
+function applicationListSheets(host){const rows=filteredApps(),filter=statusFilter==='all'?'ทุกสถานะ':STATUS[statusFilter];
+ return pdfTableSheets(host,'รายชื่อผู้สมัครนักเรียนสตราฟ',filter+(term?' · ค้นหา “'+term+'”':'')+' · '+rows.length+' คน',['ที่','ชื่อ–นามสกุล','รหัสนักเรียน','ชั้น / ห้อง','วันที่สมัคร','สถานะ','ชั่วโมงจิตอาสา','ทักษะที่สนใจ'],rows,(r,i)=>[i+1,r.name,r.studentId,'ม.'+(r.room||'—'),shortDay(r.createdAt),STATUS[r.status]||r.status,r.hours||0,r.interests],{widths:['5%','21%','12%','9%','11%','11%','10%','21%']})}
+function rosterSheets(host,v,people){return pdfTableSheets(host,'รายชื่ออาสาสมัครต้อนรับคณะดูงาน',[v.title,v.organization,thDate(v.visitDate)+' '+thTime(v.startTime,v.endTime),'อาสาสมัคร '+people.length+' / '+v.needed+' คน'].filter(Boolean).join(' · '),['ที่','ชื่อ–นามสกุล','ชั้น / เลขที่','หน้าที่','โทรศัพท์','ID LINE','ลงชื่อ'],people,(p,i)=>[i+1,(p.prefix||'')+(p.fullName||''),'ม.'+p.classroom+' / '+p.number,p.duty||'—',p.phone,p.lineId||'—',''],{cls:'pdf-roster',widths:['5%','25%','11%','17%','15%','11%','16%']})}
+by('pdfApps').onclick=()=>savePdf(pdfName('รายชื่อผู้สมัครสตราฟ',new Date(Date.now()+25200000).toISOString().slice(0,10)),applicationListSheets,by('pdfApps'));
+by('pdfRoster').onclick=()=>{if(currentVisit)savePdf(pdfName('รายชื่ออาสาสมัคร',currentVisit.visitDate,currentVisit.title),host=>rosterSheets(host,currentVisit,currentVolunteers),by('pdfRoster'),'visitNote')};
+
+// Certificates: one landscape page per volunteer who was marked present.
+const serviceText=a=>a.service&&a.service.visits.length?a.service.hours+' ชั่วโมง จาก '+a.service.visits.length+' คณะ':'ยังไม่มี';
+function certSheet(p){const sheet=node('div',null,'cert'),frame=node('div',null,'cert-frame'),logo=node('img'),sign=node('div',null,'cert-sign');
+ logo.crossOrigin='anonymous';logo.alt='';logo.src=PDF_LOGO;sign.append(node('span','ลงชื่อ ..................................................'),node('p','( .................................................. )'),node('p','ผู้ดูแลศูนย์ AI & Metaverse Innovation Center'));
+ frame.append(logo,node('p','AI & Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก','cert-org'),node('h1','เกียรติบัตร'),node('p','ขอมอบเกียรติบัตรฉบับนี้ไว้เพื่อแสดงว่า','cert-lead'),node('h2',p.name),node('p',p.line,'cert-line'),node('p','ได้ปฏิบัติหน้าที่อาสาสมัครนักเรียนต้อนรับคณะดูงาน','cert-lead'),node('h3','“'+p.title+'”'));
+ if(p.organization)frame.append(node('p',p.organization,'cert-line'));
+ frame.append(node('p',[p.when,p.duty&&'หน้าที่ '+p.duty,'รวม '+p.hours+' ชั่วโมง'].filter(Boolean).join(' · '),'cert-when'),sign,node('p','เลขที่อ้างอิง '+p.reference+' · ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน','cert-ref'));sheet.append(frame);return sheet}
+function certSheets(host,v,people){return people.map(p=>{const s=certSheet({name:(p.prefix||'')+(p.fullName||''),line:'นักเรียนชั้น ม.'+p.classroom+' เลขที่ '+p.number+' · เลขประจำตัว '+p.studentId,title:v.title,organization:v.organization,when:thDate(v.visitDate)+' เวลา '+thTime(v.startTime,v.endTime),duty:p.duty,hours:p.hours,reference:p.signupId});host.append(s);return s})}
+by('certAll').onclick=()=>{const people=currentVolunteers.filter(p=>p.attendance==='present');if(currentVisit&&people.length)savePdf(pdfName('เกียรติบัตร',currentVisit.visitDate,currentVisit.title),host=>certSheets(host,currentVisit,people),by('certAll'),'visitNote',true)};
+
+// Attendance comes back with the updated roster (one call); waitlist actions reload it so revisions stay current.
+async function setAttendance(ids,value,btn){if(!currentVisit||!token||btn.disabled)return;btn.disabled=true;
+ try{const r=await rpc('adminSetAttendance',token,currentVisit.visitId,ids,value);if(!accept(r,'visitNote')){btn.disabled=false;return}if(r.roster){vSerial++;showRoster(r.roster)}else openVisit(currentVisit.visitId);loadDashboard()}catch{btn.disabled=false;failed('visitNote')}}
+by('allPresent').onclick=()=>{const ids=currentVolunteers.filter(p=>p.attendance!=='present').map(p=>p.signupId);if(!ids.length){by('visitNote').textContent='เช็กชื่อมาครบทุกคนแล้ว';return}setAttendance(ids,'present',by('allPresent'))};
+async function promoteWaitlist(p,btn){if(!currentVisit||btn.disabled)return;btn.disabled=true;
+ try{const r=await rpc('adminPromoteWaitlist',token,p.signupId,p.revision);if(!accept(r,'visitNote')){btn.disabled=false;return}openVisit(currentVisit.visitId);loadDashboard()}catch{btn.disabled=false;failed('visitNote')}}
+
+// QR check-in: the QR opens the start page with the visit and code; students who scan it are checked in after signing in.
+// The QR always carries the live /exec URL, even when this page is opened from the editor's /dev test link.
+const APP_URL=document.body.dataset.publicUrl||'',QR_LIB=['https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js','sha384-mZT2gIty7ZDdOGkxfP6joZcYdMW1Jvj9dRlfpTmaJAKKXTqzygtB22k7FLe+KZC1'];
+let qrLib=null;
+function loadQrLib(){if(!qrLib)qrLib=new Promise((ok,fail)=>{const s=document.createElement('script');s.src=QR_LIB[0];s.integrity=QR_LIB[1];s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>fail(Error('โหลดตัวสร้าง QR ไม่สำเร็จ กรุณาลองอีกครั้ง'));document.head.append(s)}).catch(e=>{qrLib=null;throw e});return qrLib}
+const bkkTime=ms=>new Date(ms).toLocaleString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Bangkok'})+' น.';
+async function showCheckin(renew=false){const v=currentVisit;if(!v||by('qrCheckin').disabled)return;by('qrCheckin').disabled=true;by('visitNote').textContent='';
+ try{const [r]=await Promise.all([rpc('adminCheckinCode',token,v.visitId,renew===true),loadQrLib()]);if(!accept(r,'visitNote'))return;
+ const url=APP_URL+'?checkin='+r.visitId+'.'+r.code,qr=window.qrcode(0,'M');qr.addData(url);qr.make();
+ if(!openCrud('QR เช็กชื่อ · '+v.title,null))return;
+ const box=node('div',null,'qr-box'),img=node('img',null,'qr-img'),info=node('div'),again=node('button','สร้างรหัสใหม่','btn ghost small');img.alt='QR สำหรับเช็กชื่อ';img.src=qr.createDataURL(8,4);again.type='button';again.onclick=()=>{closeCrud();showCheckin(true)};
+ info.append(node('p','CHECK-IN CODE','kicker'),node('b',r.code.slice(0,3)+' '+r.code.slice(3),'qr-code'),node('p','ให้อาสาสมัครสแกน QR ด้วยกล้องโทรศัพท์ แล้วกรอกเลขประจำตัวกับเบอร์โทรศัพท์ครั้งเดียวก็เช็กชื่อเสร็จ (หรือกรอกรหัสในการ์ดคณะดูงาน) เช็กชื่อได้ '+bkkTime(r.opensAt)+' – '+bkkTime(r.closesAt),'qr-help'),node('p',url,'qr-url'),again);
+ box.append(img,info);by('crudBody').append(box)
+ }catch(e){by('visitNote').textContent=e.message||'ติดต่อระบบไม่ได้ กรุณาลองอีกครั้ง'}finally{if(currentVisit===v)by('qrCheckin').disabled=false}}
+by('qrCheckin').onclick=()=>showCheckin(false);
+
+// Email notifications: switches and the admin address live in script properties on the server.
+const MAIL_KINDS=[['confirm','นักเรียนลงทะเบียนอาสา ลงชื่อสำรอง หรือได้เลื่อนเป็นตัวจริง (ส่งถึงนักเรียน)'],['reminder','เตือนอาสาสมัครล่วงหน้า 1 วันก่อนรับคณะ'],['announce','คณะดูงานเปิดรับสมัคร (ส่งถึงนักเรียนสตราฟทุกคน ตามโควตาที่เหลือ)'],['adminNew','มีใบสมัครนักเรียนสตราฟใหม่ (ส่งถึงผู้ดูแล)']];
+let mailConf=null;
+async function openMailSettings(){if(by('qaMail').disabled)return;by('qaMail').disabled=true;
+ try{const r=await rpc('adminMailSettings',token);if(!accept(r))return;const s=r.settings,st=r.status,boxes={};let email=null;
+ let goal=null;
+ if(!openCrud('การแจ้งเตือนและเป้าหมายชั่วโมง',async()=>{const payload={adminEmail:email.value.trim(),hoursGoal:goal.value.trim()};for(const [k] of MAIL_KINDS)payload[k]=boxes[k].checked;const res=await rpc('adminSaveMailSettings',token,payload);return res.ok&&res.warning?{ok:false,message:res.warning}:res},'บันทึกการตั้งค่า'))return;
+ const body=by('crudBody'),list=node('fieldset',null,'crud-skills mail-list');list.append(node('legend','ส่งอีเมลอัตโนมัติเมื่อ'));
+ for(const [k,label] of MAIL_KINDS){const lab=node('label'),c=node('input');c.type='checkbox';c.checked=!!s[k];boxes[k]=c;lab.append(c,node('span',label));list.append(lab)}
+ body.append(list);email=formField(body,'mailAdmin','อีเมลผู้ดูแลที่รับแจ้งเตือน (เว้นว่าง = อีเมลเจ้าของโปรเจกต์)',s.adminEmail,{type:'email',max:200,wide:true});email.placeholder=st.owner||'';
+ goal=formField(body,'hoursGoal','เป้าหมายชั่วโมงจิตอาสาต่อคน (0 = ไม่แสดง) นักเรียนเห็นเป็นแถบความคืบหน้าในหน้าของตัวเอง',String(s.hoursGoal||0),{type:'number',wide:true});goal.min='0';goal.max='500';goal.step='0.5';
+ const status=node('div',null,'mail-status'),test=node('button','ส่งอีเมลทดสอบ','btn ghost small');test.type='button';
+ status.append(node('p','โควตาอีเมลที่เหลือวันนี้: '+(st.quota==null?'ยังไม่ได้อนุญาตสิทธิ์ส่งอีเมล':st.quota+' ฉบับ')),node('p','ส่งเตือนอัตโนมัติทุกชั่วโมง: '+(st.auto==null?'ยังไม่ได้อนุญาตสิทธิ์':st.auto?'เปิดอยู่':'ปิดอยู่ (เปิดเองเมื่อเลือกการเตือนหรือประกาศแล้วบันทึก)')),test);
+ test.onclick=async()=>{test.disabled=true;by('crudNote').textContent='กำลังส่ง…';try{const t=await rpc('adminSendTestMail',token);by('crudNote').textContent=t.ok?'ส่งอีเมลทดสอบไปที่ '+t.to+' แล้ว':(t.message||'ส่งไม่สำเร็จ')}catch{by('crudNote').textContent='ติดต่อระบบไม่ได้ กรุณาลองอีกครั้ง'}finally{test.disabled=false}};
+ body.append(status)
+ }catch{failed()}finally{by('qaMail').disabled=false}}
+by('qaMail').onclick=openMailSettings;
+
+// Study visits.
+function visitView(name){by('visitListView').hidden=name!=='list';by('visitEditView').hidden=name!=='edit';by('visitDetailView').hidden=name!=='detail';by('visitNote').textContent=''}
+function renderVisitList(){++vSerial;visitView('list');if(!loaded)return;by('visitTotal').textContent=visitList.length+' คณะ';
+ if(!visitList.length){const add=node('button','เพิ่มคณะดูงานแรก','btn primary small');add.type='button';add.onclick=()=>editVisit(null);by('visitRows').replaceChildren(emptyBox('ยังไม่มีคณะดูงาน','เพิ่มคณะดูงานพร้อมกำหนดวันเวลาเปิด–ปิดรับอาสาสมัคร',add));return}
+ by('visitRows').replaceChildren(...visitList.map(v=>{const card=node('button',null,'vcard'),body=node('div'),line=node('div',null,'count-line');card.type='button';line.append(node('span','อาสา '+v.count+' / '+v.needed+' คน'+(v.waiting?' · สำรอง '+v.waiting:'')),node('span','ว่าง '+Math.max(0,v.needed-v.count)));body.append(node('h3',v.title),node('p',thTime(v.startTime,v.endTime)+' · ปิดรับ '+thStamp(v.closeAt),'meta'),visitBadge(v.state),meter(v),line);card.append(dateBlock(v.visitDate),body);card.onclick=()=>openVisit(v.visitId);return card}))}
+function renderVisitSummary(v){const card=node('div',null,'visit-card'),top=node('div',null,'top'),info=node('div'),edit=node('button',null,'btn ghost');edit.type='button';edit.append(icon('edit'),node('span','แก้ไขข้อมูล'));edit.disabled=!v.revision;edit.onclick=()=>editVisit(v);
+ info.append(node('p','STUDY VISIT','kicker'),node('h2',v.title));if(v.organization)info.append(node('p',v.organization,'muted'));info.append(visitBadge(v.state));const del=node('button','ลบคณะดูงาน','btn danger small');del.type='button';del.disabled=!v.revision;del.onclick=()=>deleteRecord('visit',v.visitId,v.title,v.revision);const actions=node('div',null,'record-actions');actions.append(edit,del);top.append(info,actions);card.append(top,meter(v));
+ if(v.duties.length){const sum=node('div',null,'duty-sum');for(const d of v.duties)sum.append(node('span',d.name+' · '+d.count+' คน','tag'));card.append(sum)}
+ const grid=node('div',null,'detail-grid');grid.append(group('การดูงาน','calendar',[['วันที่',thDate(v.visitDate)],['เวลา',thTime(v.startTime,v.endTime)],['ผู้มาดูงาน',v.visitorCount?v.visitorCount+' คน':'']]),group('การรับสมัคร','badge',[['เปิดรับ',thStamp(v.openAt)],['ปิดรับ',thStamp(v.closeAt)],['อาสาสมัคร',v.count+' / '+v.needed+' คน']]));
+ by('visitSummary').replaceChildren(card,grid);if(v.details)by('visitSummary').append(node('p',v.details,'details-note'));
+ if(v.attachments&&v.attachments.length){const files=node('div',null,'visit-card');files.append(node('h3','เอกสารและรูปภาพแนบ'));for(const f of v.attachments){const b=node('button','ดาวน์โหลด '+f.name,'btn ghost small');b.type='button';b.onclick=()=>downloadVisitFile(v.visitId,f,b);files.append(b)}by('visitSummary').append(files)}}
+async function downloadVisitFile(id,file,btn){btn.disabled=true;by('visitNote').textContent='กำลังเตรียมไฟล์…';try{let offset=0,size=null,name='',type='',parts=[];do{const r=await rpc('adminVisitAttachmentPart',token,id,file.index,offset);if(!accept(r,'visitNote'))return;if(!Number.isInteger(r.next)||r.next<=offset||r.next>r.size||(size!==null&&size!==r.size))throw Error('ได้รับไฟล์ไม่ครบ กรุณาลองใหม่');size=r.size;name=r.name;type=r.type;const raw=atob(r.data),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);if(bytes.length!==r.next-offset)throw Error('ได้รับไฟล์ไม่ครบ กรุณาลองใหม่');parts.push(bytes);offset=r.next;by('visitNote').textContent='กำลังดาวน์โหลด '+Math.round(offset/size*100)+'%';}while(offset<size);const url=URL.createObjectURL(new Blob(parts,{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);by('visitNote').textContent='';}catch(e){by('visitNote').textContent=e.message||'ดาวน์โหลดไม่สำเร็จ'}finally{btn.disabled=false}}
+function readVisitFile(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=()=>reject(Error('อ่านไฟล์ไม่สำเร็จ'));r.readAsDataURL(file)})}
+async function sendVisitFile(id,file,requestId,onProgress){const first=await rpc('adminBeginVisitUpload',token,id,{name:file.name,type:file.type,size:file.size,requestId});if(!first.ok)throw Error(first.message||'เริ่มอัปโหลดไม่สำเร็จ');if(first.done)return;let offset=first.next,attempt=0;while(offset<file.size){const data=await readVisitFile(file.slice(offset,Math.min(offset+1048576,file.size)));let r;try{r=await rpc('adminSendVisitUploadChunk',token,first.uploadId,offset,data);if(!r.ok)throw Error(r.message||'อัปโหลดไม่สำเร็จ')}catch(e){if(++attempt<=2){onProgress(offset,file.size,'กำลังลองอีกครั้ง');continue}throw e}attempt=0;if(r.done){onProgress(file.size,file.size);return}if(!Number.isInteger(r.next)||r.next<=offset||r.next>file.size)throw Error('อัปโหลดไม่ครบ กรุณาเลือกไฟล์ใหม่');offset=r.next;onProgress(offset,file.size)}throw Error('ยังบันทึกไฟล์ไม่สำเร็จ กรุณาเลือกไฟล์ใหม่')}
+
+function volunteerRow(p,i,waiting=false){const row=node('div',null,'vol'),who=node('div',null,'who'),side=node('div',null,'side'),contact=node('small'),tel=node('a',p.phone);tel.href='tel:'+p.phone;contact.append('โทร ',tel);if(p.lineId)contact.append(' · LINE '+p.lineId);
+ who.append(node('b',(p.prefix||'')+(p.fullName||'ไม่ระบุชื่อ')),node('small','ม.'+p.classroom+' เลขที่ '+p.number+' · รหัส '+p.studentId+' · '+prettyDate(p.createdAt)),contact);
+ if(p.duty)side.append(node('span',p.duty,'tag'));
+ if(waiting){row.classList.add('waiting');const up=node('button','เลื่อนเป็นตัวจริง','btn primary small');up.type='button';up.onclick=()=>promoteWaitlist(p,up);side.append(up)}
+ else{const att=node('div',null,'att');att.setAttribute('role','group');att.setAttribute('aria-label','เช็กชื่อ '+(p.fullName||''));
+ for(const [value,label] of [['present','มา'],['absent','ไม่มา']]){const b=node('button',label,'att-btn '+value);b.type='button';b.setAttribute('aria-pressed',String(p.attendance===value));b.onclick=()=>setAttendance([p.signupId],p.attendance===value?'':value,b);att.append(b)}
+ side.append(att);if(p.attendance==='present'){side.append(node('span',p.hours+' ชม.','tag open'));const cert=node('button','เกียรติบัตร','btn ghost small');cert.type='button';cert.onclick=()=>savePdf(pdfName('เกียรติบัตร',p.studentId,p.signupId),host=>certSheets(host,currentVisit,[p]),cert,'visitNote',true);side.append(cert)}
+ const edit=node('button','แก้ไข','btn ghost small');edit.type='button';edit.onclick=()=>editVolunteer(p);side.append(edit)}
+ const cancel=node('button',waiting?'ลบออกจากสำรอง':'ยกเลิกรายชื่อ','btn danger small');cancel.type='button';cancel.onclick=()=>cancelVolunteer(p,cancel);side.append(cancel);row.append(node('span',String(i+1),'num'),who,side);return row}
+async function openVisit(id){currentVisit=null;currentVolunteers=[];by('newVolunteer').disabled=true;for(const b of ['pdfRoster','qrCheckin','allPresent','certAll'])by(b).disabled=true;by('waitBlock').hidden=true;const n=++vSerial;visitView('detail');const known=visitList.find(v=>v.visitId===id);if(known)renderVisitSummary(known);else by('visitSummary').replaceChildren(...skeletons(2));by('volRows').replaceChildren(...skeletons(2));by('volTotal').textContent='';by('visitBack').focus();
+ try{const r=await rpc('adminVisitVolunteers',token,id);if(n!==vSerial)return;showRoster(r)
+ }catch{if(n===vSerial){by('volRows').replaceChildren();failed('visitNote')}}}
+function showRoster(r){by('volRows').replaceChildren();if(!accept(r,'visitNote'))return;currentVisit=r.visit;currentVolunteers=r.volunteers;const present=r.volunteers.filter(p=>p.attendance==='present').length;by('newVolunteer').disabled=false;by('pdfRoster').disabled=false;by('qrCheckin').disabled=false;by('allPresent').disabled=!r.volunteers.length;by('certAll').disabled=!present;renderVisitSummary(r.visit);by('volTotal').textContent=r.volunteers.length+' / '+r.visit.needed+' คน · มา '+present+' คน';
+ const waits=r.waitlist||[];by('waitBlock').hidden=!waits.length;by('waitTotal').textContent=waits.length+' คน';by('waitRows').replaceChildren(...waits.map((p,i)=>volunteerRow(p,i,true)));
+ if(!r.volunteers.length)by('volRows').append(emptyBox('ยังไม่มีอาสาสมัครลงทะเบียน','เมื่อถึงเวลาเปิดรับ รายชื่อที่นักเรียนลงทะเบียนจะแสดงที่นี่'));r.volunteers.forEach((p,i)=>by('volRows').append(volunteerRow(p,i)))}
+function restoreCancel(btn){btn.disabled=false;btn.classList.remove('confirm');btn.textContent='ยกเลิกรายชื่อ'}
+async function cancelVolunteer(p,btn){if(!btn.classList.contains('confirm')){btn.classList.add('confirm');btn.textContent='กดอีกครั้งเพื่อยืนยัน';setTimeout(()=>{if(btn.isConnected&&!btn.disabled)restoreCancel(btn)},4000);return}
+ btn.disabled=true;btn.textContent='กำลังยกเลิก…';
+ try{const r=await rpc('adminCancelVolunteer',token,p.signupId,p.revision);if(!accept(r,'visitNote'))return restoreCancel(btn);openVisit(currentVisit.visitId);loadDashboard()}catch{restoreCancel(btn);failed('visitNote')}}
+let visitRevision='',visitRequest='';
+function editVisit(v){visitRevision=v?v.revision:'';visitRequest=crypto.randomUUID();editingId=v?v.visitId:'';visitView('edit');by('editTitle').textContent=v?'แก้ไขคณะดูงาน':'เพิ่มคณะดูงาน';const base=v||{status:'active',startTime:'09:00',endTime:'12:00',needed:10};
+ for(const [id,key] of Object.entries(VFIELDS)){const value=base[key];by(id).value=value==null||(key==='visitorCount'&&!value)?'':String(value)}
+ by('vDuties').value=v?v.duties.map(d=>d.name).join('\n'):'';by('vFiles').value='';by('vFilesExisting').textContent=v&&v.attachments&&v.attachments.length?'มีไฟล์แนบแล้ว '+v.attachments.length+' ไฟล์ (เลือกไฟล์ใหม่เพื่อเพิ่ม)':'';by('saveVisit').disabled=false;by('vTitle').focus()}
+const leaveEdit=()=>editingId?openVisit(editingId):renderVisitList();
+by('editBack').onclick=leaveEdit;by('editCancel').onclick=leaveEdit;by('visitBack').onclick=renderVisitList;by('newVisit').onclick=()=>editVisit(null);
+by('visitForm').onsubmit=async e=>{e.preventDefault();if(by('saveVisit').disabled)return;const payload={visitId:editingId,revision:visitRevision,requestId:visitRequest,duties:by('vDuties').value};for(const [id,key] of Object.entries(VFIELDS))payload[key]=by(id).value.trim();
+ const missing=['vTitle','vDate','vStart','vEnd','vOpen','vClose','vNeeded'].find(id=>!by(id).value.trim());if(missing){by('visitNote').textContent='กรุณากรอกข้อมูลที่จำเป็นให้ครบ';by(missing).focus();return}
+ const files=Array.from(by('vFiles').files);if(files.length>3){by('visitNote').textContent='เลือกไฟล์ได้ไม่เกิน 3 ไฟล์ต่อครั้ง';return}if(files.some(f=>f.size>30000000||f.size<1||!['application/pdf','image/jpeg','image/png','image/webp'].includes(f.type))){by('visitNote').textContent='กรุณาเลือก PDF, JPG, PNG หรือ WebP ขนาดไม่เกิน 30 MB ต่อไฟล์';return}
+ by('saveVisit').disabled=true;by('visitNote').textContent='กำลังบันทึก…';
+ try{const r=await rpc('adminSaveVisit',token,payload);if(accept(r,'visitNote')){const errors=[];for(let i=0;i<files.length;i++){const f=files[i];try{by('visitNote').textContent='กำลังแนบไฟล์ '+(i+1)+' / '+files.length+'…';await sendVisitFile(r.visitId,f,visitRequest+'-'+i,(done,total,msg)=>{by('visitNote').textContent=(msg||'กำลังแนบไฟล์ '+(i+1)+' / '+files.length)+' · '+Math.round(done/total*100)+'%'})}catch(e){errors.push(f.name+': '+(e.message||'ติดต่อระบบไม่ได้'))}}await openVisit(r.visitId);loadDashboard();if(errors.length)by('visitNote').textContent='บันทึกคณะแล้ว แต่แนบไฟล์ไม่สำเร็จ: '+errors.join(' · ')+' กรุณาเข้าแก้ไขคณะเพื่อแนบไฟล์อีกครั้ง'}}catch{failed('visitNote')}finally{by('saveVisit').disabled=false}};
+let crudAction=null,crudBusy=false,crudEpoch=0;
+function closeCrud(force=false){if(crudBusy&&!force)return;crudEpoch++;crudBusy=false;crudAction=null;if(by('editDialog').open)by('editDialog').close();by('crudBody').replaceChildren();by('crudNote').textContent='';by('crudForm').reset()}
+function setCrudBusy(on){crudBusy=on;for(const e of by('crudForm').querySelectorAll('button,input,select,textarea'))e.disabled=on}
+function openCrud(title,action,saveLabel='บันทึกข้อมูล'){
+ if(crudBusy)return false;closeCrud();by('crudTitle').textContent=title;by('crudSave').textContent=saveLabel;by('crudSave').hidden=!action;by('crudCancel').textContent=action?'ยกเลิก':'ปิดหน้าต่าง';by('crudClose').disabled=false;by('crudCancel').disabled=false;by('crudSave').disabled=false;crudAction=action;by('editDialog').showModal();return true}
+by('crudClose').onclick=()=>closeCrud();by('crudCancel').onclick=()=>closeCrud();
+by('editDialog').addEventListener('cancel',e=>{e.preventDefault();closeCrud()});
+by('crudForm').onsubmit=async e=>{e.preventDefault();if(crudBusy||!crudAction||!token)return;const current=crudEpoch,session=token;setCrudBusy(true);by('crudNote').textContent='กำลังบันทึก…';
+ try{const result=await crudAction();if(current!==crudEpoch||session!==token)return;
+ if(!result||!result.ok){if(result?.expired){reset('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง');return}by('crudNote').textContent=result?.message||'บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง';return}
+ const after=result.after;closeCrud(true);await loadDashboard();if(session!==token)return;if(after)await after();by('deskNote').textContent=result.message||'บันทึกข้อมูลเรียบร้อยแล้ว';
+ }catch(error){if(current===crudEpoch)by('crudNote').textContent=error.message||'ติดต่อระบบไม่ได้ กรุณาลองอีกครั้ง'}finally{if(current===crudEpoch)setCrudBusy(false)}};
+function formField(container,id,label,value='',options={}){
+ const box=node('div',null,options.wide?'crud-wide':''),lab=node('label',label),input=node(options.choices?'select':options.multiline?'textarea':'input');lab.htmlFor=id;input.id=id;
+ if(options.choices)for(const choice of options.choices){const [v,t]=Array.isArray(choice)?choice:[choice,choice];const opt=node('option',t);opt.value=v;input.append(opt)}
+ else if(!options.multiline)input.type=options.type||'text';
+ input.value=value??'';if(options.required)input.required=true;if(options.max)input.maxLength=options.max;if(options.pattern)input.pattern=options.pattern;if(options.numeric)input.inputMode='numeric';
+ box.append(lab,input);container.append(box);return input}
+async function adminPhoto(file){
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024)throw Error('กรุณาใช้รูป JPG, PNG หรือ WebP ไม่เกิน 10 MB');
+ const url=URL.createObjectURL(file);try{const img=new Image();img.src=url;await img.decode();const scale=Math.min(1,800/Math.max(img.width,img.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/jpeg',.85)}finally{URL.revokeObjectURL(url)}}
+function applicationActions(a){const actions=node('div',null,'record-actions'),edit=node('button','แก้ไขข้อมูลผู้สมัคร','btn ghost'),del=node('button','ลบใบสมัคร','btn danger');edit.type=del.type='button';edit.onclick=()=>editApplication(a);del.onclick=()=>deleteRecord('student',a.registrationId,(a.prefix||'')+a.fullName,a.revision);actions.append(edit,del);return actions}
+function editApplication(a=null){
+ let photo='',photoReady=Promise.resolve();const fields={};
+ const save=async()=>{await photoReady;const payload={registrationId:a?.registrationId||'',revision:a?.revision||'',photo,interests:[...by('crudBody').querySelectorAll('[name=adminSkills]:checked')].map(el=>el.value)};for(const [k,el] of Object.entries(fields))payload[k]=el.value.trim();
+ if(!payload.interests.length)throw Error('กรุณาเลือกทักษะอย่างน้อย 1 สาย');if(!a&&!photo)throw Error('กรุณาแนบรูปถ่ายผู้สมัคร');
+ const r=await rpc('adminSaveApplication',token,payload);if(r.ok)r.after=()=>{showTab('apps');return detail(r.registrationId)};return r};
+ if(!openCrud(a?'แก้ไขใบสมัคร':'เพิ่มผู้สมัครสตราฟ',save))return;
+ const grid=node('div',null,'crud-fields');by('crudBody').append(grid);
+ const rooms=[['','เลือกชั้น / ห้อง']];for(let g=1;g<=6;g++)for(let n=1;n<=(g<4?6:5);n++)rooms.push([String(g*100+n),'ม.'+String(g*100+n)]);
+ for(const [key,label,value,options] of [
+ ['studentId','รหัสนักเรียน',a?.studentId,{required:true,max:20,pattern:'[0-9]{1,20}',numeric:true}],
+ ['prefix','คำนำหน้า',a?.prefix,{required:true,choices:[['','เลือกคำนำหน้า'],'เด็กชาย','เด็กหญิง','นาย','นางสาว']}],
+ ['fullName','ชื่อ–นามสกุล',a?.fullName,{required:true,max:120,wide:true}],
+ ['classroom','ชั้น / ห้อง',a?.room,{required:true,choices:rooms}],
+ ['number','เลขที่',a?.number,{required:true,max:3,pattern:'[0-9]{1,3}',numeric:true}],
+ ['email','อีเมล',a?.email,{required:true,type:'email',max:200}],
+ ['phone','เบอร์โทรศัพท์',a?.phone,{required:true,max:10,pattern:'0[0-9]{8,9}',type:'tel'}],
+ ['lineId','ID LINE',a?.lineId,{required:true,max:100}],
+ ['facebook','Facebook (ไม่บังคับ)',a?.facebook,{max:200}],
+ ['status','สถานะใบสมัคร',a?.status||'pending',{choices:Object.entries(STATUS)}]
+ ])fields[key]=formField(grid,'a_'+key,label,value,options);
+ const skills=node('fieldset',null,'crud-skills crud-wide');skills.append(node('legend','ทักษะและความสนใจ · เลือกอย่างน้อย 1 สาย'));
+ for(const choice of ['สายพูด','สายเทค AI','สายครีเอทีฟ','สายสร้างโลกสมมติ 3D','สายจัดการ ซัพพอร์ต']){const label=node('label'),check=node('input');check.type='checkbox';check.name='adminSkills';check.value=choice;check.checked=(a?.interests||'').split(', ').includes(choice);label.append(check,node('span',choice));skills.append(label)}grid.append(skills);
+ const photoBox=node('div',null,'crud-wide'),preview=node('img',null,'preview'),upload=node('input'),lab=node('label',a?'เปลี่ยนรูปถ่าย (เว้นว่างเพื่อใช้รูปเดิม)':'แนบรูปถ่ายผู้สมัคร');upload.type='file';upload.accept='image/jpeg,image/png,image/webp';upload.id='adminPhotoFile';lab.htmlFor=upload.id;preview.alt='รูปที่เลือกสำหรับใบสมัคร';preview.hidden=!a?.portrait;if(a?.portrait)preview.src=a.portrait;photoBox.append(lab,preview,upload,node('small','JPG, PNG หรือ WebP ขนาดไม่เกิน 10 MB'));grid.append(photoBox);
+ const epoch=crudEpoch;upload.onchange=()=>{const file=upload.files[0];if(!file)return;by('crudNote').textContent='กำลังเตรียมรูป…';photoReady=adminPhoto(file).then(data=>{if(epoch!==crudEpoch)return;photo=data;preview.src=data;preview.hidden=false;by('crudNote').textContent='';}).catch(err=>{if(epoch!==crudEpoch)return;photo='';upload.value='';preview.hidden=true;by('crudNote').textContent=err.message;throw err});photoReady.catch(()=>{})};
+ fields.studentId.focus()}
+function deleteRecord(kind,id,name,revision){
+ if(!openCrud(kind==='student'?'ลบใบสมัคร':'ลบคณะดูงาน',async()=>{const r=await rpc('adminSetDeleted',token,kind,id,revision,false,kind==='student');if(r.ok)r.after=()=>{if(kind==='student')showList();else renderVisitList()};return r},kind==='student'?'ยืนยันลบและยกเลิกรายชื่อ':'ยืนยันย้ายไปรายการที่ลบ'))return;
+ by('crudBody').append(node('h3',name));
+ if(kind==='student'){
+  by('crudBody').append(node('p','เมื่อยืนยัน ระบบจะดำเนินการดังนี้:'));
+  const changes=node('ul');for(const text of ['ย้ายใบสมัครไป “รายการที่ลบ” และปิดการเข้าสู่ระบบของนักเรียน','ยกเลิกรายชื่อตัวจริงและสำรองที่ยังไม่ได้เช็กชื่อ รวมถึงรายชื่อในคณะที่ถูกลบแล้ว','เก็บประวัติที่เช็กชื่อแล้ว ชั่วโมงจิตอาสา และรูปถ่ายไว้'])changes.append(node('li',text));
+  by('crudBody').append(changes,node('p','กู้คืนใบสมัครได้ภายหลัง แต่รายชื่อที่ยกเลิกจะไม่กลับมาจองที่นั่งโดยอัตโนมัติ','muted'));
+ }else by('crudBody').append(node('p','คณะนี้จะหายจากหน้าสาธารณะและหยุดรับอาสาสมัคร รายชื่อที่ลงทะเบียนไว้จะยังถูกเก็บอยู่ คุณสามารถกู้คืนได้จาก “รายการที่ลบ”'));
+ by('crudCancel').focus()}
+async function showDeleted(kind){
+ if(!openCrud(kind==='student'?'ใบสมัครที่ลบ':'คณะดูงานที่ลบ',null))return;const epoch=crudEpoch;by('crudBody').append(loading());
+ try{const r=await rpc('adminDeletedItems',token,kind);if(epoch!==crudEpoch)return;by('crudBody').replaceChildren();if(!r.ok){if(r.expired){reset('กรุณาเข้าสู่ระบบใหม่');return}throw Error(r.message)}
+ if(!r.rows.length)by('crudBody').append(emptyBox('ไม่มีรายการที่ลบ','รายการที่คุณลบจะถูกเก็บไว้ที่นี่เพื่อกู้คืน'));
+ for(const row of r.rows){const line=node('div',null,'trash-row'),info=node('div'),restore=node('button','กู้คืน','btn ghost small');restore.type='button';info.append(node('b',row.name),node('small',row.detail),node('small','ลบเมื่อ '+prettyDate(row.deletedAt)));restore.onclick=()=>{if(!openCrud('ยืนยันกู้คืนรายการ',async()=>rpc('adminSetDeleted',token,kind,row.id,row.revision,true),'กู้คืนรายการ'))return;by('crudBody').append(node('h3',row.name),node('p',kind==='student'?'ใบสมัครจะกลับสู่สถานะเดิมและเก็บชั่วโมงที่เช็กชื่อแล้วไว้ รายชื่ออาสาสมัครที่ยกเลิกจะไม่กลับมาโดยอัตโนมัติ หากต้องการเข้าร่วมให้ลงทะเบียนใหม่ตามจำนวนที่ว่าง':'คณะดูงานจะกลับสู่สถานะเดิมก่อนลบ หากอยู่ในช่วงรับสมัคร ระบบจะเปิดรับอีกครั้ง'));};line.append(info,restore);by('crudBody').append(line)}
+ }catch(e){if(epoch===crudEpoch)by('crudNote').textContent=e.message||'โหลดรายการไม่สำเร็จ'}}
+function editVolunteer(p=null){
+ if(!currentVisit)return;const visit=currentVisit;let student,duty;
+ if(!openCrud(p?'แก้ไขรายชื่ออาสาสมัคร':'เพิ่มอาสาสมัคร',async()=>{const r=await rpc('adminSaveVolunteer',token,{visitId:visit.visitId,signupId:p?.signupId||'',revision:p?.revision||'',studentId:student.value,duty:duty.value});if(r.ok)r.after=()=>openVisit(visit.visitId);return r}))return;
+ by('crudBody').append(node('p',visit.title),node('p','เลือกจากใบสมัครสตราฟ ระบบจะใช้ชื่อและข้อมูลติดต่อล่าสุด ผู้ดูแลเพิ่มรายชื่อได้แม้ยังไม่เปิดรับหรือปิดรับแล้ว โดยไม่เกินจำนวนที่รับ','muted'));
+ const grid=node('div',null,'crud-fields');by('crudBody').append(grid);
+ const choices=[['','เลือกผู้สมัคร'],...apps.filter(a=>a.status!=='rejected').map(a=>[a.studentId,a.name+' · '+a.studentId])];
+ student=formField(grid,'volStudent','นักเรียน',p?.studentId,{required:true,choices,wide:true});
+ duty=formField(grid,'volDuty','หน้าที่',p?.duty||'',{required:visit.duties.length>0,choices:visit.duties.length?[['','เลือกหน้าที่'],...visit.duties.map(d=>d.name)]:[['','ไม่ระบุหน้าที่']],wide:true});student.focus()}
+by('newApp').onclick=()=>editApplication();
+by('deletedApps').onclick=()=>showDeleted('student');by('deletedVisits').onclick=()=>showDeleted('visit');
+by('newVolunteer').onclick=()=>editVolunteer();
+window.addEventListener('pageshow',e=>{if(e.persisted)reset()});
+// Back from a refresh: reopen the desk with the saved sign-in; an expired one returns to the sign-in form.
+(()=>{let saved=null;try{saved=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null')}catch{}
+ if(saved&&/^[a-f0-9]{64}$/.test(saved.token||'')&&saved.until>Date.now()){startSession(saved.token,saved.until);loadDashboard()}})();
+</script>
+<script>
+// Motion: scroll progress, scroll-in reveal, count-up numbers, cursor glow and photo tilt. Purely visual; the page works without it.
+((REVEAL, SPOT, TILT) => {
+  'use strict';
+  const root = document.documentElement;
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const max = root.scrollHeight - innerHeight;
+      root.style.setProperty('--sp', max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+      root.classList.toggle('scrolled', scrollY > 8);
+    });
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Low-power devices (few cores, little memory, data saver) get the still version of the decorations.
+  const conn = navigator.connection || {};
+  if ((navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 || conn.saveData) root.classList.add('lite');
+  // Looping decorations pause while they are off screen, so scrolling a long page stays smooth.
+  if ('IntersectionObserver' in window) {
+    const idle = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('idle', !e.isIntersecting)));
+    document.querySelectorAll('.aurora,.hero,.login-card,.board').forEach(el => idle.observe(el));
+  }
+
+  // Numbers count up to each new value the page writes.
+  const countUp = el => {
+    const text = el.textContent.trim(), m = /^\d+(?:\.(\d+))?$/.exec(text);
+    if (text === el.dataset.shown || !m) return;
+    const to = parseFloat(text), from = parseFloat(el.dataset.shown) || 0, places = (m[1] || '').length, start = performance.now();
+    cancelAnimationFrame(el.countFrame);
+    const step = now => {
+      const p = Math.min(1, (now - start) / 900), shown = p < 1 ? (from + (to - from) * (1 - Math.pow(1 - p, 3))).toFixed(places) : text;
+      el.dataset.shown = shown;
+      el.textContent = shown;
+      if (p < 1) el.countFrame = requestAnimationFrame(step);
+    };
+    el.countFrame = requestAnimationFrame(step);
+  };
+  document.querySelectorAll('[data-count]').forEach(el => {
+    countUp(el);
+    new MutationObserver(() => countUp(el)).observe(el, { childList: true, characterData: true, subtree: true });
+  });
+
+  // Reveal blocks as they scroll in. A list the page rebuilds later (refresh, filter) appears at once instead of replaying.
+  if (REVEAL && 'IntersectionObserver' in window) {
+    root.classList.add('motion');
+    const io = new IntersectionObserver(entries => {
+      entries.filter(e => e.isIntersecting).map(e => e.target)
+        .sort((a, b) => (a.compareDocumentPosition(b) & 4 ? -1 : 1))
+        .forEach((el, i) => {
+          const delay = Math.min(i, 8) * 70;
+          io.unobserve(el);
+          el.style.setProperty('--d', delay + 'ms');
+          el.classList.add('in');
+          setTimeout(() => { el.classList.remove('rv', 'in'); el.style.removeProperty('--d'); }, 1000 + delay);
+        });
+    }, { rootMargin: '0px 0px -6% 0px' });
+    const seen = new WeakSet();
+    const scan = () => {
+      const fresh = [...document.querySelectorAll(REVEAL)].filter(el => !seen.has(el));
+      fresh.forEach(el => {
+        seen.add(el);
+        if (el.parentElement && el.parentElement.dataset.revealed) return;
+        el.classList.add('rv');
+        io.observe(el);
+      });
+      fresh.forEach(el => { if (el.parentElement) el.parentElement.dataset.revealed = '1'; });
+    };
+    scan();
+    let queued = false;
+    new MutationObserver(list => {
+      if (queued || !list.some(m => [...m.addedNodes].some(n => n.nodeType === 1))) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; scan(); });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
+  // A soft glow follows the pointer over cards, and the hero photo tilts toward it.
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let frame = 0, last = null, tilted = null;
+  document.addEventListener('pointermove', e => {
+    last = e;
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      const t = last.target instanceof Element ? last.target : null;
+      const card = SPOT && t && t.closest(SPOT);
+      if (card) {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', last.clientX - r.left + 'px');
+        card.style.setProperty('--my', last.clientY - r.top + 'px');
+      }
+      const tilt = TILT && t && t.closest(TILT);
+      if (tilted && tilted !== tilt) { tilted.style.removeProperty('--rx'); tilted.style.removeProperty('--ry'); }
+      tilted = tilt || null;
+      if (tilt) {
+        const r = tilt.getBoundingClientRect(), x = (last.clientX - r.left) / r.width - .5, y = (last.clientY - r.top) / r.height - .5;
+        tilt.style.setProperty('--ry', (x * 10).toFixed(2) + 'deg');
+        tilt.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg');
+      }
+    });
+  }, { passive: true });
+})('.kpi,.quick-btn,.ov-grid>.panel,.mini,.applicant-row,.vcard,.vol,.info', '.panel,.kpi,.vcard,.quick-btn,.applicant-row', '');
+</script></body></html>

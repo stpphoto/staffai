@@ -1,45 +1,1580 @@
 <!doctype html>
-<html lang="th">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน ศูนย์ AI & Metaverse Innovation Center">
-  <title>ระบบอาสาสมัครนักเรียน | AI & Metaverse Innovation Center</title>
-  <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; width: 100%; height: 100%; background: #f4f6fc; }
-    iframe { display: block; width: 100%; height: 100vh; height: 100dvh; border: 0; }
-    noscript { display: block; padding: 24px; font-family: sans-serif; }
-  </style>
-</head>
-<body>
-  <!-- The app and its data remain in Google Apps Script. -->
-  <p id="entry" style="padding:24px;font:16px/1.7 Tahoma,sans-serif;color:#122b51">กำลังเข้าสู่ระบบ… <a id="enterApp" target="_self" href="https://script.google.com/macros/s/AKfycbxdhLNYigGGYjR7BBntCt9qXGtyP5Zhdr4dRA-AKwKYdyjJaW1vwiuiI31koeKUhXgl/exec">เข้าสู่ระบบอาสาสมัคร</a></p>
-  <script>
-    const query = new URLSearchParams(location.search);
-    const enter = document.getElementById("enterApp");
-    const destination = new URL(enter.href);
-    const page = query.get("page");
-    if (["apply", "admin", "volunteer"].includes(page)) destination.searchParams.set("page", page);
-    const checkin = query.get("checkin");
-    if (checkin && /^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkin)) destination.searchParams.set("checkin", checkin);
-    enter.href = destination.href;
-    // Mobile enters the app in the same tab without first starting an iframe session.
-    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-      || matchMedia("(pointer: coarse)").matches || matchMedia("(max-width: 800px)").matches;
-    if (mobile) {
-      location.replace(destination.href);
-    } else {
-      destination.searchParams.set("embed", "1");
-      const frame = document.createElement("iframe");
-      frame.id = "staffApp";
-      frame.title = "ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน";
-      frame.allow = "clipboard-write";
-      frame.src = destination.href;
-      document.body.append(frame);
-      document.getElementById("entry").hidden = true;
+<html lang="th"><head><title>ระบบอาสาสมัครนักเรียน | AI & Metaverse</title><script src="./bridge.js?v=1"></script><base target="_self"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&family=Plus+Jakarta+Sans:wght@600..800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><style>
+:root{color-scheme:light;--bg:#f5f7fc;--card:#fff;--ink:#0b1b3f;--ink2:#2d3d5f;--muted:#66758f;--line:#e4e9f2;--soft:#f5f7fb;--brand:#2f5bea;--brand2:#5b7cff;--brand-d:#2244c4;--brand-soft:#edf2ff;--mint:#0d9e94;--mint-soft:#e4f7f4;--violet:#6d4cff;--violet-soft:#f1edff;--sans:'Anuphan','Noto Sans Thai',Tahoma,sans-serif;--num:'Plus Jakarta Sans','Anuphan',sans-serif;--sh-sm:0 1px 2px #0b1b3f0d;--sh:0 1px 2px #0b1b3f0a,0 12px 32px -18px #2f5bea38;--sh-lg:0 2px 4px #0b1b3f08,0 34px 64px -34px #2f5bea52}
+*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:radial-gradient(760px 460px at 6% -4%,#dfe8ff 0,transparent 70%),radial-gradient(700px 480px at 96% 0,#d8f4ee 0,transparent 70%),radial-gradient(620px 420px at 50% 34%,#efeaff 0,transparent 70%),var(--bg);font:16px/1.7 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}ul,ol{padding:0;list-style:none}button,input{font:inherit;color:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.55}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #9db4ff;outline-offset:3px}
+.sprites{position:absolute;width:0;height:0;overflow:hidden}.ico{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{width:min(1180px,calc(100% - 48px));margin:0 auto}
+.kicker{color:var(--brand);font:700 12px/1.4 var(--num);letter-spacing:.12em;text-transform:uppercase}
+
+/* Header */
+.topbar{position:sticky;top:0;z-index:100;padding:12px 0 0}
+.topbar .wrap{display:flex;align-items:center;gap:14px;min-height:66px;padding:8px 10px 8px 12px;border:1px solid #ffffffe6;border-radius:22px;background:#ffffffd1;-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px);box-shadow:var(--sh)}
+.brand{display:flex;align-items:center;gap:12px;min-width:0;padding:0;border:0;background:none;text-align:left}
+.brand img{width:46px;height:46px;flex:none;padding:3px;border-radius:15px;background:#fff;border:1px solid var(--line);object-fit:contain}
+.brand>span{min-width:0}.brand strong{display:block;font-size:16.5px;font-weight:700;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand small{display:block;color:var(--muted);font-size:12.5px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-right{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav-link{padding:9px 14px;border:0;border-radius:12px;background:none;color:var(--ink2);font-size:14.5px;font-weight:600;text-decoration:none;white-space:nowrap}.nav-link:hover{background:var(--brand-soft);color:var(--brand-d)}
+.nav-cta{display:inline-flex;align-items:center;gap:8px;max-width:min(260px,46vw);margin-left:6px;padding:10px 16px;border:0;border-radius:14px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;white-space:nowrap;box-shadow:0 10px 20px -12px #0b1b3f}.nav-cta:hover{background:#17295a}#navAccount{min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:10px 20px;border:1px solid transparent;border-radius:14px;font-size:15.5px;font-weight:600;text-decoration:none;transition:transform .15s,box-shadow .15s,background .15s,filter .15s,border-color .15s}
+.btn.primary{background:linear-gradient(135deg,var(--brand2),var(--brand) 55%,var(--brand-d));color:#fff;box-shadow:inset 0 1px 0 #ffffff40,0 12px 24px -12px var(--brand)}.btn.primary:hover:enabled{transform:translateY(-1px);filter:brightness(1.05)}
+.btn.ghost{background:#fff;color:var(--ink2);border-color:var(--line);box-shadow:var(--sh-sm)}.btn.ghost:hover:enabled{border-color:#c4d0e8;background:#fbfcff}
+.btn.danger{background:#fff;color:#be123c;border-color:#fecdd6}.btn.danger:hover:enabled{background:#fff1f3}.btn.danger.confirm{background:#e11d48;color:#fff;border-color:#e11d48}
+.btn.block{width:100%}.btn.small{min-height:38px;padding:6px 14px;font-size:14px;border-radius:12px}
+
+/* Hero */
+.hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(24px,4vw,56px);align-items:center;margin-top:18px;padding:clamp(26px,4.2vw,58px);border-radius:36px;background:#ffffffc7;border:1px solid #fff;box-shadow:var(--sh-lg)}
+.hero:before{content:'';position:absolute;z-index:-1;inset:0;background:radial-gradient(440px 320px at 0 0,#e2eaff,transparent 72%),radial-gradient(420px 320px at 100% 100%,#d9f5ef,transparent 72%)}
+.hero:after{content:'';position:absolute;z-index:-1;inset:0;background:radial-gradient(#2f5bea1f 1.2px,transparent 1.6px) 0 0/22px 22px;-webkit-mask-image:radial-gradient(ellipse at 85% 20%,#000,transparent 60%);mask-image:radial-gradient(ellipse at 85% 20%,#000,transparent 60%)}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;padding:7px 15px 7px 11px;border-radius:99px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh-sm);color:var(--brand-d);font:700 12px/1.4 var(--num);letter-spacing:.1em;text-transform:uppercase}
+.pulse{width:9px;height:9px;border-radius:50%;background:#10b981;box-shadow:0 0 0 0 #10b98166;animation:pulse 2s infinite}@keyframes pulse{70%{box-shadow:0 0 0 9px #10b98100}100%{box-shadow:0 0 0 0 #10b98100}}
+.sub{color:var(--brand);font-size:13.5px;font-weight:600;line-height:1.4}
+.hero h1{margin:20px 0 14px;font-size:clamp(32px,3.9vw,52px);font-weight:700;line-height:1.25;letter-spacing:-.015em}
+.hero h1 span{display:block;padding-bottom:.06em;background:linear-gradient(90deg,var(--brand) 5%,#7c5cff 50%,#14b8a6 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:54ch;color:var(--ink2);font-size:17px;line-height:1.8}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:560px;margin-top:30px}
+.stat{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh-sm)}
+.stat-ico{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:13px;background:var(--brand-soft);color:var(--brand)}.stat:nth-child(2) .stat-ico{background:var(--mint-soft);color:var(--mint)}.stat:nth-child(3) .stat-ico{background:var(--violet-soft);color:var(--violet)}
+.stat b{display:block;font:800 25px/1.15 var(--num);font-variant-numeric:tabular-nums}.stat small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
+.hero-visual{position:relative;justify-self:end;width:100%;max-width:520px;padding:16px 0 34px 14px}
+.hero-visual:before{content:'';position:absolute;inset:0 -14px 22px 46px;border-radius:40px;background:linear-gradient(140deg,#5b7cff,#7c5cff 50%,#14b8a6);opacity:.18;transform:rotate(4deg)}
+.photo{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:30px;background:linear-gradient(140deg,#dce6ff,#d6f4ee);border:6px solid #fff;box-shadow:0 34px 64px -34px #0b1b3f80}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s}.photo img.ready{opacity:1}
+.photo-art{position:absolute;inset:0;display:grid;place-items:center}.photo-art svg{width:46%}
+.float{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:#fffffff2;border:1px solid #fff;box-shadow:0 22px 44px -22px #0b1b3f66;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.float>span{min-width:0}.float small{display:block;color:var(--muted);font-size:12px;line-height:1.35}.float b{display:block;font-size:14.5px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.float-state{left:-4px;right:40px;bottom:0;max-width:max-content}
+.float-badge{top:0;right:-10px;padding:10px 14px 10px 10px}.badge-ico{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:12px;background:linear-gradient(135deg,var(--brand2),var(--violet));color:#fff}
+.dot{width:12px;height:12px;flex:none;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 5px #94a3b833}
+[data-state=open] .dot{background:#16a34a;box-shadow:0 0 0 5px #16a34a2e}[data-state=upcoming] .dot{background:#f59e0b;box-shadow:0 0 0 5px #f59e0b33}[data-state=closed] .dot{background:#e11d48;box-shadow:0 0 0 5px #e11d482e}[data-state=full] .dot{background:#7c5cff;box-shadow:0 0 0 5px #7c5cff2e}
+
+/* Registration board: clock, sign-up window and status side by side */
+.board{--s1:#64748b;--s2:#475569;--tint:#f1f5f9;--ink-s:#334155;margin-top:28px;overflow:hidden;border-radius:30px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh)}
+.board[data-state=open]{--s1:#16a34a;--s2:#0e7a39;--tint:#e9f9f0;--ink-s:#137a3d}.board[data-state=upcoming]{--s1:#f59e0b;--s2:#c06a05;--tint:#fff5e2;--ink-s:#a1560a}.board[data-state=closed]{--s1:#e11d48;--s2:#a8123a;--tint:#ffeef1;--ink-s:#b3123c}.board[data-state=full]{--s1:#7c5cff;--s2:#5536e0;--tint:#f1edff;--ink-s:#5536e0}
+.board-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px clamp(18px,2.4vw,26px);border-bottom:1px solid var(--line)}
+.board-title{display:flex;align-items:center;gap:14px;min-width:0}.board-icon{display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:15px;background:var(--tint);color:var(--s1);transition:background .4s,color .4s}.board-icon .ico{width:22px;height:22px}
+.board-head h2{font-size:clamp(17px,1.8vw,20px);font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+.state-pill{display:inline-flex;align-items:center;gap:8px;flex:none;padding:7px 15px;border-radius:99px;background:var(--tint);color:var(--ink-s);font-size:14px;font-weight:700;white-space:nowrap;transition:background .4s,color .4s}.state-pill:before{content:'';width:8px;height:8px;border-radius:50%;background:var(--s1)}
+.board-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr) minmax(0,1.2fr);gap:16px;padding:clamp(16px,2.2vw,24px)}
+.tile{position:relative;display:flex;flex-direction:column;min-width:0;padding:20px;border-radius:22px;background:var(--soft);border:1px solid var(--line)}
+.tile-label{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;font-weight:600}.tile-label .ico{width:17px;height:17px;color:var(--brand)}
+.clock-tile{justify-content:center;background:linear-gradient(160deg,#fff,var(--soft))}
+.clock{margin-top:10px;font:800 clamp(40px,4.2vw,54px)/1.05 var(--num);font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--ink)}
+.today{margin-top:8px;color:var(--ink2);font-size:15px}.tz{margin-top:2px;color:var(--muted);font-size:12.5px}
+.window{background:linear-gradient(160deg,#fff,var(--tint));transition:background .4s}
+.steps{position:relative;display:grid;gap:14px;margin-top:14px}.steps:before{content:'';position:absolute;left:8px;top:16px;bottom:16px;border-left:2px dashed #c9d4e5}
+.step{position:relative;display:grid;grid-template-columns:18px minmax(0,1fr);gap:12px}
+.step-dot{width:18px;height:18px;margin-top:3px;border-radius:50%;background:#fff;border:5px solid #16a34a;box-shadow:0 0 0 4px #16a34a1f}.step.stop .step-dot{border-color:#e11d48;box-shadow:0 0 0 4px #e11d481f}
+.step small{display:block;color:var(--muted);font-size:13px;font-weight:600;line-height:1.4}.step p{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.pill{display:inline-flex;align-items:center;padding:3px 12px;border-radius:10px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.pill.go{background:#e5f7ec;color:#137a3d;box-shadow:inset 0 0 0 1px #bde8cd}.pill.stop{background:#ffebef;color:#be123c;box-shadow:inset 0 0 0 1px #fdc8d3}
+.span-bar{height:8px;margin:18px 6px 4px;border-radius:9px;background:#0b1b3f14}.span-bar i{position:relative;display:block;height:100%;width:0;min-width:8px;border-radius:inherit;background:linear-gradient(90deg,#22c55e,#f59e0b 70%,#e11d48);transition:width .6s}.span-bar i:after{content:'';position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#fff;border:3px solid var(--s1);box-shadow:0 2px 6px #0b1b3f33}
+.status{isolation:isolate;overflow:hidden;border:0;color:#fff;background:radial-gradient(280px 200px at 100% 0,#ffffff38,transparent 70%),linear-gradient(150deg,var(--s1),var(--s2));box-shadow:0 24px 44px -28px var(--s2);transition:background .4s}
+.status:after{content:'';position:absolute;z-index:-1;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;border:28px solid #ffffff14}
+.status .tile-label,.status .tile-label .ico{color:#ffffffe0}
+.status-word{display:flex;align-items:baseline;gap:10px;margin:6px 0 10px;font-size:clamp(34px,3.6vw,44px);font-weight:700;line-height:1.15}.status-word small{font-size:17px;font-weight:600;opacity:.88}
+.cd-label{font-size:14px;color:#ffffffe6}
+.countdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}
+.countdown div{padding:10px 4px 8px;border-radius:16px;background:#ffffff24;border:1px solid #ffffff3d;text-align:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.countdown b{display:block;font:800 26px/1 var(--num);font-variant-numeric:tabular-nums}.countdown span{font-size:12px;color:#ffffffd9}
+.cd-note{margin-top:auto;padding-top:14px;font-size:14px;color:#ffffffeb}
+
+/* Account column and visit list */
+.layout{display:grid;grid-template-columns:minmax(300px,.74fr) minmax(0,1.6fr);gap:24px;align-items:start;margin-top:28px}
+.side{display:grid;gap:18px}
+.card{overflow:hidden;border-radius:26px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh)}
+.card-top{display:flex;align-items:center;gap:14px;padding:20px 22px;background:linear-gradient(120deg,var(--brand-soft),#f4f1ff 55%,var(--mint-soft))}
+.card-icon{display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:15px;background:linear-gradient(135deg,var(--brand2),var(--brand-d));color:#fff;box-shadow:0 12px 22px -12px var(--brand)}.card-icon.mint{background:linear-gradient(135deg,#2dd4bf,var(--mint));box-shadow:0 12px 22px -12px var(--mint)}
+.card-top h2{font-size:18px;font-weight:700;line-height:1.35}.card-top p{color:var(--muted);font-size:13.5px}
+.card-body{padding:20px 22px 22px}
+.field{margin-bottom:14px}.field label{display:block;margin-bottom:6px;font-size:14.5px;font-weight:600}
+.input{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 14px;border:1px solid #d6dfec;border-radius:15px;background:var(--soft);color:#7a89a3;transition:border-color .15s,box-shadow .15s,background .15s}.input:focus-within{border-color:var(--brand2);box-shadow:0 0 0 4px #2f5bea1f;background:#fff}
+.input input{flex:1;min-width:0;height:50px;border:0;outline:0;background:transparent;color:var(--ink);font-size:16px}.input input::placeholder{color:#93a1b8;font-size:15px}
+.eye{display:grid;place-items:center;width:38px;height:38px;margin-right:-6px;border:0;border-radius:11px;background:transparent;color:#5a6c8a}.eye:hover{background:#e9eef8}
+.note{margin-top:12px;font-size:14px}.note:empty{display:none}.note.warn{padding:10px 13px;border-radius:13px;background:#fff6e5;border:1px solid #fde3b0;color:#8a4b06}
+.hint{margin-top:14px;color:var(--muted);font-size:13.5px;line-height:1.6}.hint a{color:var(--brand-d);font-weight:600}
+.profile{display:flex;align-items:center;gap:14px;padding:14px;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+.avatar{display:grid;place-items:center;width:50px;height:50px;flex:none;border-radius:16px;background:linear-gradient(135deg,var(--brand2),#14b8a6);color:#fff}.avatar .ico{width:24px;height:24px}
+.profile b{display:block;font-size:16.5px;line-height:1.4;overflow-wrap:anywhere}.profile small{color:var(--muted);font-size:13px}
+.side-title{display:flex;align-items:center;justify-content:space-between;margin:20px 0 6px;font-size:15.5px;font-weight:700}.side-title span{color:var(--muted);font-size:13px;font-weight:500}
+.mine li{display:flex;gap:12px;padding:12px 0;border-top:1px solid #edf1f7}.mine li:first-child{border-top:0}.mine .tick{display:grid;place-items:center;width:26px;height:26px;flex:none;margin-top:2px;border-radius:50%;background:#e5f7ec;color:#137a3d}.mine .tick .ico{width:14px;height:14px}
+.mine b{display:block;font-size:14.5px;line-height:1.45}.mine small{display:block;color:var(--muted);font-size:12.5px}
+.contact{margin-top:12px;font-size:13.5px;color:var(--muted)}.contact-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.contact-row span{min-width:0;overflow-wrap:anywhere}
+.contact form{margin-top:12px;color:var(--ink)}.contact .field{margin-bottom:10px}.contact .input{min-height:46px}.contact .input input{height:44px}.contact-actions{display:flex;gap:8px}.contact-saved{margin-top:6px;color:#137a3d;font-weight:600}.contact-saved:empty{display:none}
+.next{margin-top:14px;padding:14px 16px;border:1px solid #d8e2fb;border-radius:18px;background:linear-gradient(120deg,var(--brand-soft),#f4f1ff)}.next .k{color:var(--brand-d);font-size:12px;font-weight:700;letter-spacing:.04em}
+.next b{display:block;margin-top:2px;font-size:16px;line-height:1.4}.next small{display:block;color:var(--muted);font-size:13px}.next-when{margin-top:8px;font-weight:700}
+.next-actions,.cal-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.cal-row{margin:0 0 10px 44px}#myList li{flex-wrap:wrap}
+.goal{display:grid;gap:5px;margin:2px 0 8px}.goal small{color:var(--muted);font-size:12.5px}
+.acct{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink);font-size:14px}.acct-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.acct-head h3{font-size:15.5px;font-weight:700}.acct-head span{color:var(--muted);font-size:13px}.history.acct summary{padding:0}
+.link-btn{padding:4px 10px;border:0;border-radius:9px;background:none;color:var(--brand-d);font-size:14px;font-weight:700}.link-btn:hover{background:var(--brand-soft)}
+.facts{margin:0}.facts div{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid #edf1f7}.facts div:first-child{border-top:0;padding-top:2px}
+.facts dt{color:var(--muted)}.facts dd{margin:0;font-weight:600;overflow-wrap:anywhere}.signed .apply-link{display:none!important}
+.me{align-items:start}.me-head{display:flex;align-items:center;gap:16px;margin-top:20px}.me-head h1{margin:0;font-size:clamp(28px,3.4vw,44px);line-height:1.25}
+.me-avatar{display:grid;place-items:center;width:136px;height:170px;flex:none;border:4px solid #fff;border-radius:26px;background:linear-gradient(135deg,var(--brand2),#7c5cff 55%,#14b8a6);color:#fff;font-size:44px;font-weight:700;box-shadow:0 18px 34px -16px var(--brand)}
+.me-meta{margin-top:4px;color:var(--muted);font-size:15px}.me-contact{margin-top:12px;color:var(--muted);font-size:14px;overflow-wrap:anywhere}.me-contact:empty{display:none}
+.me-stats{margin-top:22px}.me .goal{max-width:560px;margin-top:14px}.me-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.me-avatar{position:relative;overflow:hidden}.me-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.me-side{display:grid;gap:14px}.me-card{padding:18px 20px;border:1px solid var(--line);border-radius:24px;background:#fff;box-shadow:var(--sh-sm)}.me-card .k{color:var(--brand-d);font-size:12px;font-weight:700;letter-spacing:.04em}
+.me-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 0}.me-facts dt{color:var(--muted);font-size:12.5px}.me-facts dd{margin:2px 0 0;font-weight:700;font-size:14px;overflow-wrap:anywhere}
+.me-sub{margin-top:12px;color:var(--muted);font-size:12.5px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chips span{padding:4px 11px;border-radius:99px;background:var(--brand-soft);color:var(--brand-d);font-size:13px;font-weight:600}
+.me-recent li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #edf1f7;font-size:13.5px}.me-recent li:first-child{border-top:0}.me-recent li div{min-width:0}.me-recent b{display:block;font-size:14px}.me-recent small{color:var(--muted)}
+.me-none{margin:8px 0;color:var(--muted);font-size:13.5px}.me-card .btn{margin-top:10px}
+@media(max-width:600px){.me-facts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.me-avatar{width:104px;height:130px;border-radius:22px}.me-head{align-items:flex-end}}
+.me-side .next{margin-top:0;padding:22px;border-radius:24px;background:#fff;box-shadow:var(--sh)}.me-side .next b{font-size:20px}.me-side .next-when{font-size:17px}
+.history{margin-top:14px}.history summary{padding:6px 0;font-size:15px;font-weight:700;cursor:pointer}.history summary span{color:var(--muted);font-size:13px;font-weight:500}
+.history li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #edf1f7;font-size:13.5px}.history li div{min-width:0}.history li b{display:block;font-size:14px}.history li small{color:var(--muted)}
+.empty-mine{padding:12px 14px;border:1px dashed #cfd9e8;border-radius:14px;background:var(--soft);color:var(--muted);font-size:13.5px}
+.session{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.pick{margin-top:14px}.note.info{margin:0 0 14px;padding:10px 13px;border-radius:13px;background:var(--brand-soft);border:1px solid #d6e0fb;color:var(--brand-d)}
+.mine li{padding:0}.mine-link{display:flex;align-items:flex-start;gap:12px;width:100%;padding:12px 6px;border:0;border-radius:14px;background:none;text-align:left}.mine-link:hover{background:var(--soft)}.mine-link>div{flex:1;min-width:0}.mine-link .go{align-self:center;color:var(--muted)}
+
+/* Three-step guide: shows where the student is and jumps to the next thing to do. */
+.steps-hero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:620px;margin-top:24px}
+.step-card{display:flex;align-items:center;gap:10px;width:100%;height:100%;padding:11px 12px;border:1px solid var(--line);border-radius:18px;background:#fff;color:var(--ink);text-align:left;text-decoration:none;box-shadow:var(--sh-sm);transition:border-color .15s,box-shadow .15s,transform .15s}.step-card:hover{border-color:#c4d0e8;transform:translateY(-1px)}
+.step-card .num{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:12px;background:var(--soft);color:var(--ink2);font:800 15px var(--num)}
+.step-card b{display:block;font-size:14.5px;line-height:1.35}.step-card small{display:block;color:var(--muted);font-size:12.5px;line-height:1.4}
+.step-card.current{border-color:var(--brand2);box-shadow:0 0 0 3px #2f5bea1f,var(--sh)}.step-card.current .num{background:linear-gradient(135deg,var(--brand2),var(--brand-d));color:#fff}
+.step-card.done .num{background:#e5f7ec;color:#137a3d;font-size:0}.step-card.done .num:after{content:'✓';font-size:17px}.step-card.done small{color:#137a3d}
+
+/* Menu: links on wide screens, a button with a drop-down list on phones. */
+.nav-links{display:flex;align-items:center;gap:2px}
+.menu-btn{display:none;align-items:center;gap:6px;margin-left:6px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);font-size:14px;font-weight:600}.menu-btn[aria-expanded=true]{background:var(--brand-soft);border-color:#c9d6f8;color:var(--brand-d)}
+.menu-panel{position:absolute;left:0;right:0;top:100%;z-index:11;display:grid;gap:4px;width:min(1180px,calc(100% - 48px));margin:8px auto 0;padding:8px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:0 26px 50px -24px #0b1b3f66}
+.menu-panel button,.menu-panel a{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:16px;background:none;color:var(--ink);text-align:left;text-decoration:none}.menu-panel button:hover,.menu-panel a:hover{background:var(--soft)}
+.mi{display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:13px;background:var(--brand-soft);color:var(--brand)}.menu-panel b{display:block;font-size:15.5px;line-height:1.4}.menu-panel small{display:block;color:var(--muted);font-size:12.5px;line-height:1.4}
+/* Waitlist, check-in, hours and certificates. */
+.wait.full{background:#f1edff;color:#4a2fd0}.wait.full+.btn{margin-top:10px}
+.done.queue{background:#f1edff;border-color:#d9cffd}.done.queue .done-icon{background:#6d4cff;font:800 16px var(--num)}.done.queue b{color:#4a2fd0}.done.queue small{color:#5a4b8a}
+.queue-note{margin-bottom:12px;padding:9px 12px;border-radius:12px;background:#f1edff;color:#4a2fd0;font-size:14px}
+.mine .tick.queue{background:#f1edff;color:#6d4cff}
+.checked{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 14px;border-radius:14px;background:#e5f7ec;color:#0e5f30;font-size:14.5px;font-weight:600}
+.checkin{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 8px 8px 14px;border:1px solid #d8e2fb;border-radius:16px;background:var(--brand-soft);color:var(--brand)}
+.checkin input{flex:1;min-width:0;height:40px;border:0;outline:0;background:transparent;color:var(--ink);font:700 18px var(--num);letter-spacing:.18em}.checkin input::placeholder{font:500 14px var(--sans);letter-spacing:0;color:#7d8cab}
+.service-item{display:flex;align-items:center;gap:12px;padding:11px 4px;border-top:1px solid #edf1f7}.service-item:first-child{border-top:0}.service-item>div{flex:1;min-width:0}.service-item b{display:block;font-size:14.5px;line-height:1.45}.service-item small{display:block;color:var(--muted);font-size:12.5px}
+.checkin-mode main>:not(#quickCheckin){display:none!important}.quick{max-width:520px;margin:20px auto 0}
+.quick-done{text-align:center}.quick-mark{display:grid;place-items:center;width:64px;height:64px;margin:4px auto 12px;border-radius:22px;background:#16a34a;color:#fff}.quick-mark .ico{width:32px;height:32px;stroke-width:2.4}
+.quick-done h3{font-size:22px;font-weight:700}.quick-done p{margin-top:6px;color:var(--muted)}.quick-foot{padding:0 22px 22px}
+/* Certificate sheet (landscape A4, 1123 × 794 px), laid out off screen and drawn into the PDF. */
+.pdf-host{position:absolute;left:-12000px;top:0;width:1123px;pointer-events:none}
+.cert{width:1123px;height:794px;padding:34px;background:#fff;color:#0b1b3f;font-family:var(--sans)}
+.cert-frame{display:flex;flex-direction:column;align-items:center;height:100%;padding:30px 70px 22px;border:3px solid #2f5bea;border-radius:26px;text-align:center;background:radial-gradient(520px 300px at 0 0,#eef3ff,#eef3ff00 70%),radial-gradient(520px 300px at 100% 100%,#e6f8f4,#e6f8f400 70%)}
+.cert-frame img{width:74px;height:74px;padding:3px;border:1px solid #dfe6f2;border-radius:20px;background:#fff;object-fit:contain}
+.cert-org{margin-top:8px;color:#4f5f7c;font-size:15px}.cert h1{margin:4px 0 2px;color:#2244c4;font-size:50px;font-weight:700;line-height:1.3}
+.cert-lead{color:#2d3d5f;font-size:17px}.cert h2{margin:4px 0 0;font-size:36px;font-weight:700;line-height:1.4}.cert-line{color:#4f5f7c;font-size:16px}
+.cert h3{margin:4px 0 0;font-size:22px;font-weight:700;line-height:1.45}.cert-when{margin-top:10px;padding:6px 18px;border-radius:99px;background:#edf2ff;color:#2244c4;font-size:15px;font-weight:700}
+.cert-sign{margin-top:auto;font-size:15px}.cert-sign span{color:#8a97ad}.cert-sign p{margin-top:4px}.cert-ref{margin-top:10px;color:#8a97ad;font-size:12px}
+#board,#visits,.side .card,.visit{scroll-margin-top:110px}.embedded #board,.embedded #visits,.embedded .side .card,.embedded .visit{scroll-margin-top:110px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 4px 16px}.section-head h2{margin-top:2px;font-size:clamp(22px,2.3vw,27px);font-weight:700;line-height:1.35}.section-head p{color:var(--muted);font-size:14px}
+.count-chip{flex:none;padding:5px 13px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--ink2);font-size:13.5px;font-weight:600;box-shadow:var(--sh-sm)}
+.visit-list{display:grid;gap:16px}
+.visit{--accent:#64748b;--accent-soft:#f1f5f9;display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;padding:22px;border-radius:26px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-sm);transition:border-color .2s,box-shadow .2s}
+.visit:has(.tag.open){--accent:#16a34a;--accent-soft:#e9f9f0}.visit:has(.tag.upcoming){--accent:#d97706;--accent-soft:#fff5e2}.visit:has(.tag.closed){--accent:#e11d48;--accent-soft:#ffeef1}.visit:has(.tag.full){--accent:#6d4cff;--accent-soft:#f1edff}
+.visit:hover{border-color:#cdd8ee;box-shadow:var(--sh)}.visit.selected{border-color:#9db4ff;box-shadow:0 0 0 4px #2f5bea1a,var(--sh)}
+.date-block{align-self:start;width:80px;padding:8px 0 10px;border-radius:20px;text-align:center;background:var(--accent-soft)}
+.date-block small{display:block;color:var(--accent);font-size:13.5px;font-weight:700;line-height:1.3}.date-block b{display:block;font:800 32px/1.15 var(--num);color:var(--ink)}.date-block span{display:block;color:var(--muted);font-size:12px;line-height:1.3}
+.visit-body{min-width:0}.visit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.visit-title{padding:0;border:0;background:none;text-align:left;font-size:clamp(18px,1.8vw,21px);font-weight:700;line-height:1.45;overflow-wrap:anywhere}.visit-title:hover{color:var(--brand-d)}
+.org{margin-top:2px;color:var(--muted);font-size:14.5px}
+.tag{display:inline-flex;align-items:center;gap:7px;flex:none;padding:4px 12px;border-radius:99px;background:#eef2f7;color:#475569;font-size:13px;font-weight:600;white-space:nowrap}.tag:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+.tag.open{background:#e5f7ec;color:#137a3d}.tag.upcoming{background:#fff2d9;color:#a1560a}.tag.closed{background:#ffebef;color:#be123c}.tag.full{background:#f1edff;color:#5536e0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.meta span{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:12px;background:var(--soft);color:var(--ink2);font-size:13.5px;line-height:1.5}.meta .ico{width:16px;height:16px;color:var(--brand)}
+.capacity{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 14px;margin-top:16px;color:var(--muted);font-size:13.5px}
+.meter{display:block;height:10px;border-radius:99px;background:#e8edf5;overflow:hidden}.meter i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--brand2),#14b8a6)}
+.duties{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.duty-chip{padding:5px 12px;border-radius:99px;background:#fff;border:1px solid var(--line);font-size:13.5px}.duty-chip b{color:var(--brand-d);font-weight:700}
+.details{margin-top:14px;padding:12px 16px;border-radius:16px;background:#fbfcfe;border:1px dashed #d3dcea;color:var(--ink2);font-size:14.5px;white-space:pre-line;overflow-wrap:anywhere}
+.action{margin-top:18px}
+.wait{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#fff5e2;color:#8a4b06;font-size:14.5px}.wait.stop{background:#ffeef1;color:#9f1239}
+.apply{padding:18px;border-radius:20px;background:linear-gradient(180deg,#f3f6ff,#fff);border:1px solid #d8e2fb}.apply-label{margin-bottom:10px;font-size:15px;font-weight:700}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:14px}
+.choice{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid #d9e2ef;border-radius:14px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}.choice:hover{border-color:#aebfe6}.choice:has(input:checked){border-color:var(--brand2);background:var(--brand-soft);box-shadow:0 0 0 3px #2f5bea1a}
+.choice input,.agree input{width:18px;height:18px;margin:0;flex:none;accent-color:var(--brand)}.choice b{display:block;font-size:15px;line-height:1.35}.choice small{display:block;color:var(--muted);font-size:12px}
+.agree{display:flex;align-items:flex-start;gap:10px;font-size:14px;cursor:pointer}.agree input{margin-top:4px}
+.apply-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.done{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:#e9f9f0;border:1px solid #bde8cd}.done-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:50%;background:#16a34a;color:#fff}
+.done div{flex:1;min-width:0}.done b{display:block;color:#0e5f30;font-size:15px}.done small{display:block;color:#3c6a52;font-size:13px;overflow-wrap:anywhere}
+.msg{margin-top:12px;padding:10px 14px;border-radius:13px;font-size:14px}.msg.ok{background:#e9f9f0;color:#0e5f30}.msg.error{background:#ffeef1;color:#9f1239}.msg.warn{background:#fff5e2;color:#8a4b06}
+.empty-card{padding:36px 22px;border-radius:26px;background:#ffffffd9;border:1px dashed #c8d4e6;text-align:center}.empty-card h3{font-size:18px;font-weight:700}.empty-card p{margin-top:4px;color:var(--muted);font-size:14px}
+.footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;margin-top:40px;padding:22px 0 32px;border-top:1px solid var(--line)}
+.foot-brand{display:flex;align-items:center;gap:12px;min-width:0}.foot-brand img{width:38px;height:38px;flex:none;padding:2px;border-radius:12px;background:#fff;border:1px solid var(--line);object-fit:contain}.foot-brand b{display:block;font-size:14.5px}.foot-brand small{display:block;color:var(--muted);font-size:12.5px}
+.footer nav{display:flex;flex-wrap:wrap;gap:6px}.footer nav a{padding:7px 12px;border-radius:11px;color:var(--ink2);font-size:14px;font-weight:600;text-decoration:none}.footer nav a:hover{background:var(--brand-soft);color:var(--brand-d)}
+
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.hero,.board,.layout>*{animation:rise .55s cubic-bezier(.2,.7,.2,1) backwards}.board{animation-delay:.07s}.layout>.side{animation-delay:.14s}.layout>section{animation-delay:.2s}
+
+/* Google Sites: compact styling; keep navigation visible while the embedded frame scrolls. */
+.embedded{background:#fff}.embedded .wrap{width:calc(100% - 28px)}
+.embedded .topbar{position:sticky;top:0;padding-top:10px}.embedded .topbar .wrap{background:#fff;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-color:var(--line)}
+.embedded .hero{margin-top:12px;padding:clamp(20px,3vw,36px);border-radius:28px;box-shadow:none;border-color:var(--line)}.embedded .hero h1{font-size:clamp(30px,3.8vw,46px)}
+.embedded .board,.embedded .card,.embedded .visit{box-shadow:none}.embedded .board,.embedded .layout{margin-top:20px}.embedded .footer{margin-top:28px;padding-bottom:18px}
+
+@media(max-width:1080px){.board-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.status{grid-column:1/-1}}
+@media(max-width:1080px) and (min-width:601px){.status{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);column-gap:24px;align-content:center}.status>*{grid-column:1}.status .countdown{grid-column:2;grid-row:1/span 3;align-self:center;margin:0}.status .cd-note{grid-column:1/-1}}
+@media(max-width:960px){.hero{grid-template-columns:minmax(0,1fr)}.hero-visual{justify-self:start;max-width:560px}.layout{grid-template-columns:minmax(0,1fr)}.embedded .hero-visual{display:none}}
+@media(max-width:720px){.nav-links{display:none}.menu-btn{display:inline-flex}}
+@media(max-width:600px){.wrap,.embedded .wrap{width:calc(100% - 24px)}.topbar{padding-top:8px}.topbar .wrap{min-height:58px;padding:6px 8px 6px 10px;border-radius:18px}.brand img{width:40px;height:40px;border-radius:13px}.brand strong{font-size:14.5px}.brand small{font-size:11.5px}.nav-cta{padding:9px 12px;font-size:13.5px}
+.brand .long{display:none}.menu-panel{width:calc(100% - 24px)}.embedded .lead{font-size:15px}.steps-hero{grid-template-columns:minmax(0,1fr);gap:8px}.nav-cta{margin-left:0;padding:10px 11px}.menu-btn{padding:9px 10px}.menu-btn span{display:none}
+#navAccount{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.hero{margin-top:12px;padding:24px 18px;border-radius:28px}.lead{font-size:16px}.stats{gap:8px}.stat{flex-direction:column;align-items:flex-start;gap:8px;padding:12px}.stat-ico{width:36px;height:36px;border-radius:11px}.stat b{font-size:22px}
+.hero-visual{padding:12px 0 30px 6px}.float-badge{display:none}.float{padding:10px 13px}
+.board{border-radius:26px}.board-head{flex-wrap:wrap}.board-grid{grid-template-columns:minmax(0,1fr);gap:12px}.tile{padding:16px}.countdown b{font-size:22px}
+.visit{grid-template-columns:minmax(0,1fr);gap:12px;padding:18px}.date-block{display:flex;align-items:baseline;gap:6px;width:auto;padding:5px 13px;border-radius:12px;justify-self:start}.date-block b{font-size:18px}
+.visit-head{flex-direction:column-reverse;gap:6px}.capacity{grid-template-columns:minmax(0,1fr)}.apply-actions{flex-direction:column-reverse}.apply-actions .btn{width:100%}.done{flex-wrap:wrap}.done div{flex:1 1 calc(100% - 52px)}.done .btn{flex:1 1 100%}.section-head{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.semester-cert-list{font-size:19px;line-height:1.5;text-align:left;max-width:900px;margin:8px auto}.semester-cert-list p{margin:3px 0;overflow-wrap:anywhere}
+/* Student account: clear identity and actions, with a wider, responsive dashboard. */
+.nav-logout{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:8px 13px;border:1px solid #d8e2f1;border-radius:13px;background:#fff;color:#30466a;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:var(--sh-sm)}
+.nav-logout:hover{background:#f0f5ff;border-color:#bdcdeb;color:var(--brand-d)}
+.signed .layout{grid-template-columns:minmax(0,1fr);gap:30px}
+.signed #studentCard .card-top{padding:22px 26px;gap:13px;background:linear-gradient(110deg,#edf2ff 0%,#f5f2ff 55%,#e3f8f2 100%)}
+.signed #studentCard .card-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:24px 26px 26px}
+.signed #studentCard .profile{grid-column:1/-1;margin:0;padding:17px 20px;background:linear-gradient(110deg,#f7faff,#eff8f6);border-color:#dce8f2}
+.signed #studentCard .profile>div{min-width:0}.signed #studentCard .profile b{font-size:19px}.signed #studentCard .profile small{display:block;margin-top:3px;font-size:14px}
+.signed #studentCard .acct{min-width:0;margin:0;padding:20px;border:1px solid #e2eaf5;border-radius:18px;background:#fff;box-shadow:0 8px 24px -20px #2455a855}
+.signed #studentCard .acct-head{margin-bottom:13px;gap:12px;flex-wrap:wrap}.signed #studentCard .acct-head h3{font-size:17px}
+.signed #studentCard .contact{grid-column:1/-1;background:#fafcff}.signed #studentCard .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.signed #studentCard .facts div{display:block;padding:10px 12px;border:1px solid #e5edf6;border-radius:12px;background:#fff}.signed #studentCard .facts dt{font-size:12px}.signed #studentCard .facts dd{margin-top:3px}
+.signed #studentCard .history{grid-column:1/-1}.signed #studentCard .history summary{color:#24477e}
+.signed #semesterCertificate{max-width:100%;white-space:normal;text-align:center}.signed #serviceEmpty,.signed #myEmpty{margin-top:12px}
+.signed #visits{min-width:0}
+@media(max-width:720px){.signed #studentCard .card-body{grid-template-columns:minmax(0,1fr);padding:18px;gap:12px}.signed #studentCard .profile,.signed #studentCard .contact,.signed #studentCard .history{grid-column:auto}.signed #studentCard .facts{grid-template-columns:minmax(0,1fr)}.signed #studentCard .acct{padding:16px}.signed #studentCard .card-top{padding:18px}.nav-logout{min-height:40px;padding:8px 10px}}
+@media(max-width:600px){.signed #navAccount{position:static;width:auto;height:auto;clip:auto;overflow:hidden;text-overflow:ellipsis;max-width:100px}.signed .nav-cta{max-width:150px;min-width:0}.nav-logout span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.nav-logout{min-width:40px;padding:8px}.signed .brand small{display:none}}
+@media(max-width:440px){.signed .brand>span{display:none}.signed #navAccount{max-width:90px}.signed .nav-right{gap:4px}}
+
+/* Signed-in profile dashboard */
+.me.hero{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);align-items:stretch;gap:clamp(24px,3vw,42px);padding:clamp(24px,3.4vw,44px);border:1px solid #dce6fa;border-radius:32px;background:linear-gradient(135deg,#fff 25%,#f5f8ff 69%,#e8f9f5);box-shadow:0 24px 65px -38px #244abf55}
+.me.hero:before{background:radial-gradient(400px 250px at 3% 0,#e3ebffb8,transparent 75%),radial-gradient(380px 300px at 100% 100%,#c9f2eb80,transparent 75%)}
+.me.hero:after{opacity:.45}
+.me-copy{display:flex;flex-direction:column;min-width:0;align-items:flex-start}
+.me .eyebrow{gap:8px;padding:6px 11px;font-size:11px;letter-spacing:.09em}
+.me-head{gap:20px;width:100%;margin-top:22px;align-items:center}
+.me-head>div{min-width:0}.me-head h1{font-size:clamp(29px,3vw,40px);letter-spacing:-.03em;overflow-wrap:anywhere}
+.me-avatar{width:120px;height:150px;border:5px solid #fff;border-radius:25px;box-shadow:0 14px 28px -15px #315be870}
+.me-meta{margin-top:8px;color:#536583;line-height:1.6;overflow-wrap:anywhere}
+.me-contact{max-width:100%;margin-top:16px;padding:9px 13px;border:1px solid #e4ebf6;border-radius:12px;background:#ffffffa8;color:#526887;font-size:13px;line-height:1.6}
+.me-stats{width:100%;max-width:none;gap:10px;margin-top:22px}
+.me-stats .stat{min-width:0;align-items:center;gap:10px;padding:14px 12px;border-color:#e1e9f6;border-radius:18px;background:#ffffffdb;box-shadow:0 8px 20px -18px #3458af80;transition:transform .2s,box-shadow .2s}
+.me-stats .stat:hover{transform:translateY(-2px);box-shadow:0 14px 25px -19px #3458af80}
+.me-stats .stat b{font-size:23px}.me-stats .stat small{margin-top:3px;font-size:12px;line-height:1.4}
+.me-actions{gap:10px;margin-top:22px}.me-actions .btn{min-height:48px;font-size:14px}
+.me-side{align-content:start;gap:12px;min-width:0}
+.me-side .next,.me-side .me-card{position:relative;margin:0;padding:19px 21px;border:1px solid #e2eaf7;border-radius:20px;background:#ffffffef;box-shadow:0 10px 28px -24px #254caa8c}
+.me-side .next{border-color:#cbdbff;background:linear-gradient(120deg,#eef4ff,#f8fbff 70%,#effbf8)}
+.me-side .next .k,.me-card .k{color:#345ac7;font-size:12px;font-weight:700;letter-spacing:.02em}
+.me-side .next b{margin-top:5px;font-size:19px;line-height:1.4}.me-side .next small{margin-top:4px;line-height:1.6}
+.me-facts{gap:12px;margin-top:14px}.me-facts dt{color:#667a98}.me-facts dd{margin-top:4px;color:#142a50}
+.me-sub{margin-top:16px}.chips span{background:#eef3ff;color:#2a50c3}
+.me-recent li{padding:10px 0}.me-none{line-height:1.6}
+@media(max-width:960px){.me.hero{grid-template-columns:minmax(0,1fr);gap:22px}.me-side{grid-template-columns:repeat(2,minmax(0,1fr))}.me-side .next{grid-column:1/-1}}
+@media(max-width:600px){.me.hero{padding:22px 18px;border-radius:25px}.me-head{gap:14px;margin-top:18px}.me-avatar{width:88px;height:112px;border-width:4px;border-radius:19px}.me-head h1{font-size:clamp(25px,7vw,32px)}.me-meta{font-size:13px}.me-stats{gap:7px}.me-stats .stat{flex-direction:column;align-items:flex-start;padding:11px 9px;gap:8px}.me-stats .stat b{font-size:21px}.me-stats .stat small{font-size:11.5px}.me-side{grid-template-columns:minmax(0,1fr)}.me-side .next{grid-column:auto}.me-actions{width:100%}.me-actions .btn{flex:1 1 auto}.me-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.me-stats .stat{transition:none}.me-stats .stat:hover{transform:none}}
+
+
+/* Public welcome banner */
+#intro.hero{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(28px,4.3vw,56px);padding:clamp(26px,4vw,52px);border:1px solid #dce7fa;border-radius:34px;background:linear-gradient(125deg,#fff 17%,#f5f8ff 62%,#e8f9f5);box-shadow:0 28px 70px -42px #244bbd70}
+#intro.hero:before{background:radial-gradient(420px 320px at 0 0,#e1eaffcf,transparent 75%),radial-gradient(420px 340px at 100% 100%,#bfeee280,transparent 75%)}
+#intro.hero:after{opacity:.55;background-size:24px 24px}
+#intro .hero-copy{min-width:0;position:relative}
+#intro .eyebrow{padding:7px 13px;font-size:11px;letter-spacing:.1em;border-color:#dce6f9;color:#2449bf}
+#intro h1{margin:20px 0 16px;font-size:clamp(32px,3.8vw,49px);line-height:1.27;letter-spacing:-.025em}
+#intro h1 span{background-image:linear-gradient(100deg,#2856e8 0%,#6b54ed 56%,#08a59d 100%)}
+#intro .lead{max-width:48ch;color:#475d80;font-size:16px;line-height:1.85}
+#intro .journey-label{display:flex;align-items:center;gap:9px;margin-top:24px;color:#566b8e;font-size:12px;font-weight:700;letter-spacing:.02em}
+#intro .journey-label:before{content:'';width:22px;height:3px;border-radius:4px;background:linear-gradient(90deg,#315ce9,#1bb7a3)}
+#intro .steps-hero{gap:9px;margin-top:10px}
+#intro .step-card{min-height:72px;padding:10px;border-color:#e1e9f7;border-radius:17px;background:#ffffffd9;box-shadow:0 8px 20px -20px #25449f;transition:transform .2s,box-shadow .2s,border-color .2s}
+#intro .step-card:hover{transform:translateY(-3px);border-color:#aebffa;box-shadow:0 15px 24px -19px #315beacc}
+#intro .step-card.current{border-color:#839eff;background:#f7f9ff;box-shadow:0 0 0 3px #476cff18,0 12px 24px -22px #345fe9}
+#intro .step-card .num{width:34px;height:34px;border-radius:12px}
+#intro .step-card b{font-size:13.5px}#intro .step-card small{font-size:12px}
+#intro .stats{gap:9px;margin-top:17px}
+#intro .stat{min-width:0;padding:11px 12px;border-color:#e2eaf7;background:#ffffffcf;border-radius:17px;transition:transform .2s,box-shadow .2s}
+#intro .stat:hover{transform:translateY(-2px);box-shadow:0 12px 22px -19px #264fc4}
+#intro .stat-ico{width:38px;height:38px;border-radius:12px}#intro .stat b{font-size:21px}#intro .stat small{font-size:12px}
+#intro .hero-visual{isolation:isolate;max-width:500px;padding:18px 4px 34px 12px}
+#intro .hero-visual:before{inset:4px 0 25px 30px;border-radius:32px;background:linear-gradient(145deg,#6985f9,#8b73f3 50%,#50d6c0);opacity:.22;transform:rotate(4deg)}
+#intro .photo{aspect-ratio:4/3;border:6px solid #fff;border-radius:27px;box-shadow:0 30px 50px -30px #15326080}
+#intro .photo:after{content:'';position:absolute;inset:55% 0 0;background:linear-gradient(transparent,#0a1c3973);pointer-events:none}
+#intro .photo img{transition:opacity .6s,transform .7s ease}#intro .photo:hover img.ready{transform:scale(1.035)}
+#intro .photo-caption{position:absolute;z-index:1;left:14px;top:14px;max-width:55%;padding:5px 9px;border-radius:9px;background:#10254ab3;color:#fff;font-size:10px;font-weight:700;line-height:1.4;letter-spacing:.04em;pointer-events:none}
+#intro .float{border:1px solid #fff;background:#fffffff2;box-shadow:0 15px 35px -20px #102c67a8}
+#intro .float-badge{top:1px;right:-8px;animation:banner-float 5s ease-in-out infinite}
+#intro .float-state{left:-4px;bottom:5px;width:max-content;max-width:calc(100% - 24px)}
+#intro .float b{max-width:290px;white-space:normal}
+@keyframes banner-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media(max-width:960px){#intro.hero{grid-template-columns:minmax(0,1fr)}#intro .hero-visual{justify-self:center;width:100%;max-width:560px}}
+@media(max-width:600px){#intro.hero{gap:20px;padding:25px 18px;border-radius:25px}#intro h1{font-size:clamp(30px,8vw,38px)}#intro .lead{font-size:14.5px}#intro .steps-hero{grid-template-columns:minmax(0,1fr);gap:7px}#intro .step-card{min-height:58px;padding:8px 10px}#intro .stats{gap:7px}#intro .stat{padding:10px 8px;gap:7px}#intro .stat b{font-size:20px}#intro .stat small{font-size:11px}#intro .hero-visual{padding:8px 3px 29px 5px}#intro .photo{border-width:4px;border-radius:22px}#intro .float-state{bottom:2px}#intro .float-badge{display:none}}
+@media(prefers-reduced-motion:reduce){#intro .float-badge{animation:none}#intro .step-card,#intro .stat,#intro .photo img{transition:none}#intro .step-card:hover,#intro .stat:hover,#intro .photo:hover img.ready{transform:none}}
+
+/* Showcase layer: drifting aurora light, gradient-ringed cards, an animated hero halo and scroll-in motion (driven by the script at the end of the page). */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+:root{--ease:cubic-bezier(.22,1,.36,1);--grad:linear-gradient(120deg,#4f46e5,#2563eb 45%,#0891b2);--flow:linear-gradient(100deg,#4f46e5,#2563eb 22%,#0891b2 45%,#8b5cf6 72%,#4f46e5);--ring:linear-gradient(140deg,#c7d2fe,#eef0f7 45%,#bae6fd);--ring-hot:linear-gradient(140deg,#818cf8,#c4b5fd 45%,#22d3ee);--halo:conic-gradient(from var(--ang),#818cf8,#22d3ee,#a78bfa,#f0abfc,#818cf8);--spot:radial-gradient(520px circle at var(--mx,50%) var(--my,-60%),rgb(99 102 241/var(--sa,0)),transparent 45%)}
+body{position:relative;background:#f4f6fc}
+.aurora{position:absolute;z-index:-1;top:0;left:0;right:0;height:min(1600px,100%);overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.aurora i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;will-change:transform}
+.aurora i:nth-child(1){left:-20vmax;top:-28vmax;background:radial-gradient(closest-side,#a5b4fccc,transparent);animation:drift-a 24s ease-in-out infinite alternate}
+.aurora i:nth-child(2){right:-22vmax;top:-20vmax;background:radial-gradient(closest-side,#99f6e4b3,transparent);animation:drift-b 28s ease-in-out infinite alternate}
+.aurora i:nth-child(3){left:18%;top:14vmax;width:46vmax;height:46vmax;background:radial-gradient(closest-side,#f5d0fe99,transparent);animation:drift-c 32s ease-in-out infinite alternate}
+.aurora:after{content:'';position:absolute;inset:0;background:radial-gradient(#4f46e514 1px,transparent 1.5px) 0 0/28px 28px;-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent);mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent)}
+.embedded .aurora{display:none}
+@keyframes drift-a{to{transform:translate(16vmax,12vmax) scale(1.18)}}@keyframes drift-b{to{transform:translate(-14vmax,16vmax) scale(.9)}}@keyframes drift-c{to{transform:translate(-10vmax,-8vmax) scale(1.2)}}
+@keyframes ang{to{--ang:360deg}}@keyframes flow{to{background-position:200% 0}}
+@keyframes up{from{opacity:0;transform:translateY(24px)}}@keyframes zoom-in{from{opacity:0;transform:translateY(18px) scale(.95)}}
+@keyframes bob{50%{transform:translateY(-8px)}}@keyframes sheen{0%,55%{background-position:150% 0}100%{background-position:-50% 0}}
+@keyframes drop{from{opacity:0;transform:translateY(-10px) scale(.98)}}@keyframes pop{0%{opacity:0;transform:scale(.3)}60%{transform:scale(1.12)}100%{transform:none}}
+@keyframes glow{50%{box-shadow:0 0 0 6px #6366f124,0 16px 30px -18px #4f46e5}}
+
+/* Scroll-in reveal; the script adds .motion only when it can observe scrolling, so nothing stays hidden without it. */
+.motion .rv{opacity:0;transform:translateY(30px) scale(.98);transition:opacity .8s var(--ease) var(--d,0s),transform .9s var(--ease) var(--d,0s)}
+.motion .rv.in{opacity:1;transform:none}
+.motion .board,.motion .layout>*{animation:none}
+.rv .meter i{transform:scaleX(0);transform-origin:left}.in .meter i{transform:none;transition:transform 1.3s var(--ease) .3s}
+@media print{.rv{opacity:1!important;transform:none!important}.aurora{display:none}}
+
+/* Header: glass that firms up on scroll, with a gradient reading-progress line. */
+.topbar .wrap{position:relative;background:#ffffffe6;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:inset 0 1px 0 #fff,0 10px 30px -18px #4f46e540;transition:box-shadow .4s var(--ease),background .4s}
+.float,.countdown div{-webkit-backdrop-filter:none;backdrop-filter:none}
+.scrolled .topbar .wrap{background:#ffffffeb;box-shadow:inset 0 1px 0 #fff,0 18px 40px -20px #312e8159}
+.topbar .wrap:after{content:'';position:absolute;left:22px;right:22px;bottom:-1px;height:2px;border-radius:2px;background:var(--grad);transform:scaleX(var(--sp,0));transform-origin:left}
+.embedded .topbar .wrap:after{display:none}
+.brand img{transition:transform .5s var(--ease)}.brand:hover img{transform:rotate(-8deg) scale(1.06)}
+.nav-cta{background:linear-gradient(120deg,#1e1b4b,#312e81 55%,#1e3a8a);box-shadow:0 12px 24px -12px #312e81;transition:transform .25s var(--ease),box-shadow .25s}
+.nav-cta:hover{background:linear-gradient(120deg,#1e1b4b,#3730a3 55%,#1d4ed8);transform:translateY(-1px);box-shadow:0 16px 28px -12px #3730a3}
+.menu-panel:not([hidden]){animation:drop .35s var(--ease)}
+
+/* Buttons: flowing gradient with a light sweep on hover and a soft press. */
+.btn{transition:transform .25s var(--ease),box-shadow .25s var(--ease),background-position .6s var(--ease),filter .2s,border-color .2s,background-color .2s}
+.btn.primary{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(120deg,#4f46e5,#2563eb 40%,#0891b2 80%,#4f46e5) 0 0/220% 100%;box-shadow:inset 0 1px 0 #ffffff47,0 14px 28px -14px #4f46e5}
+.btn.primary:after{content:'';position:absolute;z-index:-1;top:0;bottom:0;left:-75%;width:50%;background:linear-gradient(100deg,transparent,#ffffff59,transparent);transform:skewX(-20deg);transition:left .8s var(--ease)}
+.btn.primary:hover:enabled{background-position:100% 0;transform:translateY(-2px);filter:none;box-shadow:inset 0 1px 0 #ffffff47,0 20px 34px -14px #4f46e5}.btn.primary:hover:enabled:after{left:130%}
+.btn.ghost:hover:enabled{transform:translateY(-1px);border-color:#c7d2fe;box-shadow:0 10px 20px -14px #4f46e566}
+.btn:active:enabled{transform:scale(.97)}
+
+/* Heroes: a slowly turning colour halo, staggered entrance and a tilting photo. */
+.hero{border:1.5px solid transparent;animation:rise .8s var(--ease) backwards,ang 10s linear infinite}
+#intro.hero{background:linear-gradient(125deg,#fffffff5 17%,#f5f7fff5 62%,#eefaf7f5) padding-box,var(--halo) border-box;box-shadow:0 40px 90px -50px #4f46e580}
+.me.hero{background:linear-gradient(135deg,#fffffff5 25%,#f5f7fff5 69%,#eafaf6f5) padding-box,var(--halo) border-box;box-shadow:0 40px 90px -50px #4f46e580}
+.hero-copy>*,.me-copy>*{animation:up .9s var(--ease) backwards}
+.hero-copy>:nth-child(2),.me-copy>:nth-child(2){animation-delay:.08s}.hero-copy>:nth-child(3),.me-copy>:nth-child(3){animation-delay:.16s}.hero-copy>:nth-child(4),.me-copy>:nth-child(4){animation-delay:.24s}
+.hero-copy>:nth-child(5),.me-copy>:nth-child(5){animation-delay:.32s}.hero-copy>:nth-child(6),.me-copy>:nth-child(6){animation-delay:.4s}.me-copy>:nth-child(7){animation-delay:.48s}
+.hero-visual,.me-side{animation:zoom-in 1.1s var(--ease) .25s backwards}
+#intro h1 span{background-image:var(--flow);background-size:200% 100%;animation:flow 7s linear infinite}
+#intro .hero-visual{perspective:1000px}
+#intro .photo{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .6s var(--ease)}
+#intro .hero-visual:before{background:linear-gradient(145deg,#818cf8,#a78bfa 50%,#22d3ee);opacity:.3}
+#intro .float-state{animation:bob 6s ease-in-out 1.4s infinite}
+.badge-ico{background:var(--grad)}
+.me-avatar{border:4px solid transparent;background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#14b8a6) padding-box,var(--halo) border-box;animation:ang 6s linear infinite;box-shadow:0 20px 40px -18px #4f46e5}
+.eyebrow{background:#ffffffd9;border-color:#e0e7ff;color:#4338ca}
+
+/* Stats and step cards */
+.stat{transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s}
+.stat:hover{transform:translateY(-3px);border-color:#c7d2fe;box-shadow:0 18px 30px -20px #4f46e5}
+.stat .stat-ico{background:linear-gradient(135deg,#818cf8,#4f46e5);color:#fff;box-shadow:0 10px 18px -10px #4f46e5}
+.stat:nth-child(2) .stat-ico{background:linear-gradient(135deg,#2dd4bf,#0d9488);color:#fff;box-shadow:0 10px 18px -10px #0d9488}
+.stat:nth-child(3) .stat-ico{background:linear-gradient(135deg,#c084fc,#7c3aed);color:#fff;box-shadow:0 10px 18px -10px #7c3aed}
+.stat b{background:linear-gradient(120deg,#1e1b4b,#4338ca);-webkit-background-clip:text;background-clip:text;color:transparent}
+.step-card.current .num{background:var(--grad)}.step-card.current{animation:glow 2.8s ease-in-out infinite}
+
+/* Cards: a gradient hairline ring, a cursor-following glow and a lift on the visit cards. */
+.board,.card,.visit,.me-side .me-card{border:1px solid transparent;background:var(--spot) padding-box,linear-gradient(#fff,#fff) padding-box,var(--ring) border-box}
+.board:hover,.card:hover,.visit:hover,.me-side .me-card:hover{--sa:.08}
+.visit,.me-side .me-card{position:relative;transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.visit:hover,.me-side .me-card:hover{border-color:transparent;transform:translateY(-3px);background:var(--spot) padding-box,linear-gradient(#fff,#fff) padding-box,var(--ring-hot) border-box;box-shadow:0 30px 50px -32px #4f46e599}
+.visit.selected{background:var(--spot) padding-box,linear-gradient(#fff,#fff) padding-box,var(--ring-hot) border-box;box-shadow:0 0 0 4px #6366f11f,0 30px 50px -32px #4f46e599}
+.visit{overflow:hidden}.visit:before{content:'';position:absolute;left:0;top:22px;bottom:22px;width:4px;border-radius:0 4px 4px 0;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+.tag.open:before{animation:pulse 2s infinite}
+.meter i{background:linear-gradient(90deg,#6366f1,#8b5cf6 50%,#06b6d4)}
+.card-top{background:linear-gradient(120deg,#eef2ff,#f5f3ff 50%,#ecfeff)}
+.card-icon{background:var(--grad);box-shadow:0 12px 22px -12px #4f46e5}
+.input{transition:border-color .2s,box-shadow .3s var(--ease),background .2s,transform .3s var(--ease)}
+.input:focus-within{border-color:#818cf8;box-shadow:0 0 0 4px #6366f11f,0 12px 24px -18px #4f46e5;transform:translateY(-1px)}
+.choice{transition:border-color .2s,background .2s,box-shadow .3s var(--ease),transform .3s var(--ease)}.choice:hover{transform:translateY(-2px)}
+.choice:has(input:checked){border-color:#818cf8;background:#eef2ff;box-shadow:0 0 0 3px #6366f11f,0 12px 22px -16px #4f46e5}
+.section-head h2:after{content:'';display:block;width:56px;height:4px;margin-top:8px;border-radius:4px;background:var(--flow);background-size:200% 100%;animation:flow 5s linear infinite}
+.date-block{transition:transform .45s var(--ease)}.visit:hover .date-block{transform:scale(1.06) rotate(-2deg)}
+
+/* Registration board */
+.clock{background:linear-gradient(120deg,#1e1b4b,#4f46e5 60%,#0891b2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.countdown div{transition:transform .3s var(--ease)}.countdown div:hover{transform:translateY(-2px)}
+.quick-done:not([hidden]) .quick-mark{animation:pop .7s var(--ease) backwards;box-shadow:0 0 0 10px #16a34a1f}
+.footer nav a{transition:background .2s,color .2s}
+@media(hover:none){.visit:hover,.me-side .me-card:hover,.stat:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.aurora i{animation:none}.rv{opacity:1!important;transform:none!important}#intro .photo{transform:none}}
+/* Larger centre logo */
+.topbar .wrap{min-height:82px}.brand{gap:14px}
+.brand img{width:64px;height:64px;padding:4px;border-radius:19px;box-shadow:0 0 0 3px #eef2ff,0 12px 24px -12px #4f46e5}
+.brand strong{font-size:17.5px}.foot-brand img{width:50px;height:50px;border-radius:15px}
+@media(max-width:900px){.brand .long{display:none}}
+@media(max-width:600px){.topbar .wrap{min-height:64px}.brand img{width:50px;height:50px;border-radius:15px}}
+/* Smoothness: loops pause off screen (the script marks .idle), low-power devices get a still version (.lite),
+   and visit cards far below the fold skip rendering until they come near. */
+.idle,.idle *,.idle::before,.idle::after,.idle *::before,.idle *::after{animation-play-state:paused!important}
+.lite .aurora i,.lite .hero,.lite .me-avatar,.lite #intro h1 span,.lite .section-head h2:after,.lite .step-card.current,.lite #intro .float-state,.lite #intro .float-badge,.lite .tag.open:before{animation:none}
+.lite .board,.lite .card,.lite .visit,.lite .me-side .me-card{--sa:0!important}
+.visit{content-visibility:auto;contain-intrinsic-size:auto 300px}
+/* Hero banner: crossfading photo slideshow with a slow zoom, stacked colour cards behind and slide dots. */
+#intro .hero-visual{max-width:580px}
+#intro .hero-visual:after{content:'';position:absolute;z-index:-1;inset:34px 46px 46px -8px;border-radius:34px;background:linear-gradient(150deg,#22d3ee,#818cf8 60%,#f0abfc);opacity:.28;transform:rotate(-4deg)}
+#intro .photo{aspect-ratio:5/4;border-width:7px;border-radius:30px;box-shadow:0 0 0 1px #e0e7ff,0 50px 80px -40px #1e1b4bb3}
+#intro .photo img{opacity:0;transition:opacity 1.2s var(--ease)}
+#intro .photo img.ready{opacity:0}
+#intro .photo img.on{opacity:1;animation:kb-slide 7s ease-out both}
+@keyframes kb-slide{from{transform:scale(1.14) translate(2%,1.5%)}to{transform:scale(1.02)}}
+#intro .photo:after{inset:45% 0 0;background:linear-gradient(transparent,#0b1b3f8c)}
+.slide-dots{position:absolute;z-index:2;right:16px;bottom:16px;display:flex;gap:6px;padding:7px 9px;border-radius:99px;background:#0b1b3f66}
+.slide-dots button{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:#ffffff8c;transition:width .45s var(--ease),background .3s}
+.slide-dots button:hover{background:#fff}.slide-dots button[aria-current=true]{width:28px;background:linear-gradient(90deg,#fff,#c7d2fe)}
+#intro .photo-caption{display:flex;align-items:center;gap:7px;max-width:none;white-space:nowrap;padding:6px 11px;border-radius:99px;background:#0b1b3fa6;font-size:10.5px}
+#intro .photo-caption:before{content:'';width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 #34d39980;animation:pulse 2s infinite}
+.lite #intro .photo img.on,.lite #intro .photo-caption:before{animation:none}
+@media(max-width:600px){#intro .photo{border-width:4px;border-radius:22px}#intro .hero-visual:after{display:none}.slide-dots{right:10px;bottom:10px}}
+/* Hero banner to match the approved mockup: a wide photo on the right, cards breaking out of its corners,
+   a solid gradient "current step" card with a check badge, and a spark beside the title. */
+#intro.hero{grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);gap:clamp(24px,3.2vw,48px);padding:clamp(28px,3.6vw,52px)}
+#intro h1{position:relative;width:fit-content;max-width:100%;font-size:clamp(30px,2.9vw,39px)}
+#intro h1 span{background-image:linear-gradient(100deg,#2563eb,#4f46e5 35%,#8b5cf6 65%,#2563eb)}
+#intro h1:after{content:'';position:absolute;top:-30px;right:-40px;width:46px;height:46px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 46' fill='none' stroke-linecap='round' stroke-width='5'%3E%3Cpath d='M8 28 4 12' stroke='%236366f1'/%3E%3Cpath d='M18 30 30 14' stroke='%234f46e5'/%3E%3Cpath d='M22 40 40 34' stroke='%238b5cf6'/%3E%3C/svg%3E") center/contain no-repeat;animation:spark 3.2s ease-in-out infinite;transform-origin:0 100%}
+@keyframes spark{50%{transform:scale(1.12) rotate(-4deg);opacity:.75}}
+#intro .hero-visual{justify-self:stretch;max-width:none;padding:22px 0 26px;margin-right:-8px}
+#intro .hero-visual:before{inset:12% 6% 4%;border-radius:40px;background:radial-gradient(closest-side,#818cf8,#22d3ee55 60%,transparent);opacity:.45;filter:blur(28px);transform:none}
+#intro .hero-visual:after{display:none}
+#intro .photo{aspect-ratio:4/3;border-width:8px;border-radius:36px;box-shadow:0 0 0 1px #e0e7ff,0 40px 80px -40px #312e81b3}
+#intro .photo-caption{left:22px;top:22px;gap:10px;padding:10px 20px;border-radius:99px;background:#0b1b3fb3;font-size:13px;letter-spacing:.05em}
+#intro .photo-caption:before{width:10px;height:10px}
+.slide-dots{right:26px;bottom:24px;gap:9px;padding:0;background:none}
+.slide-dots button{width:11px;height:11px;background:#ffffffb3;box-shadow:0 1px 4px #0b1b3f59}.slide-dots button[aria-current=true]{width:36px;background:#fff}
+#intro .float{border:1px solid #fff;background:#ffffffeb;box-shadow:0 24px 44px -22px #1e1b4b8c}
+#intro .float-badge{top:0;right:-16px;gap:16px;padding:14px 26px 14px 14px;border-radius:22px}
+#intro .float-badge .badge-ico{width:54px;height:54px;border-radius:16px}#intro .float-badge .badge-ico .ico{width:24px;height:24px}
+#intro .float-badge b{font-size:17px}#intro .float-badge small{font-size:14px}
+#intro .float-state{left:-14px;bottom:0;gap:14px;padding:16px 26px 16px 18px;border-radius:22px}
+#intro .float-state small{font-size:13.5px}#intro .float-state b{font-size:17px}
+#intro .step-card.current{position:relative;border-color:transparent;background:linear-gradient(120deg,#3b82f6,#6366f1 55%,#8b5cf6);color:#fff;box-shadow:0 18px 32px -16px #6366f1}
+#intro .step-card.current small{color:#e0e7ff}#intro .step-card.current .num{background:#fff;color:#4f46e5}
+#intro .step-card.current:after{content:'';position:absolute;top:-10px;right:-10px;width:28px;height:28px;border:2px solid #fff;border-radius:50%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12.5 4 4 8-9'/%3E%3C/svg%3E") center/15px no-repeat,linear-gradient(135deg,#818cf8,#6366f1);box-shadow:0 6px 14px -6px #4f46e5}
+@media(max-width:960px){#intro .hero-visual{padding:22px 10px 30px}#intro .float-badge{right:-4px}#intro .float-state{left:-2px}}
+@media(max-width:600px){#intro h1:after{top:-22px;right:-22px;width:32px;height:32px}#intro .photo{border-width:5px;border-radius:24px}#intro .photo-caption{left:12px;top:12px;padding:6px 12px;font-size:10.5px}#intro .float-state{padding:11px 16px}#intro .float-state b{font-size:15px}.slide-dots{right:14px;bottom:14px}}
+.lite #intro h1:after{animation:none}
+#intro .steps-hero,#intro .stats{gap:8px}#intro .step-card{gap:8px;padding:9px 9px}#intro .step-card .num{width:30px;height:30px;border-radius:10px;font-size:14px}#intro .step-card b{font-size:13.5px;white-space:nowrap}#intro .step-card small{font-size:11.5px}
+#intro .stat{gap:9px;padding:10px}#intro .stat-ico{width:34px;height:34px}#intro .stat small{font-size:11.5px;white-space:nowrap}
+@media(max-width:1180px) and (min-width:961px){#intro .step-card small,#intro .stat small{white-space:normal}}
+/* Responsive: below 1060px the banner stacks (text first, photo below) and everything scales down for phones. */
+@media(max-width:1060px){#intro.hero{grid-template-columns:minmax(0,1fr);gap:18px}#intro .hero-copy{max-width:680px}
+#intro h1{font-size:clamp(30px,5.4vw,44px)}#intro .hero-visual{justify-self:center;width:100%;max-width:680px;margin-right:0;padding:26px 14px 30px}}
+@media(max-width:600px){#intro.hero{padding:22px 16px 18px}#intro h1:after{right:-26px}#intro .lead{font-size:15px}
+#intro .hero-visual{padding:16px 6px 26px}#intro .photo{aspect-ratio:4/3}
+#intro .photo-caption{max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+#intro .float-state{left:0;max-width:calc(100% - 12px);padding:10px 14px}#intro .float-state b{white-space:normal;font-size:14.5px}#intro .float-state small{font-size:12px}
+#intro .step-card small,#intro .stat small{white-space:normal}#intro .step-card b{white-space:normal}
+#intro .stats{grid-template-columns:repeat(3,minmax(0,1fr))}#intro .stat{padding:10px 8px}}
+@media(max-width:380px){#intro .stats{gap:6px}#intro .stat-ico{width:30px;height:30px}#intro .stat b{font-size:18px}}
+/* Lighter decorative effects for touch devices; content and controls remain unchanged. */
+@media (pointer:coarse) {
+  .aurora i{animation:none!important;will-change:auto}
+  #intro .hero-visual:before{filter:none;opacity:.18}
+  #intro .photo{box-shadow:0 8px 24px #312e8124}
+  .topbar .wrap{box-shadow:0 4px 14px #312e811a}
+  .hero,.board,.card,.visit{box-shadow:0 4px 16px #2f5bea14}
+}
+/* Keep navigation inside the web-app viewport, including a Sites embed. */
+body{padding-top:var(--nav-height,94px)}
+.topbar,.embedded .topbar{position:fixed;inset:0 0 auto}
+.menu-btn,.menu-btn span{display:inline-flex}.menu-btn{flex:none;margin-left:0}
+.nav-right{flex:none}.brand{flex:1;overflow:hidden}
+.menu-panel{right:max(12px,calc((100% - 1180px)/2));left:auto;width:min(360px,calc(100% - 24px));max-height:calc(100vh - var(--nav-height,94px) - 12px);max-height:calc(100dvh - var(--nav-height,94px) - 12px);overflow-y:auto;overscroll-behavior:contain}
+@media(max-width:980px){.nav-links{display:none}}
+@media(max-width:440px){.topbar .wrap{gap:5px}.menu-btn{gap:4px;padding:9px}.signed #navAccount{max-width:18vw}}
+</style></head><body class="" data-checkin="" data-app-url="./" data-public-url="https://stpphoto.github.io/staffai/"><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<svg class="sprites" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 21v-1.5a7.5 7.5 0 0 1 15 0V21"/></symbol>
+<symbol id="i-id" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16a3.4 3.4 0 0 1 6.4 0M14 10h4m-4 3h3"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18h2"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+<symbol id="i-hide" viewBox="0 0 24 24"><path d="m3 3 18 18M9.5 5.4A10 10 0 0 1 12 5c6 0 10 7 10 7a18 18 0 0 1-3 3.7M6.2 6.6A18 18 0 0 0 2 12s4 7 10 7a10 10 0 0 0 5-1.3"/></symbol>
+<symbol id="i-login" viewBox="0 0 24 24"><path d="M14 4h5v16h-5M3 12h11m-4-4 4 4-4 4"/></symbol>
+<symbol id="i-exit" viewBox="0 0 24 24"><path d="M10 4H5v16h5m1-8h10m-4-4 4 4-4 4"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4m8-4v4M3.5 10h17"/></symbol>
+<symbol id="i-group" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5.5a3 3 0 0 1 0 5.6M18 14.5a5.5 5.5 0 0 1 3 4.9V20"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-hand" viewBox="0 0 24 24"><path d="M7 11V6.5a1.5 1.5 0 0 1 3 0V11m0-5.5V4.5a1.5 1.5 0 0 1 3 0V11m0-5a1.5 1.5 0 0 1 3 0v5m0-3a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-6.2-3.8L4 14.5a1.6 1.6 0 0 1 2.7-1.6L8 14"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4m0 10v4M3 12h4m10 0h4M6 6l2.5 2.5m7 7L18 18M18 6l-2.5 2.5m-7 7L6 18"/></symbol>
+</defs></svg>
+<script type="application/json" id="boot">null</script>
+
+<header class="topbar"><div class="wrap">
+<button class="brand" aria-label="กลับหน้าหลัก" type="button" data-jump="top"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt=""><span><strong>ระบบอาสาสมัครนักเรียน<span class="long">ต้อนรับคณะดูงาน</span></strong><small>AI &amp; Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก</small></span></button>
+<div class="nav-right"><nav class="nav-links" aria-label="เมนูหลัก"><button class="nav-link" type="button" data-jump="visits">คณะดูงาน</button><button class="nav-link" type="button" data-jump="board">กำหนดการ</button><a class="nav-link apply-link" href="./?page=apply" target="_self">สมัครนักเรียนสตราฟ</a></nav>
+<button class="nav-cta" type="button" data-jump="account"><svg class="ico" aria-hidden="true"><use id="navIcon" href="#i-login"/></svg><span id="navAccount">เข้าสู่ระบบ</span></button><button class="nav-logout" type="button" id="logout" aria-label="ออกจากระบบ" title="ออกจากระบบ" hidden><svg class="ico" aria-hidden="true"><use href="#i-exit"/></svg><span>ออกจากระบบ</span></button>
+<button class="menu-btn" type="button" id="menuButton" aria-label="เมนูทั้งหมด" aria-expanded="false" aria-controls="menuPanel"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg><span>เมนู</span></button></div>
+</div>
+<nav class="menu-panel" id="menuPanel" aria-label="เมนู" hidden>
+<button type="button" data-jump="visits"><span class="mi"><svg class="ico" aria-hidden="true"><use href="#i-group"/></svg></span><span><b>คณะดูงานที่รับอาสาสมัคร</b><small>ดูรายละเอียดและกดสมัคร</small></span></button>
+<button type="button" data-jump="board"><span class="mi"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><span><b>กำหนดการรับสมัคร</b><small>วันเวลาเปิด–ปิด และนับถอยหลัง</small></span></button>
+<button type="button" data-jump="account"><span class="mi"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg></span><span><b id="menuAccount">เข้าสู่ระบบนักเรียน</b><small id="menuAccountText">ใช้เลขประจำตัวและเบอร์โทรศัพท์</small></span></button>
+<a class="apply-link" href="./?page=apply" target="_self"><span class="mi"><svg class="ico" aria-hidden="true"><use href="#i-id"/></svg></span><span><b>สมัครนักเรียนสตราฟ</b><small>ต้องสมัครก่อนจึงเข้าสู่ระบบได้</small></span></a>
+<a href="./?page=admin" target="_self"><span class="mi"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg></span><span><b>ผู้ดูแลระบบ</b><small>เข้าสู่หน้าจัดการใบสมัครและคณะดูงาน</small></span></a>
+<button type="button" id="menuLogout" hidden><span class="mi"><svg class="ico" aria-hidden="true"><use href="#i-exit"/></svg></span><b>ออกจากระบบ</b></button>
+</nav></header>
+
+<main class="wrap" id="top">
+<section class="card quick" id="quickCheckin" aria-labelledby="quickTitle" hidden>
+<div class="card-top"><span class="card-icon mint"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></span><div><h2 id="quickTitle">เช็กชื่ออาสาสมัคร</h2><p id="quickVisit"></p></div></div>
+<form class="card-body" id="quickForm" novalidate>
+<div class="field"><label for="quickId">เลขประจำตัวนักเรียน</label><div class="input"><svg class="ico" aria-hidden="true"><use href="#i-id"/></svg><input id="quickId" inputmode="numeric" maxlength="20" autocomplete="username" placeholder="เช่น 10234" required></div></div>
+<div class="field"><label for="quickPhone">เบอร์โทรศัพท์</label><div class="input"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><input id="quickPhone" type="password" inputmode="tel" maxlength="12" autocomplete="current-password" placeholder="เบอร์ที่ใช้สมัครสตราฟ" required></div></div>
+<button class="btn primary block" id="quickButton" type="submit"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="quickText">เช็กชื่อ</span></button>
+<p class="note warn" id="quickNote" role="alert"></p></form>
+<div class="card-body quick-done" id="quickDone" role="status" hidden><span class="quick-mark"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></span><h3 id="quickDoneTitle"></h3><p id="quickDoneText"></p></div>
+<div class="quick-foot"><button class="btn ghost block" type="button" id="quickMore">ไปหน้าระบบอาสาสมัคร</button></div>
+</section>
+<section class="hero me" id="me" aria-labelledby="meTitle" hidden>
+<div class="me-copy"><span class="eyebrow"><span class="pulse"></span>พื้นที่อาสาสมัครของฉัน</span>
+<div class="me-head"><span class="me-avatar"><img id="mePhoto" alt="รูปถ่ายจากใบสมัคร" hidden><span id="meInitial" aria-hidden="true"></span></span><div><h1 id="meTitle" tabindex="-1"></h1><p class="me-meta" id="meMeta"></p></div></div>
+<p class="me-contact" id="meContact"></p>
+<div class="stats me-stats"><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><span><b id="meHours" data-count>0</b><small>ชั่วโมงจิตอาสา</small></span></div><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><span><b id="meUpcoming" data-count>0</b><small>คณะที่ลงไว้</small></span></div><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></span><span><b id="meDone" data-count>0</b><small>คณะที่ไปแล้ว</small></span></div></div>
+<div class="goal" id="goalBox" hidden><span class="meter"><i id="goalFill"></i></span><small id="goalText"></small></div>
+<div class="me-actions"><button class="btn primary" type="button" data-jump="visits">เลือกคณะดูงาน<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button><button class="btn ghost" type="button" data-jump="account"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg>ข้อมูลและประวัติของฉัน</button></div></div>
+<div class="me-side"><div class="next" id="nextBox" aria-live="polite" hidden></div>
+<div class="next next-empty" id="nextEmpty" hidden><p class="k">งานถัดไปของฉัน</p><b>ยังไม่มีคณะที่จะถึง</b><small>เลือกคณะที่เปิดรับแล้วกดสมัคร งานถัดไปจะแสดงที่นี่พร้อมปุ่มเพิ่มลงปฏิทิน</small></div>
+<div class="me-card"><p class="k">ข้อมูลใบสมัครสตราฟ</p><dl class="me-facts"><div><dt>เลขอ้างอิง</dt><dd id="meRef"></dd></div><div><dt>สมัครเมื่อ</dt><dd id="meApplied"></dd></div><div><dt>สถานะ</dt><dd><span class="tag" id="meStatus"></span></dd></div></dl>
+<p class="me-sub">ทักษะและความสนใจ</p><div class="chips" id="meSkills"></div></div>
+<div class="me-card"><p class="k">กิจกรรมล่าสุด</p><ul class="me-recent" id="meRecent"></ul><p class="me-none" id="meRecentEmpty">ยังไม่มีประวัติการลงทะเบียนคณะดูงาน</p>
+<button class="btn ghost small" type="button" id="meHistory">ดูประวัติทั้งหมด</button></div></div>
+</section>
+<section class="hero" id="intro" aria-labelledby="pageTitle">
+<div class="hero-copy"><span class="eyebrow" lang="en"><span class="pulse"></span>Student Volunteer · Study Visit</span>
+<h1 id="pageTitle">ระบบอาสาสมัครนักเรียน<span>ต้อนรับคณะดูงาน</span></h1>
+<p class="lead">ร่วมเป็นเจ้าบ้านต้อนรับ นำชม และสาธิตนวัตกรรม AI &amp; Metaverse ให้คณะที่มาดูงานโรงเรียน ทำตาม 3 ขั้นตอนนี้ได้เลย</p>
+<p class="journey-label">เริ่มต้นเป็นอาสาสมัครใน 3 ขั้นตอน</p>
+<ol class="steps-hero" aria-label="ขั้นตอนการเป็นอาสาสมัคร">
+<li><a class="step-card" id="step1" href="./?page=apply" target="_self"><span class="num">1</span><span><b>สมัครสตราฟ</b><small id="step1Text">ทำครั้งเดียว</small></span></a></li>
+<li><button class="step-card current" id="step2" type="button" data-jump="account"><span class="num">2</span><span><b>เข้าสู่ระบบ</b><small id="step2Text">เลขประจำตัว + เบอร์</small></span></button></li>
+<li><button class="step-card" id="step3" type="button" data-jump="visits"><span class="num">3</span><span><b>เลือกคณะ</b><small id="step3Text">กดสมัครคณะที่เปิด</small></span></button></li></ol>
+<div class="stats" aria-live="polite"><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><span><b id="statOpen" data-count>–</b><small>คณะที่เปิดรับ</small></span></div><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg></span><span><b id="statSeats" data-count>–</b><small>ที่ว่างตอนนี้</small></span></div><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-group"/></svg></span><span><b id="statJoined" data-count>–</b><small>อาสาที่ลงชื่อแล้ว</small></span></div></div></div>
+<div class="hero-visual"><figure class="photo"><div class="photo-art" id="photoArt" aria-hidden="true"><svg viewBox="0 0 200 150"><rect x="44" y="18" width="112" height="114" rx="16" fill="#fff"/><rect x="78" y="10" width="44" height="16" rx="7" fill="#2f5bea"/><circle cx="70" cy="52" r="8" fill="#16a34a"/><rect x="86" y="48" width="50" height="8" rx="4" fill="#dbe4f3"/><circle cx="70" cy="78" r="8" fill="#16a34a"/><rect x="86" y="74" width="42" height="8" rx="4" fill="#dbe4f3"/><circle cx="70" cy="104" r="7" fill="none" stroke="#b6c4d9" stroke-width="2.4"/><rect x="86" y="100" width="46" height="8" rx="4" fill="#dbe4f3"/></svg></div><img id="heroPhoto" alt="นักเรียนร่วมกิจกรรมที่ศูนย์ AI &amp; Metaverse"><div class="slide-dots" id="heroDots" role="group" aria-label="เลือกภาพกิจกรรม" hidden></div><figcaption class="photo-caption">AI &amp; METAVERSE INNOVATION CENTER</figcaption></figure>
+<div class="float float-badge"><span class="badge-ico"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg></span><span><b>อาสาสมัครนักเรียน</b><small>เจ้าบ้านที่ดีของโรงเรียน</small></span></div>
+<div class="float float-state" id="heroState" data-state="none"><span class="dot"></span><span><small>สถานะการรับสมัคร</small><b id="heroStateText">กำลังโหลด…</b></span></div></div>
+</section>
+
+<section class="board" id="board" data-state="none" aria-labelledby="boardTitle">
+<div class="board-head"><div class="board-title"><span class="board-icon"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><div><p class="sub">กำหนดการลงทะเบียน</p><h2 id="boardTitle"><span id="barVisit">ยังไม่มีคณะที่เปิดรับอาสาสมัคร</span></h2></div></div><span class="state-pill" id="statePill">–</span></div>
+<div class="board-grid">
+<div class="tile clock-tile"><p class="tile-label"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>ขณะนี้เวลา</p><div class="clock" id="clock" role="timer" aria-label="เวลาปัจจุบัน">--:--:--</div><p class="today" id="today"></p><p class="tz">ตามเวลาประเทศไทย</p></div>
+<div class="tile window"><p class="tile-label"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg>ช่วงเวลารับสมัคร</p>
+<div class="steps"><div class="step go"><span class="step-dot"></span><div><small>เปิดรับสมัคร</small><p><span class="pill go" id="openDate">—</span><span class="pill go"><span id="openTime">—</span>&nbsp;น.</span></p></div></div>
+<div class="step stop"><span class="step-dot"></span><div><small>ปิดรับสมัคร</small><p><span class="pill stop" id="closeDate">—</span><span class="pill stop"><span id="closeTime">—</span>&nbsp;น.</span></p></div></div></div>
+<div class="span-bar" title="ช่วงเวลารับสมัครที่ผ่านไป"><i id="windowFill"></i></div></div>
+<div class="tile status" role="status" aria-live="polite" aria-atomic="true"><p class="tile-label"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg>สถานะการรับสมัคร</p><div class="status-word"><span id="stateWord">–</span><small>รับสมัคร</small></div>
+<p class="cd-label" id="cdLabel">กำลังโหลดข้อมูล…</p><div class="countdown" id="countdown" hidden><div><b id="cdD">0</b><span>วัน</span></div><div><b id="cdH">00</b><span>ชั่วโมง</span></div><div><b id="cdM">00</b><span>นาที</span></div><div><b id="cdS">00</b><span>วินาที</span></div></div>
+<p class="cd-note" id="cdNote"></p></div>
+</div></section>
+
+<div class="layout">
+<aside class="side" id="account">
+<section class="card" id="loginCard" aria-labelledby="loginTitle"><div class="card-top"><span class="card-icon"><svg class="ico" aria-hidden="true"><use href="#i-login"/></svg></span><div><h2 id="loginTitle">เข้าสู่ระบบนักเรียน</h2><p>ใช้ข้อมูลจากใบสมัครนักเรียนสตราฟ</p></div></div>
+<form class="card-body" id="loginForm" novalidate>
+<p class="note info" id="loginPending" role="status"></p>
+<div class="field"><label for="loginId">เลขประจำตัวนักเรียน</label><div class="input"><svg class="ico" aria-hidden="true"><use href="#i-id"/></svg><input id="loginId" inputmode="numeric" maxlength="20" autocomplete="username" placeholder="เช่น 10234" required></div></div>
+<div class="field"><label for="loginPhone">เบอร์โทรศัพท์</label><div class="input"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><input id="loginPhone" type="password" inputmode="tel" maxlength="12" autocomplete="current-password" placeholder="เบอร์ที่ใช้สมัครสตราฟ" required><button class="eye" type="button" id="togglePhone" aria-label="แสดงเบอร์โทรศัพท์" aria-pressed="false"><svg class="ico" aria-hidden="true"><use id="eyeIcon" href="#i-eye"/></svg></button></div></div>
+<button class="btn primary block" id="loginButton" type="submit"><span id="loginText">เข้าสู่ระบบ</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+<p class="note warn" id="loginNote" role="alert"></p>
+<p class="hint">ยังไม่ได้สมัครเป็นนักเรียนสตราฟ? <a href="./?page=apply" target="_self">สมัครนักเรียนสตราฟ</a></p></form></section>
+
+<section class="card" id="studentCard" aria-labelledby="studentTitle" hidden><h2 id="studentTitle" class="visually-hidden" tabindex="-1">ข้อมูลบัญชีนักเรียน</h2>
+<div class="card-body">
+<section class="acct contact" aria-labelledby="contactTitle"><div class="acct-head"><h3 id="contactTitle">ข้อมูลติดต่อ</h3><button class="link-btn" type="button" id="contactEdit">แก้ไข</button></div>
+<dl class="facts" id="contactFacts"></dl>
+<form id="contactForm" novalidate hidden>
+<div class="field"><label for="cLine">ID LINE</label><div class="input"><input id="cLine" maxlength="100" autocomplete="off" required></div></div>
+<div class="field"><label for="cMail">อีเมล (รับแจ้งเตือน)</label><div class="input"><input id="cMail" type="email" maxlength="200" autocomplete="email" required></div></div>
+<div class="field"><label for="cFb">Facebook (ไม่บังคับ)</label><div class="input"><input id="cFb" maxlength="200" autocomplete="off"></div></div>
+<div class="contact-actions"><button class="btn primary small" type="submit" id="contactSave">บันทึก</button><button class="btn ghost small" type="button" id="contactCancel">ยกเลิก</button></div>
+<p class="note warn" id="contactNote" role="alert"></p><p class="hint">เปลี่ยนเบอร์โทรศัพท์ได้ที่ผู้ดูแล เพราะใช้เป็นรหัสเข้าสู่ระบบ</p></form>
+<p class="contact-saved" id="contactSaved" role="status"></p></section>
+<section class="acct" aria-labelledby="myTitle"><div class="acct-head"><h3 id="myTitle">การลงทะเบียนของฉัน</h3><span id="myCount"></span></div>
+<ul class="mine" id="myList"></ul><p class="empty-mine" id="myEmpty">ยังไม่ได้ลงทะเบียนคณะใด เลือกคณะแล้วกด “สมัครเป็นอาสาสมัคร”</p>
+<button class="btn primary block pick" type="button" data-jump="visits">เลือกคณะดูงานที่จะสมัคร<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button></section>
+<section class="acct" aria-labelledby="hoursTitle"><div class="acct-head"><h3 id="hoursTitle">ชั่วโมงจิตอาสา</h3><span id="hoursTotal"></span></div>
+<button type="button" class="btn primary small" id="semesterCertificate">ดาวน์โหลดใบรับรองรวมประจำภาคเรียน</button><p class="note">ใช้ภาคเรียนและช่วงวันที่ล่าสุดที่ผู้ดูแลกำหนด</p><ul class="mine" id="serviceList"></ul><p class="empty-mine" id="serviceEmpty">ยังไม่มีชั่วโมงจิตอาสา เช็กชื่อในวันรับคณะเพื่อบันทึกชั่วโมงและรับเกียรติบัตร</p><p class="note warn" id="serviceNote" role="alert"></p></section>
+<details class="history acct" id="historyBox" hidden><summary>ประวัติทั้งหมด <span id="historyCount"></span></summary><ul id="historyList"></ul></details>
+</div></section>
+
+</aside>
+
+<section id="visits" aria-labelledby="visitsTitle"><div class="section-head"><div><p class="kicker" lang="en">Study visits</p><h2 id="visitsTitle">คณะดูงานที่รับอาสาสมัคร</h2><p>กด “สมัครเป็นอาสาสมัคร” ในคณะที่เปิดรับ · กดชื่อคณะเพื่อดูกำหนดการ</p></div><span class="count-chip" id="visitCount" hidden></span></div>
+<div class="visit-list" id="visitList"></div>
+<div class="empty-card" id="visitsEmpty" hidden><h3>ยังไม่มีคณะดูงานที่เปิดรับอาสาสมัคร</h3><p>เมื่อศูนย์ประกาศรอบใหม่ กำหนดการจะแสดงที่หน้านี้</p></div>
+<div class="empty-card" id="boardError" hidden><h3>โหลดข้อมูลไม่สำเร็จ</h3><p>ตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง</p><button class="btn ghost small" id="retry" type="button" style="margin-top:12px">ลองอีกครั้ง</button></div>
+</section>
+</div>
+<input type="text" id="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+<footer class="footer"><div class="foot-brand"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt=""><div><b>ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน</b><small>© AI &amp; Metaverse Innovation Center</small></div></div><nav aria-label="ลิงก์ท้ายหน้า"><a class="apply-link" href="./?page=apply" target="_self">ใบสมัครนักเรียนสตราฟ</a><a href="./?page=admin" target="_self">สำหรับผู้ดูแลระบบ</a></nav></footer>
+</main>
+<script>
+'use strict';
+const el = id => document.getElementById(id);
+const DAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const STATES = {
+  open: ['เปิด','เปิดรับสมัคร'], upcoming: ['รอเปิด','ยังไม่เปิดรับ'],
+  full: ['เต็ม','ครบจำนวน'], closed: ['ปิด','ปิดรับแล้ว'], none: ['ปิด','ยังไม่มีคณะที่เปิดรับ']
+};
+const FAILURE = 'ติดต่อระบบไม่สำเร็จ กรุณาลองอีกครั้ง';
+let offset = 0, visits = [], selectedId = '', loaded = false, painted = '';
+let token = '', student = null, until = 0, mine = {}, sessionTimer = 0;
+// A visit the student chose before signing in; after signing in the page opens its sign-up panel.
+let pendingVisit = '', resume = '';
+// The student's attended visits and hours, check-in codes typed so far, and a QR check-in waiting for sign-in.
+let service = {hours:0, visits:[]}, quick = null;
+// The student's full sign-up history, contact details and the school's hour goal (0 = none), all from the board.
+let signups = [], contact = null, goal = 0;
+// The student's application (reference, date, status, skills); the photo loads once per session after the profile shows.
+let profile = null, photoAsked = '';
+const codes = {};
+let draft = {visitId:'', duty:'', agree:false}, busy = '', confirmCancel = '';
+const notes = {};
+
+const pad = n => String(n).padStart(2,'0');
+const now = () => Date.now() + offset;
+function parts(ms) {
+  const d = new Date(ms + 25200000);
+  return {y:d.getUTCFullYear(), m:d.getUTCMonth(), d:d.getUTCDate(), w:d.getUTCDay(), h:d.getUTCHours(), mi:d.getUTCMinutes(), s:d.getUTCSeconds()};
+}
+// Sheet values are Bangkok wall-clock text: 2026-11-07 or 2026-11-01T08:00.
+const stamp = text => Date.parse(String(text).slice(0,16) + (String(text).length === 10 ? 'T00:00' : '') + ':00+07:00');
+function thaiDate(text, weekday) {
+  const p = parts(stamp(String(text).slice(0,10)));
+  return (weekday ? 'วัน' + DAYS[p.w] + 'ที่ ' : '') + p.d + ' ' + MONTHS[p.m] + ' ' + (p.y + 543);
+}
+const shortDate = text => { const p = parts(stamp(String(text).slice(0,10))); return p.d + ' ' + SHORT[p.m]; };
+const thaiTime = text => String(text).slice(-5).replace(':','.');
+function stateOf(v, at) {
+  if (!v) return 'none';
+  if (!(at < stamp(v.closeAt))) return 'closed';
+  if (at < stamp(v.openAt)) return 'upcoming';
+  return v.count >= v.needed ? 'full' : 'open';
+}
+function node(tag, text, cls) { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; }
+function icon(name) {
+  const ns = 'http://www.w3.org/2000/svg', s = document.createElementNS(ns,'svg'), u = document.createElementNS(ns,'use');
+  s.setAttribute('class','ico'); s.setAttribute('aria-hidden','true'); u.setAttribute('href','#i-' + name); s.append(u); return s;
+}
+function button(text, cls, onClick) { const b = node('button', text, 'btn ' + cls); b.type = 'button'; b.onclick = onClick; return b; }
+function meter(v) { const m = node('span',null,'meter'), fill = node('i'); fill.style.width = Math.min(100,v.needed ? v.count / v.needed * 100 : 0) + '%'; m.append(fill); return m; }
+const selected = () => visits.find(v => v.visitId === selectedId);
+// When many students use the system at once, the server may answer BUSY (it wrote nothing) or Google may refuse
+// the call before it runs. Both are safe to repeat, so retry a few times with a growing, randomised pause.
+const CROWDED = /simultaneous|too many|invoked too many|rate limit|try again later/i;
+const rpcOnce = (name, args) => new Promise((resolve, reject) => {
+  try { google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[name](...args); } catch (e) { reject(e); }
+});
+const rpc = async (name, ...args) => {
+  for (let attempt = 0; ; attempt++) {
+    const pause = () => new Promise(r => setTimeout(r, (800 << attempt) + Math.random() * 1200));
+    try {
+      const result = await rpcOnce(name, args);
+      if (!(result && result.code === 'BUSY') || attempt >= 3) return result;
+    } catch (e) {
+      if (attempt >= 3 || !CROWDED.test(String(e && e.message || e))) throw e;
     }
-  </script>
-  <noscript>กรุณาเปิด JavaScript เพื่อใช้งานระบบอาสาสมัครนักเรียน</noscript>
-</body>
-</html>
+    await pause();
+  }
+};
+const siteHeader = document.querySelector('.topbar');
+function sizeSiteHeader() {
+  document.documentElement.style.setProperty('--nav-height', siteHeader.offsetHeight + 'px');
+}
+sizeSiteHeader();
+if (window.ResizeObserver) new ResizeObserver(sizeSiteHeader).observe(siteHeader);
+else window.addEventListener('resize', sizeSiteHeader);
+function scrollWithinApp(target) {
+  if (!target) return;
+  window.scrollTo({top:Math.max(0, window.scrollY + target.getBoundingClientRect().top - siteHeader.offsetHeight - 12),
+    behavior:matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches ? 'instant' : 'smooth'});
+}
+function jump(id) {
+  const target = id === 'top' ? el('top') : id === 'account' ? el(token ? 'studentCard' : 'loginCard') : el(id);
+  if (!target) return;
+  scrollWithinApp(target);
+  if (id === 'account' && !token) el('loginId').focus({preventScroll:true});
+}
+function setMenu(open) { el('menuPanel').hidden = !open; el('menuButton').setAttribute('aria-expanded', String(open)); }
+el('menuButton').onclick = () => setMenu(el('menuPanel').hidden);
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-jump]');
+  if (b) { setMenu(false); leaveQuick(); jump(b.dataset.jump); }
+  else if (!e.target.closest('#menuPanel,#menuButton')) setMenu(false);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !el('menuPanel').hidden) { setMenu(false); el('menuButton').focus(); } });
+
+function setTextIfChanged(id, value) {
+  const item = el(id), next = String(value);
+  if (item.textContent !== next) item.textContent = next;
+}
+
+function tick() {
+  const at = now(), p = parts(at);
+  setTextIfChanged('clock', pad(p.h) + ':' + pad(p.mi) + ':' + pad(p.s));
+  setTextIfChanged('today', 'วัน' + DAYS[p.w] + 'ที่ ' + p.d + ' เดือน' + MONTHS[p.m] + ' พ.ศ. ' + (p.y + 543));
+  if (loaded) paintState(at);
+  if (loaded && token && student && p.s === 0) renderNext(at);
+  setTimeout(tick, 1005 - at % 1000);
+}
+
+// Rebuild the visit cards only when something they show changes, e.g. the opening time arrives.
+function paintState(at) {
+  const v = selected(), state = stateOf(v, at);
+  const signature = [selectedId, token, busy, confirmCancel, visits.map(x => stateOf(x, at)).join()].join('|');
+  if (signature !== painted) { painted = signature; renderVisits(at); renderStats(at); }
+  el('board').dataset.state = el('heroState').dataset.state = state;
+  setTextIfChanged('stateWord', STATES[state][0]);
+  setTextIfChanged('statePill', v ? STATES[state][1] : 'ไม่มีรอบรับสมัคร');
+  setTextIfChanged('heroStateText', v ? STATES[state][1] + ' · ' + v.title : STATES.none[1]);
+  const target = state === 'upcoming' ? stamp(v.openAt) : state === 'open' ? stamp(v.closeAt) : 0;
+  el('countdown').hidden = !target;
+  setTextIfChanged('cdLabel', !v ? 'ยังไม่มีคณะดูงานที่เปิดรับ' : state === 'upcoming' ? 'เปิดรับในอีก' : state === 'open' ? 'ปิดรับในอีก'
+    : state === 'full' ? 'อาสาสมัครครบ ' + v.needed + ' คนแล้ว' : 'ปิดรับเมื่อ ' + thaiDate(v.closeAt) + ' เวลา ' + thaiTime(v.closeAt) + ' น.');
+  if (target) {
+    const total = Math.max(0, Math.floor((target - at) / 1000));
+    setTextIfChanged('cdD', Math.floor(total / 86400));
+    setTextIfChanged('cdH', pad(Math.floor(total % 86400 / 3600)));
+    setTextIfChanged('cdM', pad(Math.floor(total % 3600 / 60)));
+    setTextIfChanged('cdS', pad(total % 60));
+  }
+  setTextIfChanged('cdNote', v && (state === 'open' || state === 'upcoming') ? 'อาสาสมัคร ' + v.count + ' / ' + v.needed + ' คน · ว่าง ' + Math.max(0, v.needed - v.count) + ' ที่' : '');
+  const open = v ? stamp(v.openAt) : 0, close = v ? stamp(v.closeAt) : 0;
+  el('windowFill').style.width = (v ? Math.min(100, Math.max(0, (at - open) / (close - open) * 100)) : 0) + '%';
+}
+
+function renderAll() {
+  const v = selected();
+  el('barVisit').textContent = v ? v.title : 'ยังไม่มีคณะที่เปิดรับอาสาสมัคร';
+  el('openDate').textContent = v ? thaiDate(v.openAt) : '—';
+  el('openTime').textContent = v ? thaiTime(v.openAt) : '—';
+  el('closeDate').textContent = v ? thaiDate(v.closeAt) : '—';
+  el('closeTime').textContent = v ? thaiTime(v.closeAt) : '—';
+  renderSide();
+  painted = '';
+  paintState(now());
+}
+
+function renderStats(at) {
+  const open = visits.filter(v => stateOf(v, at) === 'open');
+  el('statOpen').textContent = open.length;
+  el('statSeats').textContent = open.reduce((sum, v) => sum + Math.max(0, v.needed - v.count), 0);
+  el('statJoined').textContent = visits.reduce((sum, v) => sum + v.count, 0);
+}
+
+const firstName = name => String(name).replace(/^(เด็กชาย|เด็กหญิง|นางสาว|นาย|นาง)/, '').trim().split(/\s+/)[0] || name;
+function renderSteps(signed, count) {
+  el('step1').classList.toggle('done', signed);
+  el('step2').classList.toggle('done', signed);
+  el('step3').classList.toggle('done', count > 0);
+  el('step2').classList.toggle('current', !signed);
+  el('step3').classList.toggle('current', signed && !count);
+  el('step1Text').textContent = signed ? 'เป็นสตราฟแล้ว' : 'ทำครั้งเดียว';
+  el('step2Text').textContent = signed ? 'สวัสดี ' + firstName(student.name) : 'เลขประจำตัว + เบอร์';
+  el('step3Text').textContent = count ? 'สมัครแล้ว ' + count + ' คณะ' : 'กดสมัครคณะที่เปิด';
+}
+function openCard(id) {
+  select(id);
+  scrollWithinApp(el('visit-' + id));
+}
+function showPending() {
+  const v = visits.find(x => x.visitId === pendingVisit);
+  el('loginPending').textContent = v ? 'เข้าสู่ระบบแล้ว ระบบจะพาไปสมัคร “' + v.title + '” ต่อทันที' : '';
+}
+
+function renderSide() {
+  const signed = Boolean(token && student), count = visits.filter(v => mine[v.visitId]).length;
+  el('loginCard').hidden = Boolean(token);
+  el('studentCard').hidden = !token;
+  el('logout').hidden = el('menuLogout').hidden = !signed;
+  el('navAccount').textContent = signed ? firstName(student.name) : 'เข้าสู่ระบบ';
+  el('navIcon').setAttribute('href', signed ? '#i-user' : '#i-login');
+  el('menuAccount').textContent = signed ? 'การลงทะเบียนของฉัน' : 'เข้าสู่ระบบนักเรียน';
+  el('menuAccountText').textContent = signed ? student.name + (count ? ' · ลงทะเบียนแล้ว ' + count + ' คณะ' : '') : 'ใช้เลขประจำตัวและเบอร์โทรศัพท์';
+  renderSteps(signed, count);
+  // Signed in, the top of the page becomes the student's own profile instead of the introduction.
+  el('me').hidden = !signed;
+  el('intro').hidden = signed;
+  // A signed-in student has already applied, so links to the staff application are hidden.
+  document.body.classList.toggle('signed', signed);
+  if (!signed) return;
+  const first = firstName(student.name);
+  el('meInitial').textContent = /^[เแโใไ]/.test(first) ? first.slice(0, 2) : first.charAt(0);
+  el('meTitle').textContent = 'สวัสดี ' + first;
+  el('meMeta').textContent = student.name + ' · ม.' + student.classroom + ' เลขที่ ' + student.number + ' · เลขประจำตัว ' + student.studentId;
+  el('meHours').textContent = service.hours;
+  el('meUpcoming').textContent = count;
+  el('meDone').textContent = service.visits.length;
+  renderApplication();
+  renderContact();
+  nextView = null;
+  renderNext(now());
+  // The next visit already has its calendar buttons in the card above.
+  const entries = visits.filter(v => mine[v.visitId]), list = el('myList'), upcoming = nextVisit(now());
+  list.replaceChildren();
+  el('myEmpty').hidden = entries.length > 0;
+  el('myCount').textContent = entries.length ? entries.length + ' คณะ' : '';
+  for (const v of entries) {
+    const item = node('li'), link = node('button',null,'mine-link'), text = node('div'), tickMark = node('span',null,'tick'), go = icon('arrow');
+    link.type = 'button';
+    link.onclick = () => openCard(v.visitId);
+    go.classList.add('go');
+    tickMark.append(icon('check'));
+    const m = mine[v.visitId];
+    text.append(node('b',v.title), node('small', thaiDate(v.visitDate,true) + ' · ' + thaiTime(v.startTime) + ' น.' + (m.duty ? ' · ' + m.duty : '') + (m.status === 'waitlist' ? ' · สำรองลำดับที่ ' + m.position : '')));
+    if (m.status === 'waitlist') tickMark.classList.add('queue');
+    link.append(tickMark, text, go);
+    item.append(link);
+    if (m.status === 'registered' && v !== upcoming) item.append(calendarRow(v, m));
+    list.append(item);
+  }
+  // Volunteer hours across every visit attended, each with its certificate.
+  el('hoursTotal').textContent = service.visits.length ? service.hours + ' ชม. · ' + service.visits.length + ' คณะ' : '';
+  el('serviceEmpty').hidden = service.visits.length > 0;
+  el('serviceList').replaceChildren(...service.visits.map(s => {
+    const item = node('li',null,'service-item'), text = node('div'), cert = node('button','เกียรติบัตร','btn ghost small');
+    cert.type = 'button'; cert.onclick = () => downloadCert(s, cert);
+    text.append(node('b',s.title), node('small', thaiDate(s.visitDate) + ' · ' + s.hours + ' ชม.' + (s.duty ? ' · ' + s.duty : '')));
+    item.append(text, cert);
+    return item;
+  }));
+  el('goalBox').hidden = !goal;
+  if (goal) {
+    el('goalFill').style.width = Math.min(100, service.hours / goal * 100) + '%';
+    el('goalText').textContent = service.hours >= goal ? 'ครบเป้าหมาย ' + goal + ' ชั่วโมงแล้ว'
+      : 'เป้าหมายของโรงเรียน ' + service.hours + ' / ' + goal + ' ชั่วโมง · ขาดอีก ' + (goal - service.hours) + ' ชั่วโมง';
+  }
+  // Everything the student ever signed up for, including cancellations and absences, so missing hours have a reason.
+  el('historyBox').hidden = !signups.length;
+  el('historyCount').textContent = signups.length + ' รายการ';
+  const at = now();
+  el('historyList').replaceChildren(...signups.map(h => {
+    const [label, tone] = historyTag(h, at), item = node('li'), text = node('div');
+    text.append(node('b', h.title), node('small', thaiDate(h.visitDate) + ' · ' + thaiTime(h.startTime) + ' น.' + (h.duty ? ' · ' + h.duty : '')));
+    item.append(text, node('span', label, 'tag ' + tone));
+    return item;
+  }));
+}
+// Profile panels: the staff application, the three latest sign-ups, and the application photo.
+const APP_STATUS = {pending:['รอตรวจสอบ', 'upcoming'], approved:['อนุมัติแล้ว', 'open']};
+function bangkokDay(iso) { const ms = Date.parse(iso); return isNaN(ms) ? '' : new Date(ms + 25200000).toISOString().slice(0, 10); }
+function renderApplication() {
+  const pf = profile || {}, day = bangkokDay(pf.createdAt), [label, tone] = APP_STATUS[pf.status] || ['–', ''];
+  el('meRef').textContent = pf.registrationId || '–';
+  el('meApplied').textContent = day ? thaiDate(day) : '–';
+  el('meStatus').textContent = label;
+  el('meStatus').className = 'tag ' + tone;
+  const skills = pf.interests || [];
+  el('meSkills').replaceChildren(...(skills.length ? skills.map(s => node('span', s)) : [node('small', 'ยังไม่ได้ระบุ')]));
+  const at = now(), recent = signups.slice(0, 3);
+  el('meRecentEmpty').hidden = recent.length > 0;
+  el('meHistory').hidden = signups.length <= recent.length;
+  el('meRecent').replaceChildren(...recent.map(h => {
+    const [text, cls] = historyTag(h, at), item = node('li'), info = node('div');
+    info.append(node('b', h.title), node('small', thaiDate(h.visitDate)));
+    item.append(info, node('span', text, 'tag ' + cls));
+    return item;
+  }));
+  if (pf.photo && photoAsked !== token) {
+    const sent = photoAsked = token;
+    rpc('studentPhoto', sent).then(r => {
+      if (sent !== token || !r || !r.photo) return;
+      el('mePhoto').onload = () => { el('mePhoto').hidden = false; el('meInitial').hidden = true; };
+      el('mePhoto').src = r.photo;
+    }).catch(() => {});
+  }
+}
+el('meHistory').onclick = () => { el('historyBox').open = true; scrollWithinApp(el('historyBox')); };
+function historyTag(h, at) {
+  if (h.status === 'cancelled') return ['ยกเลิกแล้ว', 'closed'];
+  if (h.attendance === 'present') return ['มา +' + h.hours + ' ชม.', 'open'];
+  if (h.attendance === 'absent') return ['ไม่มา', 'closed'];
+  const over = stamp(h.visitDate + 'T' + h.endTime) < at;
+  if (h.status === 'waitlist') return [over ? 'ไม่ได้เป็นตัวจริง' : 'สำรอง', 'full'];
+  return over ? ['ยังไม่ได้เช็กชื่อ', 'upcoming'] : ['รอวันรับคณะ', ''];
+}
+
+// The next visit this student is registered for: meeting details, a countdown, check-in on the day, and calendar buttons.
+let nextView = null;
+function nextVisit(at) {
+  return visits.filter(v => mine[v.visitId] && mine[v.visitId].status === 'registered' && mine[v.visitId].attendance !== 'present'
+    && stamp(v.visitDate + 'T' + v.endTime) + 7200000 > at).sort((a, b) => (a.visitDate + a.startTime).localeCompare(b.visitDate + b.startTime))[0];
+}
+function whenText(v, at) {
+  const start = stamp(v.visitDate + 'T' + v.startTime), end = stamp(v.visitDate + 'T' + v.endTime);
+  if (at >= end) return 'รับคณะเสร็จแล้ว อย่าลืมเช็กชื่อเพื่อบันทึกชั่วโมง';
+  if (at >= start) return 'กำลังรับคณะอยู่ตอนนี้';
+  const mins = Math.ceil((start - at) / 60000), d = Math.floor(mins / 1440), h = Math.floor(mins % 1440 / 60);
+  return 'เริ่มในอีก ' + (d ? d + ' วัน ' + h + ' ชม.' : h ? h + ' ชม. ' + mins % 60 + ' นาที' : mins + ' นาที');
+}
+function renderNext(at) {
+  const v = nextVisit(at), box = el('nextBox');
+  box.hidden = !v;
+  el('nextEmpty').hidden = Boolean(v);
+  if (!v) { nextView = null; box.replaceChildren(); return; }
+  const m = mine[v.visitId], start = stamp(v.visitDate + 'T' + v.startTime), end = stamp(v.visitDate + 'T' + v.endTime);
+  const checkable = at >= start - 7200000 && at <= end + 7200000, view = [v.visitId, checkable, whenText(v, at)].join('|');
+  if (view === nextView) return;
+  nextView = view;
+  const meet = String(v.details || '').split('\n').map(s => s.trim()).filter(Boolean)[0], actions = calendarRow(v, m);
+  actions.className = 'next-actions';
+  if (checkable) actions.prepend(button('เช็กชื่อ', 'primary small', () => openCard(v.visitId)));
+  box.replaceChildren(node('p', 'งานถัดไปของฉัน', 'k'), node('b', v.title),
+    node('small', thaiDate(v.visitDate, true) + ' · ' + thaiTime(v.startTime) + '–' + thaiTime(v.endTime) + ' น.' + (m.duty ? ' · หน้าที่ ' + m.duty : '')),
+    ...(meet ? [node('small', 'นัดหมาย: ' + meet)] : []), node('p', whenText(v, at), 'next-when'), actions);
+}
+
+// Calendar: a Google Calendar link and an .ics file (with a reminder one hour before) for any calendar app.
+const utcStamp = ms => new Date(ms).toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+const PLACE = 'ศูนย์ AI & Metaverse โรงเรียนสาธิตเทศบาลวัดเพชรจริก';
+function calendarText(v, m) { return ['อาสาสมัครต้อนรับคณะ ' + v.title, m.duty && 'หน้าที่: ' + m.duty, v.details].filter(Boolean).join('\n'); }
+function calendarRow(v, m) {
+  const row = node('div', null, 'cal-row'), g = node('a', 'Google Calendar', 'btn ghost small');
+  const span = utcStamp(stamp(v.visitDate + 'T' + v.startTime)) + '/' + utcStamp(stamp(v.visitDate + 'T' + v.endTime));
+  g.href = 'https://calendar.google.com/calendar/render?' + new URLSearchParams({action:'TEMPLATE', text:'อาสาสมัคร: ' + v.title, dates:span, details:calendarText(v, m), location:PLACE});
+  g.target = '_blank'; g.rel = 'noopener';
+  row.append(g, button('ไฟล์ปฏิทิน .ics', 'ghost small', () => saveIcs(v, m)));
+  return row;
+}
+function saveIcs(v, m) {
+  const esc = s => String(s).replace(/[\\;,]/g, x => '\\' + x).replace(/\n/g, '\\n');
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//AI Metaverse Center//Volunteer//TH', 'BEGIN:VEVENT', 'UID:' + m.reference + '@volunteer',
+    'DTSTAMP:' + utcStamp(Date.now()), 'DTSTART:' + utcStamp(stamp(v.visitDate + 'T' + v.startTime)), 'DTEND:' + utcStamp(stamp(v.visitDate + 'T' + v.endTime)),
+    'SUMMARY:' + esc('อาสาสมัคร: ' + v.title), 'DESCRIPTION:' + esc(calendarText(v, m)), 'LOCATION:' + esc(PLACE),
+    'BEGIN:VALARM', 'TRIGGER:-PT60M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc('อีก 1 ชั่วโมงรับคณะ ' + v.title), 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const a = node('a'), url = URL.createObjectURL(new Blob([ics], {type:'text/calendar;charset=utf-8'}));
+  a.href = url; a.download = 'อาสาสมัคร-' + v.visitDate + '.ics';
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// Contact details: students edit LINE, email and Facebook themselves; the phone stays with the administrator.
+function renderContact() {
+  const c = contact || {};
+  el('contactFacts').replaceChildren(...[['LINE', c.lineId], ['อีเมล', c.email], ['Facebook', c.facebook]].map(([k, v]) => {
+    const row = node('div'); row.append(node('dt', k), node('dd', v || '–')); return row;
+  }));
+  el('meContact').textContent = c.lineId || c.email ? 'ติดต่อ: ' + ['LINE ' + (c.lineId || '–'), c.email, c.facebook && 'FB ' + c.facebook].filter(Boolean).join(' · ') : '';
+}
+el('contactEdit').onclick = () => {
+  const c = contact || {};
+  el('cLine').value = c.lineId || ''; el('cMail').value = c.email || ''; el('cFb').value = c.facebook || '';
+  el('contactNote').textContent = ''; el('contactSaved').textContent = '';
+  el('contactForm').hidden = false; el('contactEdit').hidden = true; el('cLine').focus();
+};
+el('contactCancel').onclick = () => { el('contactForm').hidden = true; el('contactEdit').hidden = false; el('contactEdit').focus(); };
+el('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if (busy || !token) return;
+  const data = {lineId: el('cLine').value.trim(), email: el('cMail').value.trim(), facebook: el('cFb').value.trim()};
+  if (!data.lineId) { el('contactNote').textContent = 'กรุณากรอก ID LINE'; el('cLine').focus(); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { el('contactNote').textContent = 'รูปแบบอีเมลไม่ถูกต้อง'; el('cMail').focus(); return; }
+  busy = 'contact';
+  el('contactSave').disabled = true; el('contactNote').textContent = '';
+  rpc('studentUpdateContact', token, data).then(r => {
+    busy = '';
+    if (r && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
+    if (!r || !r.success) { el('contactNote').textContent = (r && r.message) || FAILURE; return; }
+    contact = r.contact;
+    el('contactForm').hidden = true; el('contactEdit').hidden = false;
+    renderContact();
+    el('contactSaved').textContent = r.message;
+  }).catch(() => { el('contactNote').textContent = FAILURE; }).finally(() => { busy = ''; el('contactSave').disabled = false; });
+});
+
+function waitText(v, state) {
+  if (state === 'upcoming') return 'เปิดรับ' + thaiDate(v.openAt,true) + ' เวลา ' + thaiTime(v.openAt) + ' น.';
+  return state === 'full' ? 'อาสาสมัครครบจำนวนแล้ว ลงชื่อสำรองได้ ระบบจะเลื่อนให้อัตโนมัติเมื่อมีคนยกเลิก' : 'ปิดรับสมัครคณะนี้แล้ว';
+}
+// Self check-in opens two hours before the visit starts and closes two hours after it ends.
+const checkinOpen = (v, at) => at >= stamp(v.visitDate + 'T' + v.startTime) - 7200000 && at <= stamp(v.visitDate + 'T' + v.endTime) + 7200000;
+function cancelButton(v, label) {
+  const asking = confirmCancel === v.visitId, working = busy === 'cancel:' + v.visitId;
+  const cancel = button(working ? 'กำลังยกเลิก…' : asking ? 'กดอีกครั้งเพื่อยืนยัน' : label, 'small danger' + (asking ? ' confirm' : ''), () => cancelMine(v));
+  cancel.disabled = Boolean(busy);
+  return cancel;
+}
+function checkinForm(v) {
+  const form = node('form',null,'checkin'), input = node('input'), go = button(busy === 'checkin:' + v.visitId ? 'กำลังเช็กอิน…' : 'เช็กอิน','primary small',null);
+  go.type = 'submit'; go.disabled = Boolean(busy);
+  input.id = 'code-' + v.visitId; input.inputMode = 'numeric'; input.maxLength = 7; input.autocomplete = 'off'; input.placeholder = 'รหัส 6 หลักจากผู้ดูแล';
+  input.value = codes[v.visitId] || ''; input.setAttribute('aria-label','รหัสเช็กอิน'); input.oninput = () => { codes[v.visitId] = input.value; };
+  form.onsubmit = e => { e.preventDefault(); checkIn(v, input.value); };
+  form.append(icon('check'), input, go);
+  return form;
+}
+
+function actionArea(v, state, at) {
+  const box = node('div',null,'action'), entry = mine[v.visitId];
+  if (entry && entry.status === 'waitlist') {
+    const queue = node('div',null,'done queue'), text = node('div');
+    text.append(node('b','อยู่ในรายชื่อสำรองลำดับที่ ' + (entry.position || '–')), node('small','ระบบจะเลื่อนเป็นตัวจริงและแจ้งทางอีเมลเมื่อมีที่ว่าง'));
+    queue.append(node('span',String(entry.position || '–'),'done-icon'), text);
+    if (at < stamp(v.closeAt)) queue.append(cancelButton(v, 'ออกจากรายชื่อสำรอง'));
+    box.append(queue);
+    return box;
+  }
+  if (entry) {
+    const done = node('div',null,'done'), text = node('div'), mark = node('span',null,'done-icon');
+    mark.append(icon('check'));
+    text.append(node('b','คุณลงทะเบียนเป็นอาสาสมัครแล้ว'), node('small', [entry.duty && 'หน้าที่ ' + entry.duty, entry.reference && 'เลขอ้างอิง ' + entry.reference].filter(Boolean).join(' · ')));
+    done.append(mark, text);
+    if (at < stamp(v.closeAt)) done.append(cancelButton(v, 'ยกเลิกการลงทะเบียน'));
+    box.append(done);
+    if (entry.attendance === 'present') { const ok = node('p',null,'checked'); ok.append(icon('check'), node('span','เช็กอินแล้ว · ได้รับชั่วโมงจิตอาสา ' + entry.hours + ' ชั่วโมง')); box.append(ok); }
+    else if (checkinOpen(v, at)) box.append(checkinForm(v));
+    return box;
+  }
+  const full = state === 'full';
+  if (state !== 'open' && !full) {
+    const wait = node('p',null,'wait' + (state === 'upcoming' ? '' : ' stop'));
+    wait.append(icon('clock'), node('span', waitText(v, state)));
+    box.append(wait);
+    return box;
+  }
+  if (full) { const wait = node('p',null,'wait full'); wait.append(icon('group'), node('span', waitText(v, state) + (v.waiting ? ' · สำรองแล้ว ' + v.waiting + ' คน' : ''))); box.append(wait); }
+  if (!token) { const b = button(full ? 'เข้าสู่ระบบเพื่อลงชื่อสำรอง' : 'เข้าสู่ระบบเพื่อสมัครอาสาสมัคร','primary',() => { pendingVisit = v.visitId; showPending(); jump('account'); }); b.prepend(icon('login')); box.append(b); return box; }
+  if (draft.visitId !== v.visitId) {
+    const start = button(full ? 'ลงชื่อสำรอง' : 'สมัครเป็นอาสาสมัคร','primary',() => { draft = {visitId:v.visitId, duty: v.duties.length === 1 ? v.duties[0].name : '', agree:false, waitlist:full}; delete notes[v.visitId]; renderVisits(); el('apply-' + v.visitId)?.focus(); });
+    start.prepend(icon('hand'));
+    start.disabled = Boolean(busy);
+    box.append(start);
+    return box;
+  }
+  const panel = node('div',null,'apply');
+  panel.id = 'apply-' + v.visitId; panel.tabIndex = -1;
+  if (v.duties.length) {
+    const label = node('p','เลือกหน้าที่ที่อยากช่วย','apply-label'), group = node('div',null,'choices');
+    label.id = 'dutyLabel-' + v.visitId;
+    group.setAttribute('role','radiogroup'); group.setAttribute('aria-labelledby',label.id);
+    for (const d of v.duties) {
+      const choice = node('label',null,'choice'), input = node('input'), text = node('span');
+      input.type = 'radio'; input.name = 'duty-' + v.visitId; input.value = d.name; input.checked = draft.duty === d.name;
+      input.onchange = () => { draft.duty = d.name; };
+      text.append(node('b',d.name), node('small','ลงชื่อแล้ว ' + d.count + ' คน'));
+      choice.append(input, text);
+      group.append(choice);
+    }
+    panel.append(label, group);
+  }
+  const agree = node('label',null,'agree'), check = node('input');
+  check.type = 'checkbox'; check.checked = draft.agree; check.onchange = () => { draft.agree = check.checked; };
+  agree.append(check, node('span','ยืนยันว่ามาปฏิบัติหน้าที่ได้ตามวันเวลาที่กำหนด และแจ้งครูประจำชั้นหรือผู้ปกครองแล้ว'));
+  const actions = node('div',null,'apply-actions'), working = busy === 'apply:' + v.visitId;
+  const back = button('ยกเลิก','ghost',() => { draft = {visitId:'', duty:'', agree:false}; renderVisits(); });
+  const confirm = button(working ? 'กำลังบันทึก…' : draft.waitlist ? 'ยืนยันลงชื่อสำรอง' : 'ยืนยันสมัครอาสาสมัคร','primary',() => apply(v));
+  back.disabled = confirm.disabled = Boolean(busy);
+  actions.append(back, confirm);
+  if (draft.waitlist) panel.append(node('p','คุณจะอยู่ในรายชื่อสำรองลำดับที่ ' + ((v.waiting || 0) + 1) + ' ระบบจะเลื่อนให้อัตโนมัติเมื่อมีคนยกเลิก','queue-note'));
+  panel.append(agree, actions);
+  box.append(panel);
+  return box;
+}
+
+function visitCard(v, at) {
+  const state = stateOf(v, at), card = node('article',null,'visit' + (v.visitId === selectedId ? ' selected' : ''));
+  const p = parts(stamp(v.visitDate)), date = node('div',null,'date-block'), body = node('div',null,'visit-body'), head = node('div',null,'visit-head');
+  date.append(node('small',SHORT[p.m]), node('b',String(p.d)), node('span',String(p.y + 543)));
+  const title = button(v.title,'',() => select(v.visitId));
+  title.className = 'visit-title';
+  title.setAttribute('aria-pressed',String(v.visitId === selectedId));
+  head.append(title, node('span',STATES[state][1],'tag ' + state));
+  body.append(head);
+  if (v.organization) body.append(node('p',v.organization,'org'));
+  const meta = node('div',null,'meta'), when = node('span'), period = node('span');
+  when.append(icon('clock'), 'วัน' + DAYS[p.w] + ' ' + thaiTime(v.startTime) + '–' + thaiTime(v.endTime) + ' น.');
+  period.append(icon('calendar'), 'รับสมัคร ' + shortDate(v.openAt) + ' ' + thaiTime(v.openAt) + ' – ' + shortDate(v.closeAt) + ' ' + thaiTime(v.closeAt) + ' น.');
+  meta.append(when);
+  if (v.visitorCount) { const group = node('span'); group.append(icon('group'), 'ผู้มาดูงาน ' + v.visitorCount + ' คน'); meta.append(group); }
+  meta.append(period);
+  const capacity = node('div',null,'capacity');
+  capacity.append(meter(v), node('span','อาสาสมัคร ' + v.count + ' / ' + v.needed + ' คน · ว่าง ' + Math.max(0, v.needed - v.count) + ' ที่' + (v.waiting ? ' · สำรอง ' + v.waiting + ' คน' : '')));
+  body.append(meta, capacity);
+  if (v.duties.length) {
+    const duties = node('div',null,'duties');
+    for (const d of v.duties) { const chip = node('span',d.name + ' · ','duty-chip'); chip.append(node('b',d.count + ' คน')); duties.append(chip); }
+    body.append(duties);
+  }
+  if (v.details) body.append(node('p',v.details,'details'));
+  body.append(actionArea(v, state, at));
+  if (notes[v.visitId]) { const msg = node('p',notes[v.visitId].text,'msg ' + notes[v.visitId].tone); msg.setAttribute('role','status'); body.append(msg); }
+  card.append(date, body);
+  card.id = 'visit-' + v.visitId;
+  card.addEventListener('click', e => { if (!e.target.closest('button,input,label,a')) select(v.visitId); });
+  return card;
+}
+
+function renderVisits(at = now()) {
+  el('visitList').replaceChildren(...visits.map(v => visitCard(v, at)));
+  el('visitsEmpty').hidden = !loaded || visits.length > 0;
+  el('visitCount').hidden = !visits.length;
+  el('visitCount').textContent = visits.length + ' คณะ';
+}
+
+function select(id) { if (id === selectedId) return; selectedId = id; renderAll(); }
+
+function applyBoard(r, sent, started) {
+  if (sent !== token) return; // A sign-in or sign-out happened meanwhile; that change loads its own board.
+  if (r && typeof r.now === 'number') offset = r.now - (started + Date.now()) / 2;
+  if (!r || !r.success) { if (!loaded) { el('boardError').hidden = false; el('cdLabel').textContent = 'โหลดข้อมูลไม่สำเร็จ'; } return; }
+  if (sent && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
+  visits = Array.isArray(r.visits) ? r.visits : [];
+  if (r.student) {
+    student = r.student; mine = {}; for (const m of r.mine || []) mine[m.visitId] = m; service = r.service || {hours:0, visits:[]};
+    signups = r.history || []; contact = r.contact || null; goal = Number(r.goal) || 0; profile = r.profile || null;
+  }
+  if (!visits.some(v => v.visitId === selectedId)) {
+    const at = now();
+    const first = ['open','upcoming','full'].map(s => visits.find(v => stateOf(v,at) === s)).find(Boolean) || visits[0];
+    selectedId = first ? first.visitId : '';
+  }
+  loaded = true;
+  el('boardError').hidden = true;
+  renderAll();
+  if (resume && token) resumeVisit();
+}
+// Opens the sign-up panel of the visit the student picked before signing in, if it is still open to them.
+function resumeVisit() {
+  const v = visits.find(x => x.visitId === resume);
+  resume = '';
+  if (!v) return;
+  const state = stateOf(v, now());
+  if (mine[v.visitId] || (state !== 'open' && state !== 'full')) return openCard(v.visitId);
+  selectedId = v.visitId;
+  draft = {visitId:v.visitId, duty: v.duties.length === 1 ? v.duties[0].name : '', agree:false, waitlist: state === 'full'};
+  renderAll();
+  const panel = el('apply-' + v.visitId);
+  if (panel) { scrollWithinApp(panel); panel.focus({preventScroll:true}); }
+}
+// Ignore an older refresh if a newer request has already been sent. This prevents an
+// out-of-order response from replacing more recent registration or cancellation data.
+let boardRequestSequence = 0;
+function loadBoard() {
+  const started = Date.now(), sent = token, sequence = ++boardRequestSequence;
+  rpc('volunteerBoard', sent)
+    .then(r => { if (sequence === boardRequestSequence) applyBoard(r, sent, started); })
+    .catch(() => { if (sequence === boardRequestSequence) applyBoard(null, sent, started); });
+}
+el('retry').onclick = () => { el('boardError').hidden = true; el('cdLabel').textContent = 'กำลังโหลดข้อมูล…'; loadBoard(); };
+
+function phoneVisible(on) {
+  el('loginPhone').type = on ? 'tel' : 'password';
+  el('eyeIcon').setAttribute('href', on ? '#i-hide' : '#i-eye');
+  el('togglePhone').setAttribute('aria-label', on ? 'ซ่อนเบอร์โทรศัพท์' : 'แสดงเบอร์โทรศัพท์');
+  el('togglePhone').setAttribute('aria-pressed', String(on));
+}
+el('togglePhone').onclick = () => phoneVisible(el('loginPhone').type === 'password');
+
+el('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if (busy) return;
+  const id = el('loginId').value.trim(), phone = el('loginPhone').value.replace(/\D/g,'');
+  el('loginNote').textContent = '';
+  if (!/^[0-9]{1,20}$/.test(id)) { el('loginNote').textContent = 'กรอกเลขประจำตัวนักเรียนเป็นตัวเลข'; el('loginId').focus(); return; }
+  if (!/^0[0-9]{8,9}$/.test(phone)) { el('loginNote').textContent = 'กรอกเบอร์โทรศัพท์ 9–10 หลัก ขึ้นต้นด้วย 0'; el('loginPhone').focus(); return; }
+  busy = 'login';
+  el('loginButton').disabled = true;
+  el('loginText').textContent = 'กำลังตรวจสอบ…';
+  const started = Date.now();
+  rpc('studentSignIn', id, phone).then(r => {
+    if (!r || !r.ok) { el('loginNote').textContent = (r && r.message) || FAILURE; el('loginPhone').focus(); return; }
+    busy = ''; // Clear before the first signed-in render so its buttons are enabled.
+    el('loginForm').reset();
+    phoneVisible(false);
+    startSession(r, started);
+  }).catch(() => { el('loginNote').textContent = FAILURE; }).finally(() => {
+    busy = '';
+    el('loginButton').disabled = false;
+    el('loginText').textContent = 'เข้าสู่ระบบ';
+  });
+});
+
+// A refresh keeps the student signed in: this tab remembers only the session token and its expiry (never the ID or phone),
+// and the server still checks the token, which expires after an hour or when the administrator edits the application.
+const SAVED = 'volunteerSession';
+function saveSession(value) {
+  try { if (value) sessionStorage.setItem(SAVED, JSON.stringify(value)); else sessionStorage.removeItem(SAVED); } catch (e) {}
+}
+function restoreSession() {
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem(SAVED) || 'null'); } catch (e) {}
+  if (!saved || !/^[a-f0-9]{64}$/.test(saved.token || '') || !(saved.until > Date.now())) return saveSession(null);
+  const started = Date.now();
+  rpc('volunteerBoard', saved.token).then(r => {
+    if (token) return;
+    if (r && r.success && r.student) startSession({token:saved.token, until:saved.until, student:r.student, board:r}, started);
+    else if (r && r.expired) saveSession(null);
+  }).catch(() => {});
+}
+function startSession(r, started) {
+  token = r.token; student = r.student; until = r.until; mine = {};
+  saveSession({token:r.token, until:r.until});
+  resume = pendingVisit; pendingVisit = ''; showPending();
+  clearTimeout(sessionTimer);
+  sessionTimer = setTimeout(() => endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false), Math.max(0, r.until - Date.now()));
+  renderAll();
+  // Bring the student up to their profile, unless they signed in on the way to sign up for a visit.
+  if (resume) el('studentTitle').focus({preventScroll:true});
+  else { el('meTitle').focus({preventScroll:true}); scrollWithinApp(el('me')); }
+  // Sign-in already carries this student's board; fetch it separately only if it is missing.
+  if (r.board && r.board.success) applyBoard(r.board, token, started); else loadBoard();
+}
+function endSession(message, notifyServer) {
+  const old = token;
+  saveSession(null);
+  token = ''; student = null; until = 0; mine = {}; busy = ''; confirmCancel = ''; pendingVisit = ''; resume = ''; service = {hours:0, visits:[]};
+  signups = []; contact = null; goal = 0; profile = null; photoAsked = '';
+  el('mePhoto').hidden = true; el('mePhoto').removeAttribute('src'); el('meInitial').hidden = false;
+  el('contactForm').hidden = true; el('contactEdit').hidden = false; el('contactSaved').textContent = '';
+  for (const id of Object.keys(codes)) delete codes[id];
+  draft = {visitId:'', duty:'', agree:false};
+  showPending();
+  for (const id of Object.keys(notes)) delete notes[id];
+  clearTimeout(sessionTimer);
+  el('loginNote').textContent = message || '';
+  renderAll();
+  if (old && notifyServer) rpc('studentSignOut', old).catch(() => {});
+}
+el('logout').onclick = () => endSession('', true);
+el('menuLogout').onclick = () => { setMenu(false); el('logout').click(); };
+
+function apply(v) {
+  if (busy || !token) return;
+  if (v.duties.length && !draft.duty) { notes[v.visitId] = {text:'เลือกหน้าที่ที่อยากช่วย 1 หน้าที่', tone:'warn'}; renderVisits(); return; }
+  if (!draft.agree) { notes[v.visitId] = {text:'กรุณายืนยันความพร้อมก่อนสมัคร', tone:'warn'}; renderVisits(); return; }
+  busy = 'apply:' + v.visitId;
+  delete notes[v.visitId];
+  renderVisits();
+  rpc('registerVolunteer', token, {visitId:v.visitId, duty:draft.duty, agree:true, waitlist:draft.waitlist === true, website:el('website').value}).then(r => {
+    busy = '';
+    if (r && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
+    if (!r || !r.success) {
+      notes[v.visitId] = {text:(r && r.message) || FAILURE, tone:'error'};
+      if (r && ['FULL','CLOSED','NOT_OPEN','NOT_FOUND','ALREADY_REGISTERED'].includes(r.code)) { draft = {visitId:'', duty:'', agree:false}; loadBoard(); }
+      else renderVisits();
+      return;
+    }
+    const waiting = r.data.status === 'waitlist';
+    mine[v.visitId] = {visitId:v.visitId, duty:draft.duty, reference:r.data.reference, status:r.data.status || 'registered', position:r.data.position || 0, attendance:'', hours:0};
+    if (waiting) v.waiting = (v.waiting || 0) + 1; else v.count++;
+    notes[v.visitId] = {text: waiting ? r.message : 'ลงทะเบียนสำเร็จ แล้วพบกันตามวันเวลานัดหมาย', tone:'ok'};
+    draft = {visitId:'', duty:'', agree:false};
+    renderAll();
+    loadBoard();
+  }).catch(() => { busy = ''; notes[v.visitId] = {text:FAILURE, tone:'error'}; renderVisits(); });
+}
+
+function cancelMine(v) {
+  if (busy || !token) return;
+  if (confirmCancel !== v.visitId) {
+    confirmCancel = v.visitId;
+    renderVisits();
+    setTimeout(() => { if (confirmCancel === v.visitId && !busy) { confirmCancel = ''; renderVisits(); } }, 4000);
+    return;
+  }
+  busy = 'cancel:' + v.visitId;
+  confirmCancel = '';
+  renderVisits();
+  rpc('cancelMyVolunteer', token, v.visitId).then(r => {
+    busy = '';
+    if (r && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
+    if (!r || !r.success) { notes[v.visitId] = {text:(r && r.message) || FAILURE, tone:'error'}; renderVisits(); return; }
+    const waiting = mine[v.visitId] && mine[v.visitId].status === 'waitlist';
+    delete mine[v.visitId];
+    if (waiting) v.waiting = Math.max(0, (v.waiting || 0) - 1); else v.count = Math.max(0, v.count - 1);
+    notes[v.visitId] = {text: waiting ? 'ออกจากรายชื่อสำรองแล้ว' : 'ยกเลิกการลงทะเบียนแล้ว', tone:'warn'};
+    renderAll();
+    loadBoard();
+  }).catch(() => { busy = ''; notes[v.visitId] = {text:FAILURE, tone:'error'}; renderVisits(); });
+}
+
+function checkIn(v, code) {
+  if (busy || !token) return;
+  const digits = String(code || '').replace(/\D/g, '');
+  if (digits.length !== 6) { notes[v.visitId] = {text:'กรอกรหัสเช็กอิน 6 หลักจากผู้ดูแล', tone:'warn'}; renderVisits(); return; }
+  busy = 'checkin:' + v.visitId;
+  delete notes[v.visitId];
+  renderVisits();
+  rpc('checkInVolunteer', token, v.visitId, digits).then(r => {
+    busy = '';
+    if (r && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
+    if (!r || !r.success) { notes[v.visitId] = {text:(r && r.message) || FAILURE, tone:'error'}; renderVisits(); return; }
+    if (mine[v.visitId]) { mine[v.visitId].attendance = 'present'; mine[v.visitId].hours = r.hours; }
+    delete codes[v.visitId];
+    notes[v.visitId] = {text:r.message, tone:'ok'};
+    renderAll();
+    loadBoard();
+  }).catch(() => { busy = ''; notes[v.visitId] = {text:FAILURE, tone:'error'}; renderVisits(); });
+}
+
+// QR attendance: the scanned link opens a one-step form; ID and phone check the student in with a single call.
+el('quickForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if (busy || !quick) return;
+  const id = el('quickId').value.trim(), phone = el('quickPhone').value.replace(/\D/g,'');
+  el('quickNote').textContent = '';
+  if (!/^[0-9]{1,20}$/.test(id)) { el('quickNote').textContent = 'กรอกเลขประจำตัวนักเรียนเป็นตัวเลข'; el('quickId').focus(); return; }
+  if (!/^0[0-9]{8,9}$/.test(phone)) { el('quickNote').textContent = 'กรอกเบอร์โทรศัพท์ 9–10 หลัก ขึ้นต้นด้วย 0'; el('quickPhone').focus(); return; }
+  busy = 'quick';
+  el('quickButton').disabled = true;
+  el('quickText').textContent = 'กำลังเช็กชื่อ…';
+  const target = quick;
+  rpc('quickCheckIn', id, phone, target.visitId, target.code).then(r => {
+    // Signed in even when the check-in itself is refused, so the full page opens with this student's account.
+    if (r && r.token) target.session = {token:r.token, until:r.until, student:r.student};
+    if (!r || !r.success) { el('quickNote').textContent = (r && r.message) || FAILURE; return; }
+    el('quickForm').hidden = true;
+    el('quickDone').hidden = false;
+    el('quickDoneTitle').textContent = r.already ? 'เช็กชื่อไว้แล้ว' : 'เช็กชื่อเรียบร้อย';
+    el('quickDoneText').textContent = r.student.name + ' · ได้รับชั่วโมงจิตอาสา ' + r.hours + ' ชั่วโมง';
+  }).catch(() => { el('quickNote').textContent = FAILURE; }).finally(() => {
+    busy = '';
+    el('quickButton').disabled = false;
+    el('quickText').textContent = 'เช็กชื่อ';
+  });
+});
+function leaveQuick() {
+  if (!quick || busy === 'quick') return;
+  const session = quick.session;
+  quick = null;
+  document.body.classList.remove('checkin-mode');
+  el('quickCheckin').hidden = true;
+  heroPhoto();
+  if (session && !token) startSession(session, Date.now());
+}
+el('quickMore').onclick = () => { leaveQuick(); window.scrollTo(0, 0); };
+
+
+async function downloadSemesterCertificate(){
+ const btn=el('semesterCertificate');if(btn.disabled||!token)return;const session=token;btn.disabled=true;el('serviceNote').textContent='กำลังเตรียมใบรับรอง…';const host=node('div',null,'pdf-host');host.setAttribute('aria-hidden','true');document.body.append(host);
+ try{const r=await new Promise((ok,fail)=>google.script.run.withSuccessHandler(ok).withFailureHandler(fail).studentSemesterCertificate(session));
+ if(session!==token)return;if(!r.ok)throw Error(r.message||'โหลดข้อมูลไม่สำเร็จ');if(!r.entries.length)throw Error('ยังไม่มีรายการเช็กชื่อที่ได้รับชั่วโมงในภาคเรียนนี้');
+ await Promise.all([loadPdfLibs(),document.fonts.ready]);const pdf=new window.jspdf.jsPDF({orientation:'l',unit:'mm',format:'a4',compress:true});
+const perPage=r.entries.some(e=>String(e.title||'').length+String(e.duty||'').length>30)?2:6;
+const sheets=[];let current=null;
+const newSheet=()=>{const sheet=node('div',null,'cert'),frame=node('div',null,'cert-frame'),logo=node('img'),sign=node('div',null,'cert-sign'),list=node('div',null,'semester-cert-list'),footer=node('p',null,'cert-ref');logo.crossOrigin='anonymous';logo.alt='';logo.src=LOGO_URL;
+frame.append(logo,node('p','AI & Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก','cert-org'),node('h1','ใบรับรองชั่วโมงจิตอาสา'),node('p',r.period.label+' · '+thaiDate(r.period.start,true)+' ถึง '+thaiDate(r.period.end,true),'cert-lead'),node('h2',r.student.name),node('p','ชั้น ม.'+r.student.classroom+' เลขที่ '+r.student.number+' · รหัสนักเรียน '+r.student.studentId,'cert-line'),node('h3','รวม '+r.hours+' ชั่วโมง · '+r.entries.length+' คณะ'));
+sign.append(node('span','ลงชื่อ ..................................................'),node('p','( .................................................. )'),node('p','ผู้ดูแลศูนย์ AI & Metaverse Innovation Center'));frame.append(list,sign,footer);sheet.append(frame);host.append(sheet);current={sheet,frame,list,footer};sheets.push(current)};
+newSheet();for(const e of r.entries){const line=node('p',thaiDate(e.visitDate)+' · '+e.title+' · '+e.hours+' ชั่วโมง'+(e.duty?' · '+e.duty:''));current.list.append(line);if((current.footer.getBoundingClientRect().bottom>current.frame.getBoundingClientRect().bottom-12||current.frame.scrollHeight>current.frame.clientHeight||current.list.children.length>perPage)&&current.list.children.length>1){line.remove();newSheet();current.list.append(line)}}
+sheets.forEach((entry,i)=>entry.footer.textContent='หน้าที่ '+(i+1)+' / '+sheets.length+' · ข้อมูลจากรายการที่เช็กชื่อแล้ว');
+await Promise.all([...host.querySelectorAll('img')].map(img=>img.complete?null:new Promise(done=>{img.onload=img.onerror=done})));
+for(const [page,entry] of sheets.entries()){const canvas=await window.html2canvas(entry.sheet,{scale:PDF_SCALE,useCORS:true,backgroundColor:'#ffffff',logging:false});if(page)pdf.addPage('a4','l');pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,297,210)}
+ pdf.save(('ใบรับรองชั่วโมง-'+r.student.studentId+'-'+r.period.label+'.pdf').replace(/[\\/:*?"<>|\s]+/g,'_'));el('serviceNote').textContent='';
+ }catch(e){el('serviceNote').textContent=e.message||'สร้างใบรับรองไม่สำเร็จ กรุณาลองอีกครั้ง'}finally{host.remove();btn.disabled=false}}
+el('semesterCertificate').onclick=downloadSemesterCertificate;
+
+// Certificates: one landscape A4 page drawn in the browser (html2canvas) and saved as PDF (jsPDF), loaded on first use.
+const LOGO_URL = 'https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png';
+// Sheets are drawn at 4x (about 380 dpi on A4) so Thai text prints sharp; 2x looked soft on paper.
+const PDF_SCALE = 4;
+const PDF_LIBS = [['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js','sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H'],['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk']];
+let pdfLibs = null;
+function loadPdfLibs() {
+  if (!pdfLibs) pdfLibs = Promise.all(PDF_LIBS.map(([src, sri]) => new Promise((ok, fail) => {
+    const s = document.createElement('script');
+    s.src = src; s.integrity = sri; s.crossOrigin = 'anonymous'; s.onload = ok;
+    s.onerror = () => fail(Error('โหลดตัวสร้าง PDF ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง'));
+    document.head.append(s);
+  }))).catch(e => { pdfLibs = null; throw e; });
+  return pdfLibs;
+}
+function certSheet(p) {
+  const sheet = node('div',null,'cert'), frame = node('div',null,'cert-frame'), logo = node('img'), sign = node('div',null,'cert-sign');
+  logo.crossOrigin = 'anonymous'; logo.alt = ''; logo.src = LOGO_URL;
+  sign.append(node('span','ลงชื่อ ..................................................'), node('p','( .................................................. )'), node('p','ผู้ดูแลศูนย์ AI & Metaverse Innovation Center'));
+  frame.append(logo, node('p','AI & Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก','cert-org'), node('h1','เกียรติบัตร'),
+    node('p','ขอมอบเกียรติบัตรฉบับนี้ไว้เพื่อแสดงว่า','cert-lead'), node('h2',p.name), node('p',p.line,'cert-line'),
+    node('p','ได้ปฏิบัติหน้าที่อาสาสมัครนักเรียนต้อนรับคณะดูงาน','cert-lead'), node('h3','“' + p.title + '”'));
+  if (p.organization) frame.append(node('p',p.organization,'cert-line'));
+  frame.append(node('p',[p.when, p.duty && 'หน้าที่ ' + p.duty, 'รวม ' + p.hours + ' ชั่วโมง'].filter(Boolean).join(' · '),'cert-when'), sign,
+    node('p','เลขที่อ้างอิง ' + p.reference + ' · ระบบอาสาสมัครนักเรียนต้อนรับคณะดูงาน','cert-ref'));
+  sheet.append(frame);
+  return sheet;
+}
+async function downloadCert(s, btn) {
+  if (btn.disabled || !student) return;
+  const label = btn.textContent, host = node('div',null,'pdf-host');
+  btn.disabled = true; btn.textContent = 'กำลังสร้าง…'; el('serviceNote').textContent = '';
+  host.setAttribute('aria-hidden','true'); document.body.append(host);
+  try {
+    await Promise.all([loadPdfLibs(), document.fonts.ready]);
+    const sheet = certSheet({name:student.name, line:'นักเรียนชั้น ม.' + student.classroom + ' เลขที่ ' + student.number + ' · เลขประจำตัว ' + student.studentId,
+      title:s.title, organization:s.organization, when:thaiDate(s.visitDate,true) + ' เวลา ' + thaiTime(s.startTime) + '–' + thaiTime(s.endTime) + ' น.', duty:s.duty, hours:s.hours, reference:s.reference});
+    host.append(sheet);
+    await Promise.all([...host.querySelectorAll('img')].map(img => img.complete ? null : new Promise(done => { img.onload = img.onerror = done; })));
+    const canvas = await window.html2canvas(sheet, {scale:PDF_SCALE, useCORS:true, backgroundColor:'#ffffff', logging:false});
+    const pdf = new window.jspdf.jsPDF({orientation:'l', unit:'mm', format:'a4', compress:true});
+    pdf.addImage(canvas.toDataURL('image/jpeg', .95), 'JPEG', 0, 0, 297, 210);
+    pdf.save(('เกียรติบัตร-' + student.studentId + '-' + s.reference + '.pdf').replace(/\s+/g, '_'));
+  } catch (e) {
+    el('serviceNote').textContent = e.message || 'สร้างเกียรติบัตรไม่สำเร็จ กรุณาลองอีกครั้ง';
+  } finally {
+    host.remove(); btn.disabled = false; btn.textContent = label;
+  }
+}
+
+// The board arrives inside the page, so the first paint needs no server call.
+let boot = null;
+try { boot = JSON.parse(el('boot').textContent); } catch { boot = null; }
+const pageStart = Date.now();
+tick();
+if (boot && boot.success) { applyBoard(boot, '', pageStart); setTimeout(() => { if (!document.hidden && !busy && !draft.visitId) loadBoard(); }, 15000); } else loadBoard();
+restoreSession();
+{
+  const m = /^(VIS-[A-F0-9]{8})\.(\d{6})$/.exec(document.body.dataset.checkin || '');
+  if (m) {
+    quick = {visitId:m[1], code:m[2], session:null};
+    const v = visits.find(x => x.visitId === m[1]);
+    el('quickVisit').textContent = v ? v.title + ' · ' + thaiDate(v.visitDate) + ' ' + thaiTime(v.startTime) + '–' + thaiTime(v.endTime) + ' น.' : 'กรอกเลขประจำตัวและเบอร์โทรศัพท์เพื่อเช็กชื่อ';
+    document.body.classList.add('checkin-mode');
+    el('quickCheckin').hidden = false;
+  }
+}
+// Hero banner: a crossfading slideshow of the centre's photos (lines of BannerData.html). It loads after everything
+// else is on screen (not at all while the attendance form is shown): the first photo alone so the banner fills
+// quickly, then the rest, each joining the rotation once it has decoded.
+const HERO_PHOTOS = [3, 4, 5, 6], SLIDE_MS = 5500;
+let heroAsked = false, slides = [], slideAt = 0, slideTimer = 0;
+function showSlide(i) {
+  if (!slides.length) return;
+  slides[slideAt].classList.remove('on');
+  slideAt = (i + slides.length) % slides.length;
+  slides[slideAt].classList.add('on');
+  [...el('heroDots').children].forEach((dot, n) => dot.setAttribute('aria-current', n === slideAt ? 'true' : 'false'));
+  clearTimeout(slideTimer);
+  if (!document.hidden && slides.length > 1) slideTimer = setTimeout(() => showSlide(slideAt + 1), SLIDE_MS);
+}
+function addSlide(img) {
+  const n = slides.push(img) - 1, dot = node('button');
+  dot.type = 'button';
+  dot.setAttribute('aria-label', 'ภาพกิจกรรมที่ ' + (n + 1));
+  dot.onclick = () => showSlide(n);
+  el('heroDots').append(dot);
+  el('heroDots').hidden = slides.length < 2;
+  if (slides.length === 1 || (slides.length === 2 && !slideTimer)) showSlide(slideAt);
+}
+function heroPhoto() {
+  if (heroAsked) return;
+  heroAsked = true;
+  const first = el('heroPhoto');
+  const load = (img, src) => { img.onload = () => { img.classList.add('ready'); el('photoArt').hidden = true; addSlide(img); }; img.src = src; };
+  rpc('campusPhotos', HERO_PHOTOS.slice(0, 1)).then(list => {
+    if (list && list[0]) load(first, list[0]);
+    // Give touch devices time to finish drawing the page before loading other photographs.
+    if (navigator.connection && navigator.connection.saveData) return;
+    const delay = matchMedia('(pointer: coarse)').matches ? 2500 : 0;
+    setTimeout(() => rpc('campusPhotos', HERO_PHOTOS.slice(1)).then(rest => {
+      (rest || []).filter(Boolean).forEach(src => {
+        const img = node('img');
+        img.alt = '';
+        img.decoding = 'async';
+        first.parentNode.insertBefore(img, el('heroDots'));
+        load(img, src);
+      });
+    }).catch(() => {}), delay);
+  }).catch(() => { heroAsked = false; });
+}
+if (!quick) setTimeout(heroPhoto, 300);
+// Keep counts fresh, but never rebuild the cards under a student who is filling in the apply panel.
+// Every 75–105 s at random, so hundreds of open pages don't all ask the server in the same second.
+(function refreshLater() {
+  setTimeout(() => { if (!document.hidden && !busy && !draft.visitId) loadBoard(); refreshLater(); }, 75000 + Math.random() * 30000);
+})();
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { clearTimeout(slideTimer); slideTimer = 0; return; }
+  if (slides.length) showSlide(slideAt);
+  if (loaded && !busy && !draft.visitId) loadBoard();
+});
+window.addEventListener('pageshow', e => { if (e.persisted) endSession('', false); });
+</script>
+<script>
+// Motion: scroll progress, scroll-in reveal, count-up numbers, cursor glow and photo tilt. Purely visual; the page works without it.
+((REVEAL, SPOT, TILT) => {
+  'use strict';
+  const root = document.documentElement;
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const max = root.scrollHeight - innerHeight;
+      root.style.setProperty('--sp', max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+      root.classList.toggle('scrolled', scrollY > 8);
+    });
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Low-power devices (few cores, little memory, data saver) get the still version of the decorations.
+  const conn = navigator.connection || {};
+  const lite = matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 || conn.saveData;
+  if (lite) { root.classList.add('lite'); return; }
+  // Looping decorations pause while they are off screen, so scrolling a long page stays smooth.
+  if ('IntersectionObserver' in window) {
+    const idle = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('idle', !e.isIntersecting)));
+    document.querySelectorAll('.aurora,.hero,.login-card,.board').forEach(el => idle.observe(el));
+  }
+
+  // Numbers count up to each new value the page writes.
+  const countUp = el => {
+    const text = el.textContent.trim(), m = /^\d+(?:\.(\d+))?$/.exec(text);
+    if (text === el.dataset.shown || !m) return;
+    const to = parseFloat(text), from = parseFloat(el.dataset.shown) || 0, places = (m[1] || '').length, start = performance.now();
+    cancelAnimationFrame(el.countFrame);
+    const step = now => {
+      const p = Math.min(1, (now - start) / 900), shown = p < 1 ? (from + (to - from) * (1 - Math.pow(1 - p, 3))).toFixed(places) : text;
+      el.dataset.shown = shown;
+      el.textContent = shown;
+      if (p < 1) el.countFrame = requestAnimationFrame(step);
+    };
+    el.countFrame = requestAnimationFrame(step);
+  };
+  document.querySelectorAll('[data-count]').forEach(el => {
+    countUp(el);
+    new MutationObserver(() => countUp(el)).observe(el, { childList: true, characterData: true, subtree: true });
+  });
+
+  // Keep sections visible in nested Google Sites frames; no scroll-reveal observer is required.
+
+  // A soft glow follows the pointer over cards, and the hero photo tilts toward it.
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let frame = 0, last = null, tilted = null;
+  document.addEventListener('pointermove', e => {
+    last = e;
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      const t = last.target instanceof Element ? last.target : null;
+      const card = SPOT && t && t.closest(SPOT);
+      if (card) {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', last.clientX - r.left + 'px');
+        card.style.setProperty('--my', last.clientY - r.top + 'px');
+      }
+      const tilt = TILT && t && t.closest(TILT);
+      if (tilted && tilted !== tilt) { tilted.style.removeProperty('--rx'); tilted.style.removeProperty('--ry'); }
+      tilted = tilt || null;
+      if (tilt) {
+        const r = tilt.getBoundingClientRect(), x = (last.clientX - r.left) / r.width - .5, y = (last.clientY - r.top) / r.height - .5;
+        tilt.style.setProperty('--ry', (x * 10).toFixed(2) + 'deg');
+        tilt.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg');
+      }
+    });
+  }, { passive: true });
+})('.board,.section-head,.visit,.layout .card,.empty-card,.footer,.acct,.tile', '.board,.card,.visit,.me-side .me-card', '#intro');
+</script>
+
+</body></html>
