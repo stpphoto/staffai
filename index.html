@@ -863,7 +863,7 @@ function renderSide() {
   el('historyList').replaceChildren(...signups.map(h => {
     const [label, tone] = historyTag(h, at), item = node('li'), text = node('div');
     text.append(node('b', h.title), node('small', thaiDate(h.visitDate) + ' · ' + thaiTime(h.startTime) + ' น.' + (h.duty ? ' · ' + h.duty : '')));
-    item.append(text, node('span', label, 'tag ' + tone));
+    item.append(text, node('span', label, 'tag ' + tone), button('ไฟล์แนบ', 'ghost small', () => openStudentAttachments(h)));
     return item;
   }));
 }
@@ -1083,6 +1083,101 @@ function actionArea(v, state, at) {
   return box;
 }
 
+// Included in VolunteerPage.html's main script; uses its existing session and RPC helpers.
+let attachmentDialog = null, attachmentEpoch = 0, attachmentObjectUrl = '';
+function closeStudentAttachments() {
+  attachmentEpoch++;
+  if (attachmentObjectUrl) URL.revokeObjectURL(attachmentObjectUrl);
+  attachmentObjectUrl = '';
+  if (attachmentDialog) {
+    attachmentDialog.replaceChildren();
+    if (attachmentDialog.open) attachmentDialog.close();
+  }
+}
+async function openStudentAttachments(visit) {
+  if (!token || !student) return;
+  closeStudentAttachments();
+  const epoch = attachmentEpoch, session = token;
+  const current = () => epoch === attachmentEpoch && session === token && !!student;
+  if (!attachmentDialog) {
+    const css = node('style', `.student-files{box-sizing:border-box;width:min(880px,calc(100% - 24px));max-height:90dvh;padding:24px;border:1px solid #dbe5f5;border-radius:22px;color:#122447;background:#fff;overflow:auto}.student-files::backdrop{background:#0e1b3b99}.student-files header{display:flex;align-items:center;justify-content:space-between;gap:16px}.student-files h2{font-size:22px;margin:0}.student-files .file-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #e5eaf3}.student-files .file-info{min-width:0;overflow-wrap:anywhere}.student-files small{display:block;color:#657594}.student-files .file-status{min-height:24px;color:#425779}.student-files .file-preview img{display:block;max-width:100%;max-height:62dvh;object-fit:contain;margin:auto}.student-files .file-preview iframe{width:100%;height:58dvh;border:1px solid #e5eaf3;border-radius:12px}.student-files .file-download{display:inline-flex;margin:12px 0}.student-files button{min-height:44px;flex-shrink:0}.student-files progress{width:100%;height:10px}@media(max-width:520px){.student-files{padding:16px;border-radius:16px}.student-files h2{font-size:19px}.student-files .file-row{align-items:flex-start}.student-files .file-row button{padding:9px 12px;font-size:14px}}`);
+    document.head.append(css);
+    attachmentDialog = node('dialog', null, 'student-files');
+    attachmentDialog.setAttribute('aria-labelledby', 'studentFilesTitle');
+    attachmentDialog.addEventListener('cancel', e => { e.preventDefault(); closeStudentAttachments(); });
+    document.body.append(attachmentDialog);
+  }
+  const header = node('header'), heading = node('h2', 'หนังสือราชการและรูปภาพ');
+  heading.id = 'studentFilesTitle';
+  header.append(heading, button('ปิด', 'ghost small', closeStudentAttachments));
+  const status = node('p', 'กำลังโหลดรายการไฟล์…', 'file-status');
+  status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+  const list = node('div'), preview = node('div', null, 'file-preview');
+  const progress = node('progress'); progress.max = 100; progress.value = 0; progress.hidden = true;
+  progress.setAttribute('aria-label', 'ความคืบหน้าการโหลดไฟล์');
+  attachmentDialog.append(header, node('p', visit.title), list, status, progress, preview);
+  attachmentDialog.showModal();
+  let loading = false;
+  async function showFile(file) {
+    if (loading || !current()) return;
+    loading = true;
+    list.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    preview.replaceChildren();
+    if (attachmentObjectUrl) URL.revokeObjectURL(attachmentObjectUrl);
+    attachmentObjectUrl = ''; progress.hidden = false; progress.value = 0;
+    try {
+      const types = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+      if (!types.includes(file.type) || !Number.isInteger(file.size) || file.size < 1 || file.size > 30000000) throw Error('ประเภทหรือขนาดไฟล์ไม่รองรับ');
+      let offset = 0; const chunks = [];
+      while (offset < file.size) {
+        status.textContent = 'กำลังโหลด ' + file.name + ' · ' + Math.floor(offset / file.size * 100) + '%';
+        const r = await rpc('studentVisitAttachmentPart', session, visit.visitId, file.index, offset, file.revision);
+        if (!current()) return;
+        if (r && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
+        if (!r || !r.ok) throw Error(r && r.message || 'เปิดไฟล์ไม่สำเร็จ');
+        const next = Math.min(file.size, offset + 1048576);
+        if (r.next !== next || r.size !== file.size || r.type !== file.type || r.revision !== file.revision || typeof r.data !== 'string') throw Error('ได้รับข้อมูลไฟล์ไม่ถูกต้อง กรุณาลองอีกครั้ง');
+        const binary = atob(r.data);
+        if (binary.length !== next - offset) throw Error('ได้รับไฟล์ไม่ครบ กรุณาลองอีกครั้ง');
+        chunks.push(Uint8Array.from(binary, c => c.charCodeAt(0)));
+        offset = next; progress.value = Math.round(offset / file.size * 100);
+      }
+      if (!current()) return;
+      attachmentObjectUrl = URL.createObjectURL(new Blob(chunks, {type:file.type}));
+      const download = node('a', 'ดาวน์โหลดไฟล์', 'btn primary file-download');
+      download.href = attachmentObjectUrl; download.download = file.name;
+      preview.append(download);
+      if (file.type === 'application/pdf') {
+        preview.append(node('p', 'หากเบราว์เซอร์ไม่แสดง PDF ให้กดดาวน์โหลดไฟล์เพื่อเปิดอ่าน'));
+        const frame = node('iframe'); frame.title = file.name; frame.src = attachmentObjectUrl;
+        preview.append(frame);
+      } else {
+        const picture = node('img'); picture.alt = file.name; picture.src = attachmentObjectUrl;
+        preview.append(picture);
+      }
+      status.textContent = file.name + ' · พร้อมเปิดดู';
+    } catch (e) {
+      if (current()) status.textContent = e.message || 'โหลดไฟล์ไม่ได้ กรุณาลองอีกครั้ง';
+    } finally {
+      if (current()) { loading = false; progress.hidden = true; list.querySelectorAll('button').forEach(b => { b.disabled = false; }); }
+    }
+  }
+  try {
+    const r = await rpc('studentVisitAttachments', session, visit.visitId);
+    if (!current()) return;
+    if (r && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
+    if (!r || !r.ok) throw Error(r && r.message || 'โหลดรายการไม่ได้');
+    for (const file of r.files || []) {
+      const row = node('div', null, 'file-row'), info = node('div', null, 'file-info');
+      info.append(node('b', file.name), node('small', (file.size / 1000000).toFixed(2) + ' MB'));
+      row.append(info, button('เปิดดู', 'ghost small', () => showFile(file))); list.append(row);
+    }
+    status.textContent = r.files.length ? 'เลือกไฟล์ที่ต้องการเปิดดูหรือดาวน์โหลด' : 'คณะดูงานนี้ยังไม่มีไฟล์แนบที่เปิดดูได้';
+    if (r.unavailable) status.textContent += ' · บางไฟล์ไม่พร้อมใช้งาน กรุณาติดต่อผู้ดูแล';
+  } catch (e) { if (current()) status.textContent = e.message || 'โหลดรายการไม่ได้ กรุณาลองอีกครั้ง'; }
+}
+
+
 function visitCard(v, at) {
   const state = stateOf(v, at), card = node('article',null,'visit' + (v.visitId === selectedId ? ' selected' : ''));
   const p = parts(stamp(v.visitDate)), date = node('div',null,'date-block'), body = node('div',null,'visit-body'), head = node('div',null,'visit-head');
@@ -1108,6 +1203,7 @@ function visitCard(v, at) {
     body.append(duties);
   }
   if (v.details) body.append(node('p',v.details,'details'));
+  if (token && student) body.append(button('หนังสือราชการและรูปภาพ', 'ghost small', () => openStudentAttachments(v)));
   body.append(actionArea(v, state, at));
   if (notes[v.visitId]) { const msg = node('p',notes[v.visitId].text,'msg ' + notes[v.visitId].tone); msg.setAttribute('role','status'); body.append(msg); }
   card.append(date, body);
@@ -1232,6 +1328,7 @@ function startSession(r, started) {
   if (r.board && r.board.success) applyBoard(r.board, token, started); else loadBoard();
 }
 function endSession(message, notifyServer) {
+  closeStudentAttachments();
   const old = token;
   saveSession(null);
   token = ''; student = null; until = 0; mine = {}; busy = ''; confirmCancel = ''; pendingVisit = ''; resume = ''; service = {hours:0, visits:[]};
