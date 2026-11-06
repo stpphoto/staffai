@@ -488,6 +488,7 @@ body{padding-top:var(--nav-height,94px)}
 .menu-panel{right:max(12px,calc((100% - 1180px)/2));left:auto;width:min(360px,calc(100% - 24px));max-height:calc(100vh - var(--nav-height,94px) - 12px);max-height:calc(100dvh - var(--nav-height,94px) - 12px);overflow-y:auto;overscroll-behavior:contain}
 @media(max-width:980px){.nav-links{display:none}}
 @media(max-width:440px){.topbar .wrap{gap:5px}.menu-btn{gap:4px;padding:9px}.signed #navAccount{max-width:18vw}}
+ #quickAction{width:100%;min-height:48px;border:1px solid #cedbf0;border-radius:14px;padding:12px;color:#172d53;background:#f7f9fd;font:inherit}
 </style></head><body class="" data-checkin="" data-app-url="./" data-public-url="https://stpphoto.github.io/staffai/"><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <svg class="sprites" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -530,7 +531,7 @@ body{padding-top:var(--nav-height,94px)}
 <form class="card-body" id="quickForm" novalidate>
 <div class="field"><label for="quickId">เลขประจำตัวนักเรียน</label><div class="input"><svg class="ico" aria-hidden="true"><use href="#i-id"/></svg><input id="quickId" inputmode="numeric" maxlength="20" autocomplete="username" placeholder="เช่น 10234" required></div></div>
 <div class="field"><label for="quickPhone">เบอร์โทรศัพท์</label><div class="input"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><input id="quickPhone" type="password" inputmode="tel" maxlength="12" autocomplete="current-password" placeholder="เบอร์ที่ใช้สมัครสตราฟ" required></div></div>
-<button class="btn primary block" id="quickButton" type="submit"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="quickText">เช็กชื่อ</span></button>
+<div class="field"><label for="quickAction">เลือกการบันทึกเวลา</label><select id="quickAction"><option value="in">เช็กอินเริ่มงาน</option><option value="out">เช็กเอาต์เลิกงาน</option></select><p class="note">ชั่วโมงจะนับหลังครูตรวจรับรองเวลาแล้ว</p></div><button class="btn primary block" id="quickButton" type="submit"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="quickText">เช็กชื่อ</span></button>
 <p class="note warn" id="quickNote" role="alert"></p></form>
 <div class="card-body quick-done" id="quickDone" role="status" hidden><span class="quick-mark"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></span><h3 id="quickDoneTitle"></h3><p id="quickDoneText"></p></div>
 <div class="quick-foot"><button class="btn ghost block" type="button" id="quickMore">ไปหน้าระบบอาสาสมัคร</button></div>
@@ -603,7 +604,7 @@ body{padding-top:var(--nav-height,94px)}
 <ul class="mine" id="myList"></ul><p class="empty-mine" id="myEmpty">ยังไม่ได้ลงทะเบียนคณะใด เลือกคณะแล้วกด “สมัครเป็นอาสาสมัคร”</p>
 <button class="btn primary block pick" type="button" data-jump="visits">เลือกคณะดูงานที่จะสมัคร<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button></section>
 <section class="acct" aria-labelledby="hoursTitle"><div class="acct-head"><h3 id="hoursTitle">ชั่วโมงจิตอาสา</h3><span id="hoursTotal"></span></div>
-<button type="button" class="btn primary small" id="semesterCertificate">ดาวน์โหลดใบรับรองรวมประจำภาคเรียน</button><p class="note">ใช้ภาคเรียนและช่วงวันที่ล่าสุดที่ผู้ดูแลกำหนด</p><ul class="mine" id="serviceList"></ul><p class="empty-mine" id="serviceEmpty">ยังไม่มีชั่วโมงจิตอาสา เช็กชื่อในวันรับคณะเพื่อบันทึกชั่วโมงและรับเกียรติบัตร</p><p class="note warn" id="serviceNote" role="alert"></p></section>
+<button type="button" class="btn primary small" id="semesterCertificate">ดาวน์โหลดใบรับรองรวมประจำภาคเรียน</button><p class="note">ใช้ภาคเรียนและช่วงวันที่ล่าสุดที่ผู้ดูแลกำหนด</p><ul class="mine" id="serviceList"></ul><p class="empty-mine" id="serviceEmpty">เช็กอินเมื่อเริ่มงานและเช็กเอาต์เมื่อเสร็จงาน ชั่วโมงจะรวมในใบรับรองหลังครูตรวจรับรองแล้ว</p><p class="note warn" id="serviceNote" role="alert"></p></section>
 <details class="history acct" id="historyBox" hidden><summary>ประวัติทั้งหมด <span id="historyCount"></span></summary><ul id="historyList"></ul></details>
 </div></section>
 
@@ -899,7 +900,9 @@ function renderApplication() {
 el('meHistory').onclick = () => { el('historyBox').open = true; scrollWithinApp(el('historyBox')); };
 function historyTag(h, at) {
   if (h.status === 'cancelled') return ['ยกเลิกแล้ว', 'closed'];
-  if (h.attendance === 'present') return ['มา +' + h.hours + ' ชม.', 'open'];
+  if (h.attendance === 'present') return ['รับรองแล้ว +' + h.hours + ' ชม.', 'open'];
+  if (h.attendance === 'pending') return ['รอครูรับรอง '+h.proposedHours+' ชม.', 'upcoming'];
+  if (h.attendance === 'checked_in') return ['เช็กอินแล้ว · ยังไม่เช็กเอาต์', 'upcoming'];
   if (h.attendance === 'absent') return ['ไม่มา', 'closed'];
   const over = stamp(h.visitDate + 'T' + h.endTime) < at;
   if (h.status === 'waitlist') return [over ? 'ไม่ได้เป็นตัวจริง' : 'สำรอง', 'full'];
@@ -1007,11 +1010,12 @@ function cancelButton(v, label) {
   return cancel;
 }
 function checkinForm(v) {
-  const form = node('form',null,'checkin'), input = node('input'), go = button(busy === 'checkin:' + v.visitId ? 'กำลังเช็กอิน…' : 'เช็กอิน','primary small',null);
+  const action=mine[v.visitId]?.checkInAt?'out':'in',label=action==='out'?'เช็กเอาต์เลิกงาน':'เช็กอินเริ่มงาน';
+  const form = node('form',null,'checkin'), input = node('input'), go = button(busy === 'checkin:' + v.visitId ? 'กำลังบันทึก…' : label,'primary small',null);
   go.type = 'submit'; go.disabled = Boolean(busy);
   input.id = 'code-' + v.visitId; input.inputMode = 'numeric'; input.maxLength = 7; input.autocomplete = 'off'; input.placeholder = 'รหัส 6 หลักจากผู้ดูแล';
   input.value = codes[v.visitId] || ''; input.setAttribute('aria-label','รหัสเช็กอิน'); input.oninput = () => { codes[v.visitId] = input.value; };
-  form.onsubmit = e => { e.preventDefault(); checkIn(v, input.value); };
+  form.onsubmit = e => { e.preventDefault(); checkIn(v, input.value, action); };
   form.append(icon('check'), input, go);
   return form;
 }
@@ -1033,8 +1037,10 @@ function actionArea(v, state, at) {
     done.append(mark, text);
     if (at < stamp(v.closeAt)) done.append(cancelButton(v, 'ยกเลิกการลงทะเบียน'));
     box.append(done);
-    if (entry.attendance === 'present') { const ok = node('p',null,'checked'); ok.append(icon('check'), node('span','เช็กอินแล้ว · ได้รับชั่วโมงจิตอาสา ' + entry.hours + ' ชั่วโมง')); box.append(ok); }
-    else if (checkinOpen(v, at)) box.append(checkinForm(v));
+    if (entry.attendance === 'present') { const ok = node('p',null,'checked'); ok.append(icon('check'), node('span','ครูรับรองแล้ว · ชั่วโมงจิตอาสา ' + entry.hours + ' ชั่วโมง')); box.append(ok); }
+    else if(entry.attendance==='absent')box.append(node('p','ครูบันทึกว่าไม่มา หากข้อมูลไม่ถูกต้องให้ติดต่อครู','wait'));
+    else if(entry.checkOutAt)box.append(node('p','เช็กเอาต์แล้ว · '+entry.proposedHours+' ชั่วโมง รอครูตรวจรับรอง','checked'));
+    else {if(entry.checkInAt)box.append(node('p','เช็กอินแล้ว '+new Date(entry.checkInAt).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Bangkok'})+' น. · อย่าลืมเช็กเอาต์','checked'));if(checkinOpen(v,at))box.append(checkinForm(v));else if(entry.checkInAt)box.append(node('p','หมดช่วงบันทึกเวลาแล้ว กรุณาติดต่อครูเพื่อตรวจแก้เวลา','wait'));}
     return box;
   }
   const full = state === 'full';
@@ -1397,18 +1403,18 @@ function cancelMine(v) {
   }).catch(() => { busy = ''; notes[v.visitId] = {text:FAILURE, tone:'error'}; renderVisits(); });
 }
 
-function checkIn(v, code) {
+function checkIn(v, code, action) {
   if (busy || !token) return;
   const digits = String(code || '').replace(/\D/g, '');
   if (digits.length !== 6) { notes[v.visitId] = {text:'กรอกรหัสเช็กอิน 6 หลักจากผู้ดูแล', tone:'warn'}; renderVisits(); return; }
   busy = 'checkin:' + v.visitId;
   delete notes[v.visitId];
   renderVisits();
-  rpc('checkInVolunteer', token, v.visitId, digits).then(r => {
+  rpc('checkInVolunteer', token, v.visitId, digits, action).then(r => {
     busy = '';
     if (r && r.expired) return endSession('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง', false);
     if (!r || !r.success) { notes[v.visitId] = {text:(r && r.message) || FAILURE, tone:'error'}; renderVisits(); return; }
-    if (mine[v.visitId]) { mine[v.visitId].attendance = 'present'; mine[v.visitId].hours = r.hours; }
+    if (mine[v.visitId]) { Object.assign(mine[v.visitId],{attendance:r.attendance,hours:r.hours,checkInAt:r.checkInAt,checkOutAt:r.checkOutAt,proposedHours:r.proposedHours}); }
     delete codes[v.visitId];
     notes[v.visitId] = {text:r.message, tone:'ok'};
     renderAll();
@@ -1428,14 +1434,14 @@ el('quickForm').addEventListener('submit', e => {
   el('quickButton').disabled = true;
   el('quickText').textContent = 'กำลังเช็กชื่อ…';
   const target = quick;
-  rpc('quickCheckIn', id, phone, target.visitId, target.code).then(r => {
+  rpc('quickCheckIn', id, phone, target.visitId, target.code, el('quickAction').value).then(r => {
     // Signed in even when the check-in itself is refused, so the full page opens with this student's account.
     if (r && r.token) target.session = {token:r.token, until:r.until, student:r.student};
     if (!r || !r.success) { el('quickNote').textContent = (r && r.message) || FAILURE; return; }
     el('quickForm').hidden = true;
     el('quickDone').hidden = false;
-    el('quickDoneTitle').textContent = r.already ? 'เช็กชื่อไว้แล้ว' : 'เช็กชื่อเรียบร้อย';
-    el('quickDoneText').textContent = r.student.name + ' · ได้รับชั่วโมงจิตอาสา ' + r.hours + ' ชั่วโมง';
+    el('quickDoneTitle').textContent = r.already ? 'บันทึกเวลานี้ไว้แล้ว' : 'บันทึกเวลาเรียบร้อย';
+    el('quickDoneText').textContent = r.student.name + ' · ' + r.message;
   }).catch(() => { el('quickNote').textContent = FAILURE; }).finally(() => {
     busy = '';
     el('quickButton').disabled = false;
