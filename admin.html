@@ -637,9 +637,17 @@ function applicationReview(a){
  for(const [status,label,cls] of [['approved','อนุมัติใบสมัคร','approve'],['rejected','ไม่อนุมัติ','danger'],['pending','ตั้งเป็นรอตรวจสอบ','ghost']]){
  const button=node('button',label,'btn '+cls);button.type='button';button.disabled=a.status===status;button.onclick=()=>confirmApplicationReview(a,status);buttons.append(button)}
  panel.append(buttons);return panel}
+function applyReviewResult(application,result){
+ const item=apps.find(x=>x.ref===application.registrationId);
+ const updated={...application,status:result.status,revision:result.revision};
+ if(item){item.status=result.status;item.application={...updated};delete item.application.portrait;}
+ // Ignore a dashboard response that began before the status was saved.
+ ++dSerial;++serial;by('refresh').disabled=false;by('syncText').textContent='อัปเดตผลการตรวจแล้ว';
+ renderOverview();if(currentDetailRef===application.registrationId)renderApplication(updated);else if(by('detailView').hidden)renderApps();
+}
 function confirmApplicationReview(a,status){
  const label=STATUS[status];if(!label||!token)return;
- if(!openCrud('ยืนยันผลการตรวจใบสมัคร',async()=>{const r=await rpc('adminReviewApplication',token,{registrationId:a.registrationId,revision:a.revision,status});if(r.ok)r.after=()=>{showTab('apps');return detail(a.registrationId)};return r},'ยืนยัน'+(status==='approved'?'อนุมัติ':status==='rejected'?'ไม่อนุมัติ':'ตั้งรอตรวจสอบ')))return;
+ if(!openCrud('ยืนยันผลการตรวจใบสมัคร',async()=>{const r=await rpc('adminReviewApplication',token,{registrationId:a.registrationId,revision:a.revision,status});if(r.ok){if(r.revision)r.applyLocal=()=>applyReviewResult(a,r);else r.after=()=>{showTab('apps');return detail(a.registrationId)}};return r},'ยืนยัน'+(status==='approved'?'อนุมัติ':status==='rejected'?'ไม่อนุมัติ':'ตั้งรอตรวจสอบ')))return;
  by('crudBody').append(node('h3',(a.prefix||'')+(a.fullName||'ผู้สมัคร')),node('p','รหัสนักเรียน '+a.studentId),node('p','เปลี่ยนผลการตรวจจาก “'+(STATUS[a.status]||a.status)+'” เป็น “'+label+'”'));
  by('crudCancel').focus()}
 function showList(){currentDetailRef='';++serial;by('detailView').hidden=true;by('listView').hidden=false;by('person').replaceChildren();if(loaded)renderApps()}
@@ -917,7 +925,7 @@ by('editDialog').addEventListener('cancel',e=>{e.preventDefault();closeCrud()});
 by('crudForm').onsubmit=async e=>{e.preventDefault();if(crudBusy||!crudAction||!token)return;const current=crudEpoch,session=token;setCrudBusy(true);by('crudNote').textContent='กำลังบันทึก…';
  try{const result=await crudAction();if(current!==crudEpoch||session!==token)return;
  if(!result||!result.ok){if(result?.expired){reset('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง');return}by('crudNote').textContent=result?.message||'บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง';return}
- const after=result.after;closeCrud(true);await loadDashboard();if(session!==token)return;if(after)await after();by('deskNote').textContent=result.message||'บันทึกข้อมูลเรียบร้อยแล้ว';
+ const after=result.after;closeCrud(true);if(result.applyLocal)result.applyLocal();else{await loadDashboard();if(session!==token)return;if(after)await after();}by('deskNote').textContent=result.message||'บันทึกข้อมูลเรียบร้อยแล้ว';
  }catch(error){if(current===crudEpoch)by('crudNote').textContent=error.message||'ติดต่อระบบไม่ได้ กรุณาลองอีกครั้ง'}finally{if(current===crudEpoch)setCrudBusy(false)}};
 function formField(container,id,label,value='',options={}){
  const box=node('div',null,options.wide?'crud-wide':''),lab=node('label',label),input=node(options.choices?'select':options.multiline?'textarea':'input');lab.htmlFor=id;input.id=id;
