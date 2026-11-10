@@ -114,6 +114,7 @@ label{display:block;margin-bottom:6px;font-weight:650;font-size:14px}
 .photo-dialog{width:min(860px,94vw);max-height:94vh;padding:0;border:1px solid var(--line);border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 30px 90px #0f1f3d66;overflow:auto}.photo-dialog::backdrop{background:#0a1a36d9}
 .photo-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}.photo-head h2{font-size:17px}.photo-actions{display:flex;gap:6px}
 .photo-stage{height:min(66vh,620px);overflow:auto;background:#0f1f3d}.photo-stage img{display:block;width:100%;height:100%;object-fit:contain}.photo-stage.enlarged img{width:200%;height:200%}body:has(.photo-dialog[open]){overflow:hidden}
+.photo-feedback{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 18px;font-size:14px;min-height:42px}.photo-feedback:has(#photoNote:empty){display:none}.photo-stage img:not([src]){visibility:hidden}
 
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ov-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:960px){.app{grid-template-columns:minmax(0,1fr)}.sidebar{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px}.side-brand{padding:0}.side-nav{order:3;display:flex;width:100%;overflow-x:auto}.nav-item{width:auto;white-space:nowrap;padding:9px 12px}.nav-item[aria-selected=true]:before{display:none}.side-links{display:none}.side-user{margin:0 0 0 auto;padding:6px 8px}.side-user div{display:none}.workspace{padding:20px 14px 32px}}
@@ -480,7 +481,7 @@ body{position:relative;background:#f4f6fc}
 </section>
 </main>
 </div>
-<dialog id="photoDialog" class="photo-dialog" aria-labelledby="photoDialogTitle"><div class="photo-head"><h2 id="photoDialogTitle">รูปถ่ายผู้สมัคร</h2><div class="photo-actions"><button type="button" class="btn ghost small" id="photoZoom" aria-pressed="false">ขยาย 2 เท่า</button><button type="button" class="btn ghost small" id="photoClose" autofocus>ปิดรูป</button></div></div><div class="photo-stage" id="photoStage"><img id="largePhoto" alt="รูปถ่ายผู้สมัครขนาดใหญ่"></div></dialog>
+<dialog id="photoDialog" class="photo-dialog" aria-labelledby="photoDialogTitle"><div class="photo-head"><h2 id="photoDialogTitle">รูปถ่ายผู้สมัคร</h2><div class="photo-actions"><button type="button" class="btn ghost small" id="photoZoom" aria-pressed="false">ขยาย 2 เท่า</button><button type="button" class="btn ghost small" id="photoClose" autofocus>ปิดรูป</button></div></div><div class="photo-stage" id="photoStage"><img id="largePhoto" alt="รูปถ่ายผู้สมัครขนาดใหญ่" decoding="async"></div><div class="photo-feedback"><span id="photoNote" role="status" aria-live="polite"></span><button type="button" class="btn ghost small" id="photoRetry" hidden>ลองโหลดรูปอีกครั้ง</button></div></dialog>
 <dialog id="editDialog" class="crud-dialog" aria-labelledby="crudTitle"><form id="crudForm" class="vform">
 <div class="panel-head"><div><p class="kicker">MANAGE RECORD</p><h2 id="crudTitle"></h2></div><button type="button" class="btn ghost small" id="crudClose" aria-label="ปิดหน้าต่างจัดการข้อมูล">ปิด</button></div>
 <div id="crudBody"></div><p class="notice" id="crudNote" role="alert"></p><div class="form-actions"><button type="button" class="btn ghost" id="crudCancel">ยกเลิก</button><button type="submit" class="btn primary" id="crudSave">บันทึกข้อมูล</button></div></form></dialog>
@@ -500,7 +501,8 @@ function icon(name){const ns='http://www.w3.org/2000/svg',s=document.createEleme
 // Private images stay in this page's memory and are cleared on refresh or sign-out.
 let photoEpoch=0,photoObserver=null,photoTimer=0,photoBusy=0;
 const photoCache=new Map(),photoQueue=new Map(),photoInFlight=new Set();
-function clearApplicantPhotos(keep=false){photoEpoch++;clearTimeout(photoTimer);photoTimer=0;photoBusy=0;photoInFlight.clear();photoObserver?.disconnect();photoObserver=null;if(!keep)photoCache.clear();photoQueue.clear()}
+const fullPhotoCache=new Map(),fullPhotoRequests=new Map();
+function clearApplicantPhotos(keep=false){photoEpoch++;clearTimeout(photoTimer);photoTimer=0;photoBusy=0;photoInFlight.clear();photoObserver?.disconnect();photoObserver=null;if(!keep){photoCache.clear();fullPhotoCache.clear();fullPhotoRequests.clear()}photoQueue.clear()}
 function paintApplicantPhoto(box,source){
  box.replaceChildren(icon('user'));box.title=source?'รูปผู้สมัคร':'ไม่มีรูปถ่ายหรือไม่สามารถโหลดรูปได้';
  if(!source)return;const img=node('img');img.alt='';img.decoding='async';img.onerror=()=>{box.replaceChildren(icon('user'));box.title='ไม่สามารถแสดงรูปถ่ายได้'};img.src=source;box.replaceChildren(img)}
@@ -512,18 +514,18 @@ function queueApplicantPhoto(box,ref){
 function applicantAvatar(item){
  const box=node('span',null,'avatar applicant-avatar');box.setAttribute('aria-hidden','true');box.append(icon('user'));box.dataset.applicantRef=item.ref;
  if(photoCache.has(item.ref)){paintApplicantPhoto(box,photoCache.get(item.ref).source);return box}
- if(!photoObserver&&'IntersectionObserver' in window){const observedEpoch=photoEpoch;photoObserver=new IntersectionObserver(entries=>{if(observedEpoch!==photoEpoch)return;for(const entry of entries)if(entry.isIntersecting){photoObserver.unobserve(entry.target);queueApplicantPhoto(entry.target,entry.target.dataset.applicantRef)}},{rootMargin:'120px'});}
+ if(!photoObserver&&'IntersectionObserver' in window){const observedEpoch=photoEpoch;photoObserver=new IntersectionObserver(entries=>{if(observedEpoch!==photoEpoch)return;for(const entry of entries){const box=entry.target,ref=box.dataset.applicantRef;if(entry.isIntersecting)queueApplicantPhoto(box,ref);else{photoQueue.get(ref)?.delete(box);if(!photoQueue.get(ref)?.size&&!photoInFlight.has(ref))photoQueue.delete(ref)}}},{rootMargin:'480px'});}
  if(photoObserver)photoObserver.observe(box);else setTimeout(()=>queueApplicantPhoto(box,item.ref),0);
  return box}
 async function loadApplicantPhotos(){
  photoTimer=0;if(photoBusy>=2||!token)return;
  for(const [ref,boxes] of photoQueue){for(const box of boxes)if(!box.isConnected)boxes.delete(box);if(!boxes.size&&!photoInFlight.has(ref))photoQueue.delete(ref)}
- const refs=[...photoQueue.keys()].filter(ref=>!photoInFlight.has(ref)).slice(0,2);if(!refs.length)return;
+ const refs=[...photoQueue.keys()].filter(ref=>!photoInFlight.has(ref)).slice(0,4);if(!refs.length)return;
  const epoch=photoEpoch,session=token;photoBusy++;refs.forEach(ref=>photoInFlight.add(ref));
  if(photoBusy<2&&[...photoQueue.keys()].some(ref=>!photoInFlight.has(ref)))photoTimer=setTimeout(loadApplicantPhotos,0);
  try{const r=await rpc('adminApplicantPhotos',session,refs);if(epoch!==photoEpoch||session!==token)return;
  if(r?.expired){reset('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง');return}
- for(const ref of refs){const source=(r?.ok&&r.photos?.find(p=>p.ref===ref)?.portrait)||'';if(source)photoCache.set(ref,{source,version:apps.find(a=>a.ref===ref)?.photoVersion});for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,source);photoQueue.delete(ref)}
+ for(const ref of refs){const result=r?.ok&&r.photos?.find(p=>p.ref===ref),source=result?.portrait||'',version=apps.find(a=>a.ref===ref)?.photoVersion;if(result?.photoVersion&&result.photoVersion!==version){photoQueue.delete(ref);continue}if(source)photoCache.set(ref,{source,version});for(const box of photoQueue.get(ref)||[])if(box.isConnected){paintApplicantPhoto(box,source);if(source)photoObserver?.unobserve(box)}photoQueue.delete(ref)}
  while(photoCache.size>60)photoCache.delete(photoCache.keys().next().value);
  }catch{if(epoch===photoEpoch&&session===token)for(const ref of refs){for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,'');photoQueue.delete(ref)}}
  finally{if(epoch===photoEpoch){photoBusy--;refs.forEach(ref=>photoInFlight.delete(ref));if(!photoTimer&&[...photoQueue.keys()].some(ref=>!photoInFlight.has(ref)))photoTimer=setTimeout(loadApplicantPhotos,0)}}}
@@ -546,9 +548,11 @@ function group(title,ico,rows){const card=node('section',null,'info'),h=node('h3
 function passwordVisible(on){by('password').type=on?'text':'password';by('eyeIcon').setAttribute('href',on?'#i-hide':'#i-eye');by('toggle').setAttribute('aria-label',on?'ซ่อนรหัสผ่าน':'แสดงรหัสผ่าน');by('toggle').setAttribute('aria-pressed',String(on))}
 by('toggle').onclick=()=>passwordVisible(by('password').type==='password');
 function zoomPhoto(on){by('photoStage').classList.toggle('enlarged',on);by('photoZoom').setAttribute('aria-pressed',String(on));by('photoZoom').textContent=on?'พอดีจอ':'ขยาย 2 เท่า';by('photoStage').scrollTo(0,0)}
-function clearLargePhoto(){by('largePhoto').removeAttribute('src');zoomPhoto(false)}
+let photoViewSerial=0,photoViewRef='';
+function clearLargePhoto(){photoViewSerial++;photoViewRef='';by('largePhoto').removeAttribute('src');by('photoNote').textContent='';by('photoRetry').hidden=true;zoomPhoto(false)}
 function closePhoto(){if(by('photoDialog').open)by('photoDialog').close();clearLargePhoto()}
-function openPhoto(source){if(!token||!source)return;zoomPhoto(false);by('largePhoto').src=source;by('photoDialog').showModal();by('photoClose').focus()}
+function openPhoto(source){if(!token)return;clearLargePhoto();if(source)by('largePhoto').src=source;if(!by('photoDialog').open)by('photoDialog').showModal();by('photoClose').focus()}
+by('photoRetry').onclick=()=>{if(photoViewRef)showListPhoto(photoViewRef)};
 by('photoZoom').onclick=()=>zoomPhoto(by('photoZoom').getAttribute('aria-pressed')!=='true');
 by('photoClose').onclick=closePhoto;by('photoDialog').addEventListener('close',()=>{if(!by('photoDialog').open)clearLargePhoto()});
 by('photoDialog').addEventListener('click',e=>{if(e.target!==by('photoDialog'))return;const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closePhoto()});
@@ -588,7 +592,7 @@ async function loadDashboard(preloaded){const n=++dSerial;by('refresh').disabled
  if(!loaded&&!preloaded){by('ovVisits').replaceChildren(...skeletons(3));by('ovApps').replaceChildren(...skeletons(3));by('results').replaceChildren(...skeletons(4));by('visitRows').replaceChildren(...skeletons(2))}
  try{const r=preloaded||await rpc('adminDashboard',token);if(n!==dSerial)return;if(!accept(r)){by('syncText').textContent='';return}
  clearApplicantPhotos(true);
- const changed=new Map((r.applications||[]).map(a=>[a.ref,a.photoVersion]));for(const [ref,p] of photoCache)if(!changed.has(ref)||p.version!==changed.get(ref))photoCache.delete(ref);
+ const changed=new Map((r.applications||[]).map(a=>[a.ref,a.photoVersion]));for(const [ref,p] of photoCache)if(!changed.has(ref)||p.version!==changed.get(ref))photoCache.delete(ref);for(const key of fullPhotoCache.keys())if(![...changed].some(([ref,version])=>key===ref+':'+version))fullPhotoCache.delete(key);
  // Upcoming visits first (soonest at the top), past visits after them (most recent first).
  const today=new Date(Date.now()+25200000).toISOString().slice(0,10),past=v=>v.visitDate<today?1:0;
  apps=r.applications||[];mailConf=r.mail||null;visitList=(r.visits||[]).sort((a,b)=>past(a)-past(b)||(past(a)?-1:1)*(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime));loaded=true;const t=new Date();by('syncText').textContent='อัปเดต '+String(t.getHours()).padStart(2,'0')+'.'+String(t.getMinutes()).padStart(2,'0')+' น.';
@@ -605,10 +609,20 @@ function renderOverview(){const pending=apps.filter(a=>a.status==='pending').len
 // Applications: search and filter run locally on the list loaded with the dashboard.
 function filteredApps(){const q=term.toLowerCase();return apps.filter(r=>(statusFilter==='all'||r.status===statusFilter)&&(!q||[r.ref,r.studentId,r.name,r.room,'ม.'+r.room].some(v=>String(v||'').toLowerCase().includes(q))))}
 async function showListPhoto(ref,button){
- if(button.disabled||!token)return;const session=token,epoch=photoEpoch;button.disabled=true;by('deskNote').textContent='';
- try{const r=await rpc('adminApplicationDetail',session,ref);if(session!==token||epoch!==photoEpoch)return;if(!accept(r))return;
- if(r.application?.portrait)openPhoto(r.application.portrait);else by('deskNote').textContent='ไม่พบรูปถ่ายของผู้สมัคร หรือรูปถูกย้ายออกจากโฟลเดอร์';
- }catch{if(session===token)failed()}finally{if(button.isConnected)button.disabled=false}}
+ if(!token)return;const session=token,version=apps.find(a=>a.ref===ref)?.photoVersion,key=ref+':'+version,cached=fullPhotoCache.get(key);
+ openPhoto(cached||photoCache.get(ref)?.source||'');photoViewRef=ref;const request=photoViewSerial;
+ if(cached)return;by('photoNote').textContent=by('largePhoto').getAttribute('src')?'กำลังโหลดรูปชัดขึ้น… สามารถปิดหน้าต่างได้':'กำลังโหลดรูปถ่าย… สามารถปิดหน้าต่างได้';
+ let pending=fullPhotoRequests.get(key);
+ if(!pending){pending=rpc('adminApplicantPhotos',session,[ref],'full');fullPhotoRequests.set(key,pending);pending.finally(()=>{if(fullPhotoRequests.get(key)===pending)fullPhotoRequests.delete(key)}).catch(()=>{})}
+ let timeout;
+ try{const r=await Promise.race([pending,new Promise((_,reject)=>{timeout=setTimeout(()=>reject(Error('timeout')),15000)})]);
+ if(session!==token||request!==photoViewSerial||!by('photoDialog').open)return;if(r?.expired){accept(r);return}if(!r?.ok)throw Error('unavailable');
+ const p=r.photos?.find(p=>p.ref===ref);if(!p?.portrait)throw Error('missing');
+ if(p.photoVersion&&p.photoVersion!==version)throw Error('changed');
+ fullPhotoCache.set(key,p.portrait);while(fullPhotoCache.size>8)fullPhotoCache.delete(fullPhotoCache.keys().next().value);
+ by('largePhoto').src=p.portrait;by('photoNote').textContent='';
+ }catch{if(session===token&&request===photoViewSerial&&by('photoDialog').open){by('photoNote').textContent='ยังโหลดรูปใหญ่ไม่สำเร็จ กรุณาลองอีกครั้ง หรือรีเฟรชรายชื่อหากมีการเปลี่ยนรูป';by('photoRetry').hidden=false}}
+ finally{clearTimeout(timeout)}}
 function applicationRow(item){
  const row=node('article',null,'applicant-row'),person=node('div',null,'applicant-person'),who=node('div',null,'who'),photo=node('button',null,'list-photo'),caption=node('span',null,'photo-caption');
  photo.type='button';photo.setAttribute('aria-label','ขยายรูปของ '+(item.name||'ผู้สมัคร'));photo.setAttribute('aria-haspopup','dialog');photo.setAttribute('aria-controls','photoDialog');caption.append(icon('search'),node('span','ขยายรูป'));photo.append(applicantAvatar(item),caption);photo.onclick=()=>showListPhoto(item.ref,photo);
