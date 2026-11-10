@@ -267,7 +267,7 @@ footer a{transition:color .2s}
 <section class="hero" aria-labelledby="heroTitle"><div class="poster-head"><div class="kicker" lang="en">STUDENT STAFF PROGRAM</div><div class="hero-intro"><div class="hero-copy"><h1 id="heroTitle"><span>ลงทะเบียน</span><span>นักเรียนสตราฟ</span></h1><p>ร่วมเป็นทีมดูแลห้องเรียน AI และกิจกรรมโลกเสมือนจริงของโรงเรียน</p></div><button class="hero-cta" id="startApplication" type="button">เริ่มกรอกใบสมัคร <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div></div><figure class="activity-banner"><div class="banner-art bento" role="group" aria-label="ภาพกิจกรรมของศูนย์"><div class="shot s1"><img id="campusImage0" alt="นักเรียนสตราฟนำเสนอผลงาน STP Metaverse ให้คณะดูงาน" decoding="async"><span>นำเสนอผลงาน Metaverse</span></div><div class="shot s2"><img id="campusImage1" alt="นักเรียนแนะนำการใช้คอมพิวเตอร์ในห้องปฏิบัติการ AI" decoding="async"><span>ห้องปฏิบัติการ AI</span></div><div class="shot s3"><img id="campusImage2" alt="นักเรียนสตราฟต้อนรับและพูดคุยกับคณะดูงาน" decoding="async"><span>ต้อนรับคณะดูงาน</span></div><div class="shot s4"><img id="campusImage3" alt="นักเรียนสาธิตแอปพลิเคชันและแว่น VR ให้ผู้มาเยือน" decoding="async"><span>สาธิตเทคโนโลยี VR</span></div></div><figcaption><span class="band-title">บรรยากาศกิจกรรมของศูนย์</span><span class="band-index" lang="en">AI &amp; METAVERSE INNOVATION CENTER</span></figcaption></figure></section>
 <a class="visit-alert" id="visitAlert" href="./" target="_self" rel="noopener" hidden><span class="visit-dot" aria-hidden="true"></span><span class="visit-copy"><strong id="visitAlertTitle"></strong><small id="visitAlertText"></small></span><span class="visit-go" id="visitGo"></span></a>
 <div class="application-card" id="application">
-<div id="formSection"><div class="application-heading"><div><h2>ใบสมัครนักเรียนสตราฟ</h2><p>เตรียมรหัสนักเรียน อีเมล เบอร์โทรศัพท์ ID LINE และรูปถ่ายหน้าตรง</p></div><span class="badge">นักเรียน (Student)</span></div><div class="form-progress"><span>ข้อมูลที่กรอกครบ</span><div class="progress-track" role="progressbar" aria-label="ข้อมูลที่กรอกครบ" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="formProgress"><span class="progress-fill" id="progressFill"></span></div><span id="progressCount">0 / 10</span></div><form id="registration" novalidate>
+<p id="registrationClosed" role="status" hidden>ขณะนี้ปิดรับสมัครนักเรียนสตราฟ</p><div id="formSection"><div class="application-heading"><div><h2>ใบสมัครนักเรียนสตราฟ</h2><p>เตรียมรหัสนักเรียน อีเมล เบอร์โทรศัพท์ ID LINE และรูปถ่ายหน้าตรง</p></div><span class="badge">นักเรียน (Student)</span></div><div class="form-progress"><span>ข้อมูลที่กรอกครบ</span><div class="progress-track" role="progressbar" aria-label="ข้อมูลที่กรอกครบ" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="formProgress"><span class="progress-fill" id="progressFill"></span></div><span id="progressCount">0 / 10</span></div><form id="registration" novalidate>
 <h3 class="form-section"><span>01</span> ข้อมูลนักเรียน</h3>
 <div><label for="studentId">รหัสประจำตัวนักเรียน</label><input id="studentId" name="studentId" inputmode="numeric" pattern="[0-9]{1,20}" maxlength="20" placeholder="กรอกรหัสนักเรียน" required autocomplete="off"></div>
 <div class="two name-row"><div><label for="prefix">คำนำหน้า</label><select id="prefix" name="prefix" required><option value="">เลือกคำนำหน้า</option><option>เด็กชาย</option><option>เด็กหญิง</option><option>นาย</option><option>นางสาว</option></select></div>
@@ -310,6 +310,15 @@ footer a{transition:color .2s}
 const el = id => document.getElementById(id);
 el('startApplication').addEventListener('click', () => { el('application').scrollIntoView({behavior:'smooth',block:'start'}); });
 const form = el('registration');
+function showRegistrationClosed(){
+ el('registrationClosed').hidden=false;
+ el('formSection').hidden=true;
+ el('startApplication').hidden=true;
+}
+google.script.run.withSuccessHandler(result=>{
+ if(result?.open===false)showRegistrationClosed();
+}).withFailureHandler(()=>{}).registerStudent({availabilityOnly:true});
+
 const requiredFields = ['studentId','prefix','fullName','classroom','number','email','phone','lineId'];
 const requiredTotal = requiredFields.length + 2; // one interest group and one portrait
 const fieldMessages = {
@@ -619,6 +628,7 @@ el('confirmRegistration').addEventListener('click',() => {
     google.script.run.withSuccessHandler(result => {
       if (result && result.code === 'BUSY' && attempt < 3 && retry()) return;
       if (!result || !result.success) {
+        if(result?.code==='REGISTRATION_CLOSED')showRegistrationClosed();
         sendFailed(result?.message || failure);
         return;
       }
