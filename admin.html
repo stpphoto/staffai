@@ -595,7 +595,7 @@ async function loadDashboard(preloaded){const n=++dSerial;by('refresh').disabled
  const changed=new Map((r.applications||[]).map(a=>[a.ref,a.photoVersion]));for(const [ref,p] of photoCache)if(!changed.has(ref)||p.version!==changed.get(ref))photoCache.delete(ref);for(const key of fullPhotoCache.keys())if(![...changed].some(([ref,version])=>key===ref+':'+version))fullPhotoCache.delete(key);
  // Upcoming visits first (soonest at the top), past visits after them (most recent first).
  const today=new Date(Date.now()+25200000).toISOString().slice(0,10),past=v=>v.visitDate<today?1:0;
- apps=r.applications||[];mailConf=r.mail||null;visitList=(r.visits||[]).sort((a,b)=>past(a)-past(b)||(past(a)?-1:1)*(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime));loaded=true;const t=new Date();by('syncText').textContent='อัปเดต '+String(t.getHours()).padStart(2,'0')+'.'+String(t.getMinutes()).padStart(2,'0')+' น.';
+ apps=r.applications||[];for(const a of apps)if(a.photoPreview){photoCache.set(a.ref,{source:a.photoPreview,version:a.photoVersion});delete a.photoPreview}mailConf=r.mail||null;visitList=(r.visits||[]).sort((a,b)=>past(a)-past(b)||(past(a)?-1:1)*(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime));loaded=true;const t=new Date();by('syncText').textContent='อัปเดต '+String(t.getHours()).padStart(2,'0')+'.'+String(t.getMinutes()).padStart(2,'0')+' น.';
  renderOverview();if(by('detailView').hidden)renderApps();if(!by('visitListView').hidden)renderVisitList();
  }catch{if(n===dSerial){failed();by('syncText').textContent=''}}finally{if(n===dSerial)by('refresh').disabled=false}}
 
@@ -901,6 +901,13 @@ function formField(container,id,label,value='',options={}){
  else if(!options.multiline)input.type=options.type||'text';
  input.value=value??'';if(options.required)input.required=true;if(options.max)input.maxLength=options.max;if(options.pattern)input.pattern=options.pattern;if(options.numeric)input.inputMode='numeric';
  box.append(lab,input);container.append(box);return input}
+
+// Generate the durable private preview before sending the original. No network call.
+async function prepareFastPreview(source){
+ const image=new Image();image.src=source;await image.decode();
+ for(const size of [240,180,120]){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of [.72,.55,.38]){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=24023)return data}}
+ throw Error('ไม่สามารถเตรียมรูปย่อได้ กรุณาเลือกรูปใหม่');
+}
 async function adminPhoto(file){
  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024)throw Error('กรุณาใช้รูป JPG, PNG หรือ WebP ไม่เกิน 10 MB');
  const url=URL.createObjectURL(file);try{const img=new Image();img.src=url;await img.decode();const scale=Math.min(1,800/Math.max(img.width,img.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/jpeg',.85)}finally{URL.revokeObjectURL(url)}}
@@ -908,6 +915,7 @@ function applicationActions(a){const actions=node('div',null,'record-actions'),e
 function editApplication(a=null){
  let photo='',photoReady=Promise.resolve();const fields={};
  const save=async()=>{await photoReady;const payload={registrationId:a?.registrationId||'',revision:a?.revision||'',photo,interests:[...by('crudBody').querySelectorAll('[name=adminSkills]:checked')].map(el=>el.value)};for(const [k,el] of Object.entries(fields))payload[k]=el.value.trim();
+ if(photo)payload.photoPreview=await prepareFastPreview(photo);
  if(!payload.interests.length)throw Error('กรุณาเลือกทักษะอย่างน้อย 1 สาย');if(!a&&!photo)throw Error('กรุณาแนบรูปถ่ายผู้สมัคร');
  const r=await rpc('adminSaveApplication',token,payload);if(r.ok)r.after=()=>{showTab('apps');return detail(r.registrationId)};return r};
  if(!openCrud(a?'แก้ไขใบสมัคร':'เพิ่มผู้สมัครสตราฟ',save))return;

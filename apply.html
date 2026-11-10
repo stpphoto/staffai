@@ -323,7 +323,14 @@ const fieldMessages = {
   email: 'กรอกอีเมลให้ครบ เช่น name@school.ac.th'
 };
 const touched = new Set();
-let photoData = '';
+
+// Generate the durable private preview before sending the original. No network call.
+async function prepareFastPreview(source){
+ const image=new Image();image.src=source;await image.decode();
+ for(const size of [240,180,120]){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of [.72,.55,.38]){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=24023)return data}}
+ throw Error('ไม่สามารถเตรียมรูปย่อได้ กรุณาเลือกรูปใหม่');
+}
+let photoData = '', photoPreviewData = '';
 let processing = false;
 let sending = false;
 let reviewedApplication = null;
@@ -447,7 +454,7 @@ function setWorkingState() {
 }
 
 function clearPhoto() {
-  photoData = '';
+  photoData = ''; photoPreviewData = '';
   el('preview').removeAttribute('src');
   el('preview').hidden = true;
   el('photoIcon').hidden = false;
@@ -494,6 +501,7 @@ el('photo').addEventListener('change',async event => {
   el('photoName').textContent = 'กำลังเตรียมรูปถ่าย…';
   try {
     photoData = await preparePhoto(file);
+    photoPreviewData = await prepareFastPreview(photoData);
     el('preview').src = photoData;
     el('preview').hidden = false;
     el('photoIcon').hidden = true;
@@ -522,7 +530,7 @@ function readApplication() {
     values[id] = el(id).value.trim();
   }
   values.interests = selectedInterests();
-  values.photo = photoData;
+  values.photo = photoData; values.photoPreview = photoPreviewData;
   return values;
 }
 

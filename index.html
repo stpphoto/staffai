@@ -888,6 +888,10 @@ function renderApplication() {
     item.append(info, node('span', text, 'tag ' + cls));
     return item;
   }));
+  if(pf.photoPreview && photoAsked!==token+':'+(pf.photoVersion||'')){
+    el('mePhoto').onload=()=>{el('mePhoto').hidden=false;el('meInitial').hidden=true};
+    el('mePhoto').src=pf.photoPreview;photoAsked=token+':'+(pf.photoVersion||'');
+  }
   if (pf.photo && photoAsked !== token+':'+(pf.photoVersion||'')) {
     const sent=token, version=pf.photoVersion||'';photoAsked=sent+':'+version;
     rpc('studentPhoto', sent).then(r => {
@@ -1696,13 +1700,13 @@ f.onchange=async()=>{const n=++seq,file=f.files[0];draft=null;save.disabled=true
  try{if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024)throw Error('เลือกรูป JPG, PNG หรือ WebP ไม่เกิน 10 MB');
  url=URL.createObjectURL(file);const img=new Image();img.src=url;await img.decode();if(!img.width||!img.height||img.width*img.height>60000000)throw Error('รูปมีความละเอียดสูงเกินไป กรุณาย่อรูปก่อน');
  const resize=(size,quality)=>{const scale=Math.min(1,size/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const x=c.getContext('2d');x.fillStyle='white';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',quality)};
- const photo=resize(800,.82),thumbnail=resize(240,.72);if(photo.length>2100000||thumbnail.length>80000)throw Error('รูปยังมีขนาดใหญ่เกินไป กรุณาเลือกรูปอื่น');if(n!==seq||owner!==token)return;
+ const photo=resize(800,.82);let thumbnail=resize(240,.72);for(const size of [240,180,120]){if(thumbnail.length<=24023)break;thumbnail=resize(size,.45);}if(thumbnail.length>24023)throw Error('รูปย่อมีขนาดใหญ่เกินไป');if(photo.length>2100000||thumbnail.length>80000)throw Error('รูปยังมีขนาดใหญ่เกินไป กรุณาเลือกรูปอื่น');if(n!==seq||owner!==token)return;
  draft={photo,thumbnail};preview.src=photo;preview.hidden=false;note.textContent='ตรวจสอบรูปก่อนกดบันทึก';save.disabled=false;requestId=crypto.randomUUID();
  }catch(e){if(n===seq)note.textContent=e.message;}finally{if(url)URL.revokeObjectURL(url);}
 };
 save.onclick=async()=>{if(saving||!draft||owner!==token)return;const sent=owner,data=draft;saving=true;save.disabled=f.disabled=cancel.disabled=true;note.textContent='กำลังบันทึกรูป…';
  try{const r=await rpc('studentUpdatePhoto',sent,{...data,photoVersion:version,requestId});if(sent!==token){d.close();return;}if(!r?.ok)throw Error(r?.message||'บันทึกรูปไม่สำเร็จ กรุณาลองอีกครั้ง');
- profile={...profile,photo:true,photoVersion:r.photoVersion};photoAsked=sent+':'+r.photoVersion;const img=document.getElementById('mePhoto');img.onload=()=>{img.hidden=false;document.getElementById('meInitial').hidden=true;};img.src=data.thumbnail;d.close();
+ profile={...profile,photo:true,photoVersion:r.photoVersion,photoPreview:data.thumbnail};photoAsked=sent+':'+r.photoVersion;const img=document.getElementById('mePhoto');img.onload=()=>{img.hidden=false;document.getElementById('meInitial').hidden=true;};img.src=data.thumbnail;d.close();
  }catch(e){note.textContent=e.message;}finally{saving=false;f.disabled=cancel.disabled=false;save.disabled=!draft;}
 };
 })();
