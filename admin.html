@@ -498,34 +498,36 @@ let token='',until=0,timer=0,clockTimer=0,serial=0,vSerial=0,dSerial=0,tab='over
 function node(tag,txt,cls){const n=document.createElement(tag);if(txt!=null)n.textContent=txt;if(cls)n.className=cls;return n}
 function icon(name){const ns='http://www.w3.org/2000/svg',s=document.createElementNS(ns,'svg'),u=document.createElementNS(ns,'use');s.setAttribute('class','ico');s.setAttribute('aria-hidden','true');u.setAttribute('href','#i-'+name);s.append(u);return s}
 // Private images stay in this page's memory and are cleared on refresh or sign-out.
-let photoEpoch=0,photoObserver=null,photoTimer=0,photoBusy=false;
-const photoCache=new Map(),photoQueue=new Map();
-function clearApplicantPhotos(){photoEpoch++;clearTimeout(photoTimer);photoTimer=0;photoBusy=false;photoObserver?.disconnect();photoObserver=null;photoCache.clear();photoQueue.clear()}
+let photoEpoch=0,photoObserver=null,photoTimer=0,photoBusy=0;
+const photoCache=new Map(),photoQueue=new Map(),photoInFlight=new Set();
+function clearApplicantPhotos(keep=false){photoEpoch++;clearTimeout(photoTimer);photoTimer=0;photoBusy=0;photoInFlight.clear();photoObserver?.disconnect();photoObserver=null;if(!keep)photoCache.clear();photoQueue.clear()}
 function paintApplicantPhoto(box,source){
  box.replaceChildren(icon('user'));box.title=source?'รูปผู้สมัคร':'ไม่มีรูปถ่ายหรือไม่สามารถโหลดรูปได้';
  if(!source)return;const img=node('img');img.alt='';img.decoding='async';img.onerror=()=>{box.replaceChildren(icon('user'));box.title='ไม่สามารถแสดงรูปถ่ายได้'};img.src=source;box.replaceChildren(img)}
 function queueApplicantPhoto(box,ref){
  if(!token||!box.isConnected)return;
- if(photoCache.has(ref)){paintApplicantPhoto(box,photoCache.get(ref));return}
+ if(photoCache.has(ref)){paintApplicantPhoto(box,photoCache.get(ref).source);return}
  if(!photoQueue.has(ref))photoQueue.set(ref,new Set());photoQueue.get(ref).add(box);
- if(!photoBusy&&!photoTimer)photoTimer=setTimeout(loadApplicantPhotos,0)}
+ if(photoBusy<2&&!photoTimer)photoTimer=setTimeout(loadApplicantPhotos,0)}
 function applicantAvatar(item){
  const box=node('span',null,'avatar applicant-avatar');box.setAttribute('aria-hidden','true');box.append(icon('user'));box.dataset.applicantRef=item.ref;
- if(photoCache.has(item.ref)){paintApplicantPhoto(box,photoCache.get(item.ref));return box}
+ if(photoCache.has(item.ref)){paintApplicantPhoto(box,photoCache.get(item.ref).source);return box}
  if(!photoObserver&&'IntersectionObserver' in window){const observedEpoch=photoEpoch;photoObserver=new IntersectionObserver(entries=>{if(observedEpoch!==photoEpoch)return;for(const entry of entries)if(entry.isIntersecting){photoObserver.unobserve(entry.target);queueApplicantPhoto(entry.target,entry.target.dataset.applicantRef)}},{rootMargin:'120px'});}
  if(photoObserver)photoObserver.observe(box);else setTimeout(()=>queueApplicantPhoto(box,item.ref),0);
  return box}
 async function loadApplicantPhotos(){
- photoTimer=0;if(photoBusy||!token)return;
- for(const [ref,boxes] of photoQueue){for(const box of boxes)if(!box.isConnected)boxes.delete(box);if(!boxes.size)photoQueue.delete(ref)}
- const refs=[...photoQueue.keys()].slice(0,4);if(!refs.length)return;
- const epoch=photoEpoch,session=token;photoBusy=true;
+ photoTimer=0;if(photoBusy>=2||!token)return;
+ for(const [ref,boxes] of photoQueue){for(const box of boxes)if(!box.isConnected)boxes.delete(box);if(!boxes.size&&!photoInFlight.has(ref))photoQueue.delete(ref)}
+ const refs=[...photoQueue.keys()].filter(ref=>!photoInFlight.has(ref)).slice(0,2);if(!refs.length)return;
+ const epoch=photoEpoch,session=token;photoBusy++;refs.forEach(ref=>photoInFlight.add(ref));
+ if(photoBusy<2&&[...photoQueue.keys()].some(ref=>!photoInFlight.has(ref)))photoTimer=setTimeout(loadApplicantPhotos,0);
  try{const r=await rpc('adminApplicantPhotos',session,refs);if(epoch!==photoEpoch||session!==token)return;
  if(r?.expired){reset('หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบอีกครั้ง');return}
- for(const ref of refs){const source=(r?.ok&&r.photos?.find(p=>p.ref===ref)?.portrait)||'';photoCache.set(ref,source);for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,source);photoQueue.delete(ref)}
+ for(const ref of refs){const source=(r?.ok&&r.photos?.find(p=>p.ref===ref)?.portrait)||'';if(source)photoCache.set(ref,{source,version:apps.find(a=>a.ref===ref)?.photoVersion});for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,source);photoQueue.delete(ref)}
  while(photoCache.size>60)photoCache.delete(photoCache.keys().next().value);
- }catch{if(epoch===photoEpoch&&session===token)for(const ref of refs){photoCache.set(ref,'');for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,'');photoQueue.delete(ref)}}
- finally{if(epoch===photoEpoch){photoBusy=false;if(photoQueue.size)photoTimer=setTimeout(loadApplicantPhotos,0)}}}
+ }catch{if(epoch===photoEpoch&&session===token)for(const ref of refs){for(const box of photoQueue.get(ref)||[])if(box.isConnected)paintApplicantPhoto(box,'');photoQueue.delete(ref)}}
+ finally{if(epoch===photoEpoch){photoBusy--;refs.forEach(ref=>photoInFlight.delete(ref));if(!photoTimer&&[...photoQueue.keys()].some(ref=>!photoInFlight.has(ref)))photoTimer=setTimeout(loadApplicantPhotos,0)}}}
+
 function badge(value){return node('span',STATUS[value]||value||'ไม่ได้ระบุ','tag '+(STATUS[value]?value:''))}
 function visitBadge(state){const t=VISIT_TAGS[state]||[state,''];return node('span',t[0],'tag '+t[1])}
 function initial(name){const bare=String(name||'').replace(/^(เด็กชาย|เด็กหญิง|นางสาว|นาย|นาง)/,'').trim();return [...bare].find(ch=>!'เแโใไ'.includes(ch))||'?'}
@@ -585,7 +587,8 @@ by('qaApp').onclick=()=>{by('tabApps').click();by('newApp').click()};
 async function loadDashboard(preloaded){const n=++dSerial;by('refresh').disabled=true;by('syncText').textContent='กำลังอัปเดต…';
  if(!loaded&&!preloaded){by('ovVisits').replaceChildren(...skeletons(3));by('ovApps').replaceChildren(...skeletons(3));by('results').replaceChildren(...skeletons(4));by('visitRows').replaceChildren(...skeletons(2))}
  try{const r=preloaded||await rpc('adminDashboard',token);if(n!==dSerial)return;if(!accept(r)){by('syncText').textContent='';return}
- clearApplicantPhotos();
+ clearApplicantPhotos(true);
+ const changed=new Map((r.applications||[]).map(a=>[a.ref,a.photoVersion]));for(const [ref,p] of photoCache)if(!changed.has(ref)||p.version!==changed.get(ref))photoCache.delete(ref);
  // Upcoming visits first (soonest at the top), past visits after them (most recent first).
  const today=new Date(Date.now()+25200000).toISOString().slice(0,10),past=v=>v.visitDate<today?1:0;
  apps=r.applications||[];mailConf=r.mail||null;visitList=(r.visits||[]).sort((a,b)=>past(a)-past(b)||(past(a)?-1:1)*(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime));loaded=true;const t=new Date();by('syncText').textContent='อัปเดต '+String(t.getHours()).padStart(2,'0')+'.'+String(t.getMinutes()).padStart(2,'0')+' น.';

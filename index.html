@@ -538,7 +538,7 @@ body{padding-top:var(--nav-height,94px)}
 </section>
 <section class="hero me" id="me" aria-labelledby="meTitle" hidden>
 <div class="me-copy"><span class="eyebrow"><span class="pulse"></span>พื้นที่อาสาสมัครของฉัน</span>
-<div class="me-head"><span class="me-avatar"><img id="mePhoto" alt="รูปถ่ายจากใบสมัคร" hidden><span id="meInitial" aria-hidden="true"></span></span><div><h1 id="meTitle" tabindex="-1"></h1><p class="me-meta" id="meMeta"></p></div></div>
+<div class="me-head"><span class="me-avatar"><img id="mePhoto" alt="รูปถ่ายจากใบสมัคร" hidden><span id="meInitial" aria-hidden="true"></span></span><div><h1 id="meTitle" tabindex="-1"></h1><p class="me-meta" id="meMeta"></p><button type="button" class="btn ghost" id="changeMyPhoto" style="margin-top:12px">เปลี่ยนรูปของฉัน</button></div></div>
 <p class="me-contact" id="meContact"></p>
 <div class="stats me-stats"><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><span><b id="meHours" data-count>0</b><small>ชั่วโมงจิตอาสา</small></span></div><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><span><b id="meUpcoming" data-count>0</b><small>คณะที่ลงไว้</small></span></div><div class="stat"><span class="stat-ico"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></span><span><b id="meDone" data-count>0</b><small>คณะที่ไปแล้ว</small></span></div></div>
 <div class="goal" id="goalBox" hidden><span class="meter"><i id="goalFill"></i></span><small id="goalText"></small></div>
@@ -888,13 +888,13 @@ function renderApplication() {
     item.append(info, node('span', text, 'tag ' + cls));
     return item;
   }));
-  if (pf.photo && photoAsked !== token) {
-    const sent = photoAsked = token;
+  if (pf.photo && photoAsked !== token+':'+(pf.photoVersion||'')) {
+    const sent=token, version=pf.photoVersion||'';photoAsked=sent+':'+version;
     rpc('studentPhoto', sent).then(r => {
-      if (sent !== token || !r || !r.photo) return;
+      if(sent!==token || version!==(profile?.photoVersion||''))return;if(!r?.photo){photoAsked='';return;}
       el('mePhoto').onload = () => { el('mePhoto').hidden = false; el('meInitial').hidden = true; };
       el('mePhoto').src = r.photo;
-    }).catch(() => {});
+    }).catch(() => {if(sent===token)photoAsked='';});
   }
 }
 el('meHistory').onclick = () => { el('historyBox').open = true; scrollWithinApp(el('historyBox')); };
@@ -1335,6 +1335,7 @@ function startSession(r, started) {
 }
 function endSession(message, notifyServer) {
   closeStudentAttachments();
+  document.getElementById('myPhotoDialog')?.close();
   const old = token;
   saveSession(null);
   token = ''; student = null; until = 0; mine = {}; busy = ''; confirmCancel = ''; pendingVisit = ''; resume = ''; service = {hours:0, visits:[]};
@@ -1679,5 +1680,33 @@ window.addEventListener('pageshow', e => { if (e.persisted) endSession('', false
   }, { passive: true });
 })('.board,.section-head,.visit,.layout .card,.empty-card,.footer,.acct,.tile', '.board,.card,.visit,.me-side .me-card', '#intro');
 </script>
+<style>
+.my-photo-dialog{box-sizing:border-box;width:min(440px,calc(100% - 24px));max-height:90dvh;overflow:auto;border:1px solid #dce5f5;border-radius:24px;padding:24px;color:#13264b;background:white;box-shadow:0 24px 80px #10244944}.my-photo-dialog::backdrop{background:#0b1b3fb3}.my-photo-dialog h2{margin:0 0 8px;font-size:23px}.my-photo-dialog p{font-size:14px;color:#627397}.my-photo-dialog img{display:block;width:180px;height:220px;object-fit:contain;background:#eff4fa;border-radius:16px;margin:16px auto}.my-photo-dialog input{max-width:100%;font-size:16px;margin:16px 0}.my-photo-dialog .photo-buttons{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}.my-photo-dialog [hidden]{display:none!important}
+</style>
+<dialog id="myPhotoDialog" class="my-photo-dialog" aria-labelledby="myPhotoHeading"><h2 id="myPhotoHeading">เปลี่ยนรูปของฉัน</h2><p>เลือกรูปหน้าตรงที่เห็นใบหน้าชัดเจน JPG, PNG หรือ WebP ไม่เกิน 10 MB ระบบจะย่อรูปให้อัตโนมัติ</p><label for="myPhotoFile">เลือกรูปถ่ายใหม่</label><input id="myPhotoFile" type="file" accept="image/jpeg,image/png,image/webp"><img id="myPhotoPreview" alt="ตัวอย่างรูปใหม่" hidden><p id="myPhotoNote" role="status" aria-live="polite"></p><div class="photo-buttons"><button type="button" class="btn ghost" id="myPhotoCancel">ยกเลิก</button><button type="button" class="btn" id="myPhotoSave" disabled>บันทึกรูปใหม่</button></div></dialog>
+<script>
+(()=>{
+const d=document.getElementById('myPhotoDialog'),f=document.getElementById('myPhotoFile'),preview=document.getElementById('myPhotoPreview'),note=document.getElementById('myPhotoNote'),save=document.getElementById('myPhotoSave'),cancel=document.getElementById('myPhotoCancel');
+let draft=null,seq=0,saving=false,owner='',version='',requestId='';
+function clear(){seq++;draft=null;f.value='';preview.removeAttribute('src');preview.hidden=true;note.textContent='';save.disabled=true;}
+document.getElementById('changeMyPhoto').onclick=()=>{if(!token)return;clear();owner=token;version=profile?.photoVersion||'';requestId=crypto.randomUUID();d.showModal();f.focus();};
+cancel.onclick=()=>{if(!saving)d.close()};d.addEventListener('cancel',e=>{if(saving)e.preventDefault()});d.addEventListener('close',clear);
+f.onchange=async()=>{const n=++seq,file=f.files[0];draft=null;save.disabled=true;preview.hidden=true;if(!file)return;
+ note.textContent='กำลังเตรียมรูป…';let url;
+ try{if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024)throw Error('เลือกรูป JPG, PNG หรือ WebP ไม่เกิน 10 MB');
+ url=URL.createObjectURL(file);const img=new Image();img.src=url;await img.decode();if(!img.width||!img.height||img.width*img.height>60000000)throw Error('รูปมีความละเอียดสูงเกินไป กรุณาย่อรูปก่อน');
+ const resize=(size,quality)=>{const scale=Math.min(1,size/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const x=c.getContext('2d');x.fillStyle='white';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);return c.toDataURL('image/jpeg',quality)};
+ const photo=resize(800,.82),thumbnail=resize(240,.72);if(photo.length>2100000||thumbnail.length>80000)throw Error('รูปยังมีขนาดใหญ่เกินไป กรุณาเลือกรูปอื่น');if(n!==seq||owner!==token)return;
+ draft={photo,thumbnail};preview.src=photo;preview.hidden=false;note.textContent='ตรวจสอบรูปก่อนกดบันทึก';save.disabled=false;requestId=crypto.randomUUID();
+ }catch(e){if(n===seq)note.textContent=e.message;}finally{if(url)URL.revokeObjectURL(url);}
+};
+save.onclick=async()=>{if(saving||!draft||owner!==token)return;const sent=owner,data=draft;saving=true;save.disabled=f.disabled=cancel.disabled=true;note.textContent='กำลังบันทึกรูป…';
+ try{const r=await rpc('studentUpdatePhoto',sent,{...data,photoVersion:version,requestId});if(sent!==token){d.close();return;}if(!r?.ok)throw Error(r?.message||'บันทึกรูปไม่สำเร็จ กรุณาลองอีกครั้ง');
+ profile={...profile,photo:true,photoVersion:r.photoVersion};photoAsked=sent+':'+r.photoVersion;const img=document.getElementById('mePhoto');img.onload=()=>{img.hidden=false;document.getElementById('meInitial').hidden=true;};img.src=data.thumbnail;d.close();
+ }catch(e){note.textContent=e.message;}finally{saving=false;f.disabled=cancel.disabled=false;save.disabled=!draft;}
+};
+})();
+</script>
+
 
 </body></html>
