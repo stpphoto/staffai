@@ -327,9 +327,10 @@ const touched = new Set();
 // Generate the durable private preview before sending the original. No network call.
 async function prepareFastPreview(source,display=false){
  const image=new Image();image.src=source;await image.decode();
- for(const size of (display?[800,640,480]:[240,180,120])){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of (display?[.8,.7,.6]:[.72,.55,.38])){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=(display?48023:24023))return data}}
+ for(const size of (display?[800,640,480,360]:[240,180,120])){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of (display?[.8,.7,.6,.45]:[.72,.55,.38])){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=(display?48023:24023))return data}}
  throw Error('ไม่สามารถเตรียมรูปย่อได้ กรุณาเลือกรูปใหม่');
 }
+let photoSequence=0;
 let photoData = '', photoPreviewData = '', photoDisplayData = '';
 let processing = false;
 let sending = false;
@@ -454,6 +455,7 @@ function setWorkingState() {
 }
 
 function clearPhoto() {
+  photoSequence++;
   photoData = ''; photoPreviewData = ''; photoDisplayData = '';
   el('preview').removeAttribute('src');
   el('preview').hidden = true;
@@ -493,6 +495,7 @@ async function preparePhoto(file) {
 el('photo').addEventListener('change',async event => {
   const file = event.target.files[0];
   clearPhoto();
+  const sequence=photoSequence;
   updateProgress();
   if (!file) return;
   processing = true;
@@ -500,9 +503,9 @@ el('photo').addEventListener('change',async event => {
   showError('error');
   el('photoName').textContent = 'กำลังเตรียมรูปถ่าย…';
   try {
-    photoData = await preparePhoto(file);
-    photoPreviewData = await prepareFastPreview(photoData);
-    photoDisplayData = await prepareFastPreview(photoData,true);
+    const photo=await preparePhoto(file), small=await prepareFastPreview(photo), large=await prepareFastPreview(photo,true);
+    if(sequence!==photoSequence)return;
+    photoData=photo;photoPreviewData=small;photoDisplayData=large;
     el('preview').src = photoData;
     el('preview').hidden = false;
     el('photoIcon').hidden = true;
@@ -512,10 +515,13 @@ el('photo').addEventListener('change',async event => {
     el('removePhoto').hidden = false;
     el('photoName').textContent = file.name;
   } catch (err) {
+    if(sequence!==photoSequence)return;
     el('photo').value = '';
     clearPhoto();
+    processing=false;setWorkingState();updateProgress();
     showError('error',err.message);
   } finally {
+    if(sequence!==photoSequence)return;
     processing = false;
     setWorkingState();
     updateProgress();
@@ -531,7 +537,7 @@ function readApplication() {
     values[id] = el(id).value.trim();
   }
   values.interests = selectedInterests();
-  values.photo = photoData; values.photoPreview = photoPreviewData; values.photoDisplay = photoDisplayData;
+  values.photo = photoData; values.photoPreview = photoPreviewData; values.photoDisplay = photoDisplayData; values.photoPrepared = true;
   return values;
 }
 

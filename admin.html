@@ -494,6 +494,7 @@ const STATUS={pending:'รอตรวจสอบ',approved:'อนุมัต
 const VISIT_TAGS={open:['เปิดรับสมัคร','open'],upcoming:['ยังไม่เปิดรับ','upcoming'],closed:['ปิดรับแล้ว','closed'],full:['ครบจำนวน','full'],hidden:['ซ่อนอยู่','']};
 const VFIELDS={vTitle:'title',vOrg:'organization',vVisitors:'visitorCount',vDate:'visitDate',vStart:'startTime',vEnd:'endTime',vOpen:'openAt',vClose:'closeAt',vNeeded:'needed',vDetails:'details',vStatus:'status'};
 const PANELS={stats:['ANNUAL STATISTICS','สถิติรายปี','กราฟจำนวนอาสาและชั่วโมงรายเดือน แยกระดับชั้น สำหรับรายงานประจำปี'],semester:['SEMESTER HOURS','สรุปชั่วโมงจิตอาสา','รายงานและใบรับรองประจำภาคเรียน'],overview:['OVERVIEW','ภาพรวม','สรุปใบสมัครและรอบรับอาสาสมัครล่าสุด'],apps:['APPLICATIONS','ใบสมัครนักเรียนสตราฟ','ค้นหาและเปิดดูรายละเอียดผู้สมัคร'],visits:['STUDY VISITS','คณะดูงานและอาสาสมัคร','เปิดรอบรับสมัคร กำหนดเวลา และดูรายชื่ออาสาสมัคร']};
+let dashboardLoadedAt=0,currentDetailRef='';
 let token='',until=0,timer=0,clockTimer=0,serial=0,vSerial=0,dSerial=0,tab='overview',apps=[],visitList=[],loaded=false,page=1,term='',statusFilter='all',currentVisit=null,currentVolunteers=[],editingId='';
 
 function node(tag,txt,cls){const n=document.createElement(tag);if(txt!=null)n.textContent=txt;if(cls)n.className=cls;return n}
@@ -557,7 +558,7 @@ by('photoZoom').onclick=()=>zoomPhoto(by('photoZoom').getAttribute('aria-pressed
 by('photoClose').onclick=closePhoto;by('photoDialog').addEventListener('close',()=>{if(!by('photoDialog').open)clearLargePhoto()});
 by('photoDialog').addEventListener('click',e=>{if(e.target!==by('photoDialog'))return;const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closePhoto()});
 
-function reset(note=''){forgetSession();statsReport=null;++statSerial;by('statBody').hidden=true;by('statCsv').disabled=by('statPdf').disabled=true;semesterReport=null;++semSerial;by('semRows').replaceChildren();by('semReport').hidden=true;++serial;++vSerial;++dSerial;clearTimeout(timer);clearInterval(clockTimer);token='';until=0;clearApplicantPhotos();closePhoto();closeCrud(true);apps=[];visitList=[];loaded=false;page=1;term='';statusFilter='all';currentVisit=null;currentVolunteers=[];editingId='';
+function reset(note=''){dashboardLoadedAt=0;currentDetailRef='';forgetSession();statsReport=null;++statSerial;by('statBody').hidden=true;by('statCsv').disabled=by('statPdf').disabled=true;semesterReport=null;++semSerial;by('semRows').replaceChildren();by('semReport').hidden=true;++serial;++vSerial;++dSerial;clearTimeout(timer);clearInterval(clockTimer);token='';until=0;clearApplicantPhotos();closePhoto();closeCrud(true);apps=[];visitList=[];loaded=false;page=1;term='';statusFilter='all';currentVisit=null;currentVolunteers=[];editingId='';
  by('query').value='';by('credentials').reset();by('visitForm').reset();passwordVisible(false);by('signIn').disabled=false;
  ['results','person','count','page','deskNote','visitRows','visitTotal','visitSummary','volRows','volTotal','visitNote','ovVisits','ovApps','syncText','appsBadge','visitsBadge'].forEach(k=>by(k).replaceChildren());
  showTab('overview');by('desk').hidden=true;by('login').hidden=false;by('loginNote').textContent=note;by('username').focus()}
@@ -595,8 +596,8 @@ async function loadDashboard(preloaded){const n=++dSerial;by('refresh').disabled
  const changed=new Map((r.applications||[]).map(a=>[a.ref,a.photoVersion]));for(const [ref,p] of photoCache)if(!changed.has(ref)||p.version!==changed.get(ref))photoCache.delete(ref);for(const key of fullPhotoCache.keys())if(![...changed].some(([ref,version])=>key===ref+':'+version))fullPhotoCache.delete(key);
  // Upcoming visits first (soonest at the top), past visits after them (most recent first).
  const today=new Date(Date.now()+25200000).toISOString().slice(0,10),past=v=>v.visitDate<today?1:0;
- apps=r.applications||[];for(const a of apps)if(a.photoPreview){photoCache.set(a.ref,{source:a.photoPreview,version:a.photoVersion});delete a.photoPreview}mailConf=r.mail||null;visitList=(r.visits||[]).sort((a,b)=>past(a)-past(b)||(past(a)?-1:1)*(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime));loaded=true;const t=new Date();by('syncText').textContent='อัปเดต '+String(t.getHours()).padStart(2,'0')+'.'+String(t.getMinutes()).padStart(2,'0')+' น.';
- renderOverview();if(by('detailView').hidden)renderApps();if(!by('visitListView').hidden)renderVisitList();
+ dashboardLoadedAt=Date.now();apps=r.applications||[];for(const a of apps)if(a.photoPreview){photoCache.set(a.ref,{source:a.photoPreview,version:a.photoVersion});delete a.photoPreview}mailConf=r.mail||null;visitList=(r.visits||[]).sort((a,b)=>past(a)-past(b)||(past(a)?-1:1)*(a.visitDate+a.startTime).localeCompare(b.visitDate+b.startTime));loaded=true;const t=new Date();by('syncText').textContent='อัปเดต '+String(t.getHours()).padStart(2,'0')+'.'+String(t.getMinutes()).padStart(2,'0')+' น.';
+ renderOverview();if(by('detailView').hidden)renderApps();else if(currentDetailRef){if(apps.some(a=>a.ref===currentDetailRef))detail(currentDetailRef);else showList();}if(!by('visitListView').hidden)renderVisitList();
  }catch{if(n===dSerial){failed();by('syncText').textContent=''}}finally{if(n===dSerial)by('refresh').disabled=false}}
 
 function renderOverview(){const pending=apps.filter(a=>a.status==='pending').length,open=visitList.filter(v=>v.state==='open').length;
@@ -641,7 +642,7 @@ function confirmApplicationReview(a,status){
  if(!openCrud('ยืนยันผลการตรวจใบสมัคร',async()=>{const r=await rpc('adminReviewApplication',token,{registrationId:a.registrationId,revision:a.revision,status});if(r.ok)r.after=()=>{showTab('apps');return detail(a.registrationId)};return r},'ยืนยัน'+(status==='approved'?'อนุมัติ':status==='rejected'?'ไม่อนุมัติ':'ตั้งรอตรวจสอบ')))return;
  by('crudBody').append(node('h3',(a.prefix||'')+(a.fullName||'ผู้สมัคร')),node('p','รหัสนักเรียน '+a.studentId),node('p','เปลี่ยนผลการตรวจจาก “'+(STATUS[a.status]||a.status)+'” เป็น “'+label+'”'));
  by('crudCancel').focus()}
-function showList(){++serial;by('detailView').hidden=true;by('listView').hidden=false;by('person').replaceChildren();if(loaded)renderApps()}
+function showList(){currentDetailRef='';++serial;by('detailView').hidden=true;by('listView').hidden=false;by('person').replaceChildren();if(loaded)renderApps()}
 function renderApps(){if(!loaded)return;const rows=filteredApps(),pages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));page=Math.min(Math.max(1,page),pages);
  for(const chip of by('statusChips').children){const s=chip.dataset.status,n=s==='all'?apps.length:apps.filter(a=>a.status===s).length;chip.textContent=(s==='all'?'ทั้งหมด':STATUS[s])+' · '+n;chip.setAttribute('aria-pressed',String(s===statusFilter))}
  if(!rows.length){const clear=node('button','ล้างการค้นหา','btn ghost small');clear.type='button';clear.onclick=()=>{term='';statusFilter='all';by('query').value='';renderApps();by('query').focus()};by('results').replaceChildren(apps.length?emptyBox('ไม่พบผู้สมัครที่ตรงกับเงื่อนไข','ลองค้นหาด้วยชื่อ รหัสนักเรียน หรือห้องอีกครั้ง',clear):emptyBox('ยังไม่มีใบสมัคร','เมื่อนักเรียนส่งใบสมัคร รายชื่อจะแสดงที่นี่'))}
@@ -651,11 +652,34 @@ by('search').onsubmit=e=>e.preventDefault();
 by('query').addEventListener('input',()=>{term=by('query').value.trim();page=1;renderApps()});
 by('statusChips').addEventListener('click',e=>{const c=e.target.closest('[data-status]');if(!c)return;statusFilter=c.dataset.status;page=1;renderApps()});
 by('prev').onclick=()=>{page--;renderApps()};by('next').onclick=()=>{page++;renderApps()};by('back').onclick=()=>{showList();by('query').focus()};
-async function detail(ref){const n=++serial;by('listView').hidden=true;by('detailView').hidden=false;by('person').replaceChildren(...skeletons(2));by('deskNote').textContent='';by('back').focus();
- try{const r=await rpc('adminApplicationDetail',token,ref);if(n!==serial)return;by('person').replaceChildren();if(!accept(r))return;const a=r.application,head=node('div',null,'person'),info=node('div');
+function preparedApplication(ref){
+ const item=apps.find(a=>a.ref===ref);if(!item?.application)return null;
+ const picture=photoCache.get(ref),a={...item.application};
+ a.portrait=picture?.version===item.photoVersion?picture.source:'';
+ return a;
+}
+function renderApplication(a){by('person').replaceChildren();
+const head=node('div',null,'person'),info=node('div');
  if(a.portrait){const btn=node('button',null,'photo-trigger'),img=node('img',null,'portrait'),hint=node('span',null,'zoom-hint');btn.type='button';btn.setAttribute('aria-label','ดูรูปถ่ายผู้สมัครขนาดใหญ่');btn.setAttribute('aria-haspopup','dialog');btn.setAttribute('aria-controls','photoDialog');img.alt='รูปถ่ายผู้สมัคร';img.src=a.portrait;hint.append(icon('search'),node('span','ดูรูปใหญ่'));btn.append(img,hint);btn.onclick=()=>openPhoto(img.src);head.append(btn)}else{const no=node('span',null,'portrait no-photo');no.setAttribute('role','img');no.setAttribute('aria-label','ไม่มีรูปถ่าย');no.append(icon('user'));head.append(no)}
  info.append(node('p','APPLICANT PROFILE','kicker'),node('h2',(a.prefix||'')+(a.fullName||'ไม่ระบุชื่อ')),badge(a.status));head.append(info,pdfButton('ดาวน์โหลด PDF',b=>savePdf(pdfName('ใบสมัคร',a.studentId,a.registrationId),host=>applicationSheets(host,a),b)));const groups=node('div',null,'detail-grid');groups.append(group('ข้อมูลนักเรียน','user',[['รหัสนักเรียน',a.studentId],['ชั้น / ห้อง',[a.classLevel,a.room].filter(Boolean).join(' / ')],['เลขที่',a.number]]),group('ช่องทางติดต่อ','mail',[['อีเมล',a.email],['เบอร์โทรศัพท์',a.phone],['ID LINE',a.lineId],['Facebook',a.facebook]]),group('ข้อมูลใบสมัคร','file',[['เลขอ้างอิง',a.registrationId],['วันที่สมัคร',prettyDate(a.createdAt)],['ทักษะและความสนใจ',a.interests],['ชั่วโมงจิตอาสา',serviceText(a)]]));by('person').append(head,applicationReview(a),groups,applicationActions(a));
- }catch{if(n===serial){by('person').replaceChildren();failed()}}}
+}
+async function detail(ref){
+ const n=++serial,session=token;if(!session)return;currentDetailRef=ref;
+ by('listView').hidden=true;by('detailView').hidden=false;by('deskNote').textContent='';by('back').focus();
+ const cached=preparedApplication(ref),item=apps.find(a=>a.ref===ref);
+ if(cached)renderApplication(cached);else by('person').replaceChildren(...skeletons(2));
+ // Keep the displayed snapshot responsive; revalidate after one minute. Writes
+ // always require the server's fresh revision inside the existing mutation lock.
+ if(cached && Date.now()-(item.detailLoadedAt||dashboardLoadedAt)<60000)return;
+ if(cached)by('deskNote').textContent='กำลังตรวจสอบข้อมูลล่าสุด…';
+ try{const r=await rpc('adminApplicationDetail',session,ref);if(n!==serial||session!==token)return;
+  if(!accept(r)){by('person').replaceChildren();return}
+  const a=r.application,live=apps.find(x=>x.ref===ref);
+  if(live){live.application={...a};delete live.application.portrait;live.detailLoadedAt=Date.now();live.photoVersion=a.photoVersion;live.status=a.status;
+   if(a.portrait)photoCache.set(ref,{source:a.portrait,version:a.photoVersion});else photoCache.delete(ref);}
+  by('deskNote').textContent='';renderApplication(a);
+ }catch{if(n===serial&&session===token){if(cached)by('deskNote').textContent='แสดงข้อมูลที่โหลดไว้ ตรวจสอบข้อมูลล่าสุดไม่สำเร็จ กรุณากดรีเฟรช';else{by('person').replaceChildren();failed()}}}
+}
 
 
 let semesterReport=null,semSerial=0;
@@ -905,7 +929,7 @@ function formField(container,id,label,value='',options={}){
 // Generate the durable private preview before sending the original. No network call.
 async function prepareFastPreview(source,display=false){
  const image=new Image();image.src=source;await image.decode();
- for(const size of (display?[800,640,480]:[240,180,120])){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of (display?[.8,.7,.6]:[.72,.55,.38])){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=(display?48023:24023))return data}}
+ for(const size of (display?[800,640,480,360]:[240,180,120])){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of (display?[.8,.7,.6,.45]:[.72,.55,.38])){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=(display?48023:24023))return data}}
  throw Error('ไม่สามารถเตรียมรูปย่อได้ กรุณาเลือกรูปใหม่');
 }
 async function adminPhoto(file){
@@ -915,7 +939,7 @@ function applicationActions(a){const actions=node('div',null,'record-actions'),e
 function editApplication(a=null){
  let photo='',photoReady=Promise.resolve();const fields={};
  const save=async()=>{await photoReady;const payload={registrationId:a?.registrationId||'',revision:a?.revision||'',photo,interests:[...by('crudBody').querySelectorAll('[name=adminSkills]:checked')].map(el=>el.value)};for(const [k,el] of Object.entries(fields))payload[k]=el.value.trim();
- if(photo){payload.photoPreview=await prepareFastPreview(photo);payload.photoDisplay=await prepareFastPreview(photo,true);}
+ if(photo){payload.photoPreview=await prepareFastPreview(photo);payload.photoDisplay=await prepareFastPreview(photo,true);payload.photoPrepared=true;}
  if(!payload.interests.length)throw Error('กรุณาเลือกทักษะอย่างน้อย 1 สาย');if(!a&&!photo)throw Error('กรุณาแนบรูปถ่ายผู้สมัคร');
  const r=await rpc('adminSaveApplication',token,payload);if(r.ok)r.after=()=>{showTab('apps');return detail(r.registrationId)};return r};
  if(!openCrud(a?'แก้ไขใบสมัคร':'เพิ่มผู้สมัครสตราฟ',save))return;
