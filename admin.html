@@ -609,7 +609,7 @@ function renderOverview(){const pending=apps.filter(a=>a.status==='pending').len
 // Applications: search and filter run locally on the list loaded with the dashboard.
 function filteredApps(){const q=term.toLowerCase();return apps.filter(r=>(statusFilter==='all'||r.status===statusFilter)&&(!q||[r.ref,r.studentId,r.name,r.room,'ม.'+r.room].some(v=>String(v||'').toLowerCase().includes(q))))}
 async function showListPhoto(ref,button){
- if(!token)return;const session=token,version=apps.find(a=>a.ref===ref)?.photoVersion,key=ref+':'+version,cached=fullPhotoCache.get(key);
+ if(!token)return;const session=token,item=apps.find(a=>a.ref===ref),version=item?.photoVersion,key=ref+':'+version,inline=photoCache.get(ref),cached=fullPhotoCache.get(key)||(item?.photoReady && inline?.version===version ? inline.source : '');
  openPhoto(cached||photoCache.get(ref)?.source||'');photoViewRef=ref;const request=photoViewSerial;
  if(cached)return;by('photoNote').textContent=by('largePhoto').getAttribute('src')?'กำลังโหลดรูปชัดขึ้น… สามารถปิดหน้าต่างได้':'กำลังโหลดรูปถ่าย… สามารถปิดหน้าต่างได้';
  let pending=fullPhotoRequests.get(key);
@@ -903,9 +903,9 @@ function formField(container,id,label,value='',options={}){
  box.append(lab,input);container.append(box);return input}
 
 // Generate the durable private preview before sending the original. No network call.
-async function prepareFastPreview(source){
+async function prepareFastPreview(source,display=false){
  const image=new Image();image.src=source;await image.decode();
- for(const size of [240,180,120]){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of [.72,.55,.38]){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=24023)return data}}
+ for(const size of (display?[800,640,480]:[240,180,120])){const scale=Math.min(1,size/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);for(const quality of (display?[.8,.7,.6]:[.72,.55,.38])){const data=canvas.toDataURL('image/jpeg',quality);if(data.length<=(display?48023:24023))return data}}
  throw Error('ไม่สามารถเตรียมรูปย่อได้ กรุณาเลือกรูปใหม่');
 }
 async function adminPhoto(file){
@@ -915,7 +915,7 @@ function applicationActions(a){const actions=node('div',null,'record-actions'),e
 function editApplication(a=null){
  let photo='',photoReady=Promise.resolve();const fields={};
  const save=async()=>{await photoReady;const payload={registrationId:a?.registrationId||'',revision:a?.revision||'',photo,interests:[...by('crudBody').querySelectorAll('[name=adminSkills]:checked')].map(el=>el.value)};for(const [k,el] of Object.entries(fields))payload[k]=el.value.trim();
- if(photo)payload.photoPreview=await prepareFastPreview(photo);
+ if(photo){payload.photoPreview=await prepareFastPreview(photo);payload.photoDisplay=await prepareFastPreview(photo,true);}
  if(!payload.interests.length)throw Error('กรุณาเลือกทักษะอย่างน้อย 1 สาย');if(!a&&!photo)throw Error('กรุณาแนบรูปถ่ายผู้สมัคร');
  const r=await rpc('adminSaveApplication',token,payload);if(r.ok)r.after=()=>{showTab('apps');return detail(r.registrationId)};return r};
  if(!openCrud(a?'แก้ไขใบสมัคร':'เพิ่มผู้สมัครสตราฟ',save))return;
