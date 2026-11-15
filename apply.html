@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th"><head><title>ระบบอาสาสมัครนักเรียน | AI & Metaverse</title><script src="./bridge.js?v=1"></script><base target="_self"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&family=Plus+Jakarta+Sans:wght@600..800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><style>
+<html lang="th"><head><title>ระบบอาสาสมัครนักเรียน | AI & Metaverse</title><script src="./bridge.js?v=1"></script><base target="_self"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&family=Plus+Jakarta+Sans:wght@600..800&family=Noto+Sans+Thai:wght@400..800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><style>
 :root{color-scheme:light;--ink:#122b51;--muted:#415875;--line:#cddceb;--blue:#124ad2;--bg:#f4f8fc}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:linear-gradient(155deg,#f8fbff,#edf5fd 63%,#eff8f8);font:18px/1.6 'Anuphan','Noto Sans Thai',Tahoma,sans-serif}
 main{width:min(1180px,calc(100% - 48px));margin:auto;padding-bottom:28px}
@@ -262,8 +262,40 @@ footer a{transition:color .2s}
 .activity-banner figcaption{padding:12px 6px 0;background:none;border:0}
 @media(max-width:640px){.banner-art.bento{grid-template-columns:1fr 1fr;grid-template-rows:190px 130px 130px}.s1{grid-row:auto;grid-column:1/3}.s2{grid-column:1/3}.shot{border-radius:16px}.shot span{font-size:11.5px;left:10px;bottom:9px;padding:4px 10px}.s1 span{font-size:13px}.hero h1{font-size:clamp(28px,8vw,38px)}}
 @media(hover:none){.shot:hover{transform:none}}
-.lite .s1 img.ready,.lite .shot{animation:none}</style></head><body class=""><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><main>
-<header class="brand"><a class="center-logo" href="https://nst-ai-23203.netlify.app/" target="_blank" rel="noopener" aria-label="เว็บไซต์ศูนย์"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt="โลโก้ศูนย์นวัตกรรม AI"></a><div class="brand-title"><strong>ระบบอาสาสมัครนักเรียน<span class="long">ต้อนรับคณะดูงาน</span></strong><p><b>·</b> AI & Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก</p></div><nav class="top-nav" aria-label="เมนู"><a class="center-link" href="https://nst-ai-23203.netlify.app/" target="_blank" rel="noopener">เว็บไซต์ศูนย์ ↗</a></nav></header>
+.lite .s1 img.ready,.lite .shot{animation:none}
+/* ===== Bright tech theme, matching the volunteer and admin pages: pale-sky banner with blue-to-cyan gradient words,
+   pill buttons, a white rounded form card, the logo as a round glowing badge. ===== */
+:root{--bg:#f7faff;--ink:#0b1424;--ink2:#1c2b44;--muted:#5b6b82;--line:#e3eaf5;--soft:#f4f8ff;--blue:#1f5eff;--brand:#1f5eff;--brand2:#3b82f6;--brand-d:#1747c9;--brand-soft:#eef4ff;
+ --sans:'Noto Sans Thai','Anuphan',system-ui,sans-serif;--display:'Plus Jakarta Sans','Noto Sans Thai',sans-serif;
+ --grad:linear-gradient(135deg,#1f5eff,#3b82f6 48%,#06b6d4);--flow:linear-gradient(100deg,#1f5eff,#3b82f6 35%,#06b6d4 65%,#1f5eff);--ring:linear-gradient(#e3eaf5,#e3eaf5);--ring-hot:linear-gradient(135deg,#3b82f6,#06b6d4);
+ --sky:radial-gradient(circle at 12% 18%,#dbeafe 0,transparent 42%),radial-gradient(circle at 92% 8%,#cffafe 0,transparent 40%),linear-gradient(135deg,#ffffff,#f0f6ff 55%,#eafcff)}
+body{background:radial-gradient(900px 500px at 0 -10%,#e3eeff 0,transparent 70%),radial-gradient(800px 500px at 100% 0,#dff8ff 0,transparent 70%),var(--bg);font-family:var(--sans);color:var(--ink)}
+.aurora{display:none}
+.hero h1,.application-heading h2{font-family:var(--display);font-weight:800;letter-spacing:-.01em}
+header.brand{border:1px solid var(--line)!important;border-radius:22px!important;background:#ffffffeb!important;box-shadow:0 14px 34px -24px #1f5eff80!important}
+header.brand img{width:56px!important;height:56px!important;margin:6px;padding:0!important;border:0!important;border-radius:50%!important;background:#0b1424!important;object-fit:cover;box-shadow:0 0 0 3px #fff,0 0 0 5px #93c5fd,0 10px 26px -8px #1f5eff99!important}
+.hero{border:1px solid #fff!important;border-radius:30px!important;background:var(--sky)!important;box-shadow:0 30px 70px -40px #1f5eff66!important;animation:none}
+.hero h1 span:last-child{background-image:linear-gradient(100deg,#1f5eff,#3b82f6 45%,#06b6d4)!important;-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .kicker{border:1px solid #dbe6ff;background:#fff;color:var(--brand-d);box-shadow:0 6px 16px -10px #1f5eff66}
+.shot{border:5px solid #fff;border-radius:22px!important;box-shadow:0 20px 40px -26px #1f5eff80}
+.hero-cta,.submit,.btn.primary{border-radius:999px!important;background:var(--grad)!important;box-shadow:0 12px 26px -14px #1f5eff!important}
+.application-card{border:1px solid var(--line)!important;border-radius:26px!important;background:#fff!important;box-shadow:0 12px 32px -20px #1f5eff4d!important}
+.application-card:before{background:var(--grad)!important}
+.badge{border-radius:999px;background:var(--brand-soft)!important;color:var(--blue)!important;border:0!important}
+.progress-fill{background:var(--grad)!important}
+.band-index{border-radius:10px!important;background:var(--grad)!important;color:#fff!important;font-family:var(--display)}
+figcaption .band-index{background:none!important;color:var(--brand)!important}
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{border-radius:14px!important}
+input:focus,select:focus,textarea:focus{border-color:var(--brand2)!important;box-shadow:0 0 0 4px #1f5eff1f!important}
+.interest-option{border-radius:16px!important}
+.interest-option:has(input:checked){background:var(--brand-soft)!important;border-color:#93b4ff!important}
+.interest-option input{accent-color:var(--blue)}
+.photo-box{border-radius:20px!important}
+.file-button{border-radius:999px!important}
+.visit-alert{border-radius:20px!important}
+@media(max-width:600px){.hero{border-radius:22px!important}.application-card{border-radius:20px!important}}
+</style></head><body class=""><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><main>
+<header class="brand"><a class="center-logo" href="https://nst-ai-23203.netlify.app/" target="_blank" rel="noopener" aria-label="เว็บไซต์ศูนย์"><img src="./assets/logo-badge.svg" alt="โลโก้ศูนย์นวัตกรรม AI"></a><div class="brand-title"><strong>ระบบอาสาสมัครนักเรียน<span class="long">ต้อนรับคณะดูงาน</span></strong><p><b>·</b> AI & Metaverse Innovation Center · โรงเรียนสาธิตเทศบาลวัดเพชรจริก</p></div><nav class="top-nav" aria-label="เมนู"><a class="center-link" href="https://nst-ai-23203.netlify.app/" target="_blank" rel="noopener">เว็บไซต์ศูนย์ ↗</a></nav></header>
 <section class="hero" aria-labelledby="heroTitle"><div class="poster-head"><div class="kicker" lang="en">STUDENT STAFF PROGRAM</div><div class="hero-intro"><div class="hero-copy"><h1 id="heroTitle"><span>ลงทะเบียน</span><span>นักเรียนสตราฟ</span></h1><p>ร่วมเป็นทีมดูแลห้องเรียน AI และกิจกรรมโลกเสมือนจริงของโรงเรียน</p></div><button class="hero-cta" id="startApplication" type="button">เริ่มกรอกใบสมัคร <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div></div><figure class="activity-banner"><div class="banner-art bento" role="group" aria-label="ภาพกิจกรรมของศูนย์"><div class="shot s1"><img id="campusImage0" alt="นักเรียนสตราฟนำเสนอผลงาน STP Metaverse ให้คณะดูงาน" decoding="async"><span>นำเสนอผลงาน Metaverse</span></div><div class="shot s2"><img id="campusImage1" alt="นักเรียนแนะนำการใช้คอมพิวเตอร์ในห้องปฏิบัติการ AI" decoding="async"><span>ห้องปฏิบัติการ AI</span></div><div class="shot s3"><img id="campusImage2" alt="นักเรียนสตราฟต้อนรับและพูดคุยกับคณะดูงาน" decoding="async"><span>ต้อนรับคณะดูงาน</span></div><div class="shot s4"><img id="campusImage3" alt="นักเรียนสาธิตแอปพลิเคชันและแว่น VR ให้ผู้มาเยือน" decoding="async"><span>สาธิตเทคโนโลยี VR</span></div></div><figcaption><span class="band-title">บรรยากาศกิจกรรมของศูนย์</span><span class="band-index" lang="en">AI &amp; METAVERSE INNOVATION CENTER</span></figcaption></figure></section>
 <a class="visit-alert" id="visitAlert" href="./" target="_self" rel="noopener" hidden><span class="visit-dot" aria-hidden="true"></span><span class="visit-copy"><strong id="visitAlertTitle"></strong><small id="visitAlertText"></small></span><span class="visit-go" id="visitGo"></span></a>
 <div class="application-card" id="application">
