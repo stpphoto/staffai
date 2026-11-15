@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="th"><head><title>ระบบอาสาสมัครนักเรียน | AI & Metaverse</title><script src="./bridge.js?v=1"></script><meta charset="utf-8"><base target="_self"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&amp;family=Plus+Jakarta+Sans:wght@600..800&amp;display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&amp;family=Plus+Jakarta+Sans:wght@600..800&amp;family=Noto+Sans+Thai:wght@400..800&amp;display=swap" media="print" onload="this.media='all'">
 <style>
 :root{color-scheme:light;--bg:#f3f6fb;--ink:#0f1f3d;--muted:#5a6a84;--line:#e2e9f2;--card:#fff;--blue:#2563eb;--blue-d:#1d4ed8;--navy:#0a1a36;--mint:#2dd4bf;--sans:'Noto Sans Thai','Plus Jakarta Sans',system-ui,sans-serif;--display:'Plus Jakarta Sans','Noto Sans Thai',sans-serif;--mono:ui-monospace,Consolas,monospace;--shadow:0 1px 2px #0f1f3d0d,0 12px 30px -18px #0f1f3d33}
 *{box-sizing:border-box}[hidden]{display:none!important}
@@ -411,6 +411,73 @@ body{position:relative;background:#f4f6fc}
 .rank-bar{display:block;height:6px;margin-top:5px;border-radius:9px;background:#0f1f3d12}.rank-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#5b7cff,#7c5cff 60%,#14b8a6)}
 .rank-row .hrs{font:800 18px/1 var(--display);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}.rank-row .hrs small{margin-left:4px;color:var(--muted);font:600 12px var(--sans)}
 .rank-more{display:flex;justify-content:center;margin-top:12px}
+/* ===== Bright tech theme, matching the volunteer page: white sidebar with a blue pill for the open tab,
+   pale-sky banner, blue-to-cyan pill buttons, white rounded cards, the logo as a round glowing badge.
+   Overview layout: shortcuts in one row, ranking on the left, upcoming visits and latest applications on the right. ===== */
+:root{--bg:#f7faff;--ink:#0b1424;--ink2:#1c2b44;--muted:#5b6b82;--line:#e3eaf5;--soft:#f4f8ff;--card:#fff;
+ --blue:#1f5eff;--blue2:#3b82f6;--blue-d:#1747c9;--blue-soft:#eef4ff;--navy:#0b1424;
+ --sans:'Noto Sans Thai','Anuphan',system-ui,sans-serif;--display:'Plus Jakarta Sans','Noto Sans Thai',sans-serif;
+ --shadow:0 12px 32px -20px #1f5eff4d;--grad:linear-gradient(135deg,#1f5eff,#3b82f6 48%,#06b6d4);
+ --flow:linear-gradient(100deg,#1f5eff,#3b82f6 35%,#06b6d4 65%,#1f5eff);--ring:linear-gradient(#e3eaf5,#e3eaf5);--ring-hot:linear-gradient(135deg,#3b82f6,#06b6d4);
+ --sky:radial-gradient(circle at 12% 18%,#dbeafe 0,transparent 42%),radial-gradient(circle at 92% 8%,#cffafe 0,transparent 40%),linear-gradient(135deg,#ffffff,#f0f6ff 55%,#eafcff)}
+body{background:radial-gradient(900px 500px at 30% -10%,#e3eeff 0,transparent 70%),radial-gradient(800px 500px at 100% 0,#dff8ff 0,transparent 70%),var(--bg);font-family:var(--sans)}
+.aurora{display:none}
+.workspace .topbar h1,#loginTitle,.panel-head h2,.kpi b{font-family:var(--display);font-weight:800;letter-spacing:-.01em}
+.kicker{color:var(--blue)}
+/* Logo: round badge with a soft blue ring */
+.side-brand img,.cover-brand img{margin:6px;padding:0;border:0;border-radius:50%;background:#0b1424;object-fit:cover;box-shadow:0 0 0 3px #fff,0 0 0 5px #93c5fd,0 10px 26px -8px #1f5eff99}
+/* Buttons */
+.btn{border-radius:999px}
+.btn.primary{background:var(--grad);box-shadow:0 12px 26px -14px #1f5eff}
+.btn.primary:hover:enabled{filter:brightness(1.06);transform:translateY(-1px)}
+/* Sidebar: white with a blue pill */
+.sidebar{background:#ffffffeb;border-right:1px solid var(--line)}
+.side-brand strong{font-family:var(--display);font-weight:800}
+.nav-item{border-radius:14px}
+.nav-item .ico{color:var(--blue)}
+.nav-item:hover{background:var(--blue-soft)}
+.nav-item[aria-selected=true]{background:var(--grad);color:#fff;box-shadow:0 12px 24px -14px #1f5eff}
+.nav-item[aria-selected=true] .ico{color:#fff}.nav-item[aria-selected=true]:before{display:none}
+.nav-item .badge{background:#f43f5e;color:#fff}
+.side-links a{border-radius:12px}.side-links a:hover{background:var(--blue-soft)}
+.side-user{border:1px solid var(--line);background:#fff;box-shadow:var(--shadow)}
+.side-user .avatar{background:var(--grad)}
+.applicant-avatar{background:#eef3fb;color:#7b8ba3}
+/* Workspace header: pale-sky banner */
+.workspace .topbar{padding:22px 26px;border:1px solid #fff;border-radius:24px;background:var(--sky);box-shadow:var(--shadow)}
+/* Surfaces */
+.panel,.kpi,.quick-btn,.applicant-row,.chart-card{border:1px solid var(--line);background:#fff;box-shadow:var(--shadow)}
+.panel{border-radius:22px}
+.kpi{border-radius:20px}.kpi:after{opacity:.14}
+.k-icon{border-radius:12px}
+.kpi:hover,.quick-btn:hover{transform:translateY(-2px);border-color:#bfd3ff}
+.quick-btn{border-radius:18px}
+.q-ico{border-radius:12px!important;background:var(--blue-soft)!important;color:var(--blue)!important}
+/* Overview layout */
+@media(min-width:1101px){#overviewPanel{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);gap:18px;align-items:start}
+ #overviewPanel>.kpis{grid-column:1/-1;margin:0}
+ #overviewPanel>.quick{grid-column:1/-1;grid-template-columns:repeat(5,minmax(0,1fr));margin:0}
+ #overviewPanel .quick-btn{flex-direction:column;align-items:flex-start;gap:10px;padding:16px}
+ #overviewPanel>.rank-panel{grid-column:1;margin:0}
+ #overviewPanel>.ov-grid{grid-column:2;grid-template-columns:minmax(0,1fr)}}
+.mini{border-radius:14px}.mini:hover{background:var(--soft)}
+.mini-date{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.mini-date small{background:var(--grad);color:#fff}
+/* Applications */
+.applicant-row{border-radius:20px}.applicant-row:hover{border-color:#bfd3ff;box-shadow:0 24px 44px -28px #1f5eff80}
+#statusChips button{border-radius:999px}
+#statusChips button[aria-pressed=true]{background:var(--grad);color:#fff;border-color:transparent}
+.pdf-sort select{border-radius:999px}
+.semester-table table th{background:#f1f6ff}
+/* Ranking */
+.rank-panel{border-radius:22px}
+.rank-panel .panel-head h2 .ico{background:var(--grad)}
+.rank-bar i{background:var(--grad)}
+.rank-stats span{border-radius:999px}
+/* Login */
+.login-card{border-radius:28px;overflow:hidden}
+.login-cover{background:radial-gradient(circle at 20% 15%,#ffffff40,transparent 45%),var(--grad)}
+.login-form .kicker{color:var(--blue)}
 .pdf-sort{display:inline-flex;align-items:center;gap:8px;margin:0;color:var(--muted);font-size:13px;white-space:nowrap}.pdf-sort select{min-height:38px;padding:6px 32px 6px 12px;border:1px solid #d6dfec;border-radius:12px;background:var(--soft);color:var(--ink);font:inherit;font-weight:600}
 @media(max-width:600px){.podium{gap:8px}.rank-panel .podium .applicant-avatar{width:50px;height:50px}.rank-panel .podium .p1 .applicant-avatar{width:62px;height:62px}.plinth b{font-size:21px}.p1 .plinth b{font-size:26px}.plinth span{font-size:11px}.podium .nm{display:-webkit-box;font-size:13px;white-space:normal;-webkit-line-clamp:2;-webkit-box-orient:vertical}.rank-row{grid-template-columns:26px 36px minmax(0,1fr) 64px;gap:8px;padding:8px 10px}.rank-row .hrs{font-size:16px}.rank-row .applicant-avatar{width:36px;height:40px}}
 </style></head><body data-public-url="https://stpphoto.github.io/staffai/"><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script>
@@ -429,7 +496,7 @@ body{position:relative;background:#f4f6fc}
 
 <main id="login" class="login-wrap">
 <section class="login-card" aria-labelledby="loginTitle">
-<div class="login-cover"><div class="cover-brand"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt=""><div><strong>ระบบอาสาสมัครนักเรียน</strong><small>AI &amp; Metaverse Innovation Center · ผู้ดูแล</small></div></div>
+<div class="login-cover"><div class="cover-brand"><img src="./assets/logo-badge.svg" alt=""><div><strong>ระบบอาสาสมัครนักเรียน</strong><small>AI &amp; Metaverse Innovation Center · ผู้ดูแล</small></div></div>
 <div class="cover-art" aria-hidden="true"><span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span><span class="hub"><svg class="ico"><use href="#i-badge"/></svg></span>
 <span class="tile t1"><svg class="ico"><use href="#i-folder"/></svg></span><span class="tile t2"><svg class="ico"><use href="#i-calendar"/></svg></span><span class="tile t3"><svg class="ico"><use href="#i-users"/></svg></span><span class="tile t4"><svg class="ico"><use href="#i-clock"/></svg></span></div>
 <p class="cover-title">ระบบอาสาสมัครนักเรียน<span>ต้อนรับคณะดูงาน</span></p></div>
@@ -443,7 +510,7 @@ body{position:relative;background:#f4f6fc}
 
 <div id="desk" class="app" hidden>
 <aside class="sidebar">
-<div class="side-brand"><img src="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png" alt=""><div><strong>ระบบอาสาสมัครนักเรียน</strong><small>ต้อนรับคณะดูงาน · ผู้ดูแล</small></div></div>
+<div class="side-brand"><img src="./assets/logo-badge.svg" alt=""><div><strong>ระบบอาสาสมัครนักเรียน</strong><small>ต้อนรับคณะดูงาน · ผู้ดูแล</small></div></div>
 <nav class="side-nav" id="tabs" role="tablist" aria-label="เมนูผู้ดูแล" aria-orientation="vertical">
 <button class="nav-item" type="button" role="tab" id="tabOverview" aria-selected="true" aria-controls="overviewPanel"><svg class="ico" aria-hidden="true"><use href="#i-grid"/></svg><span>ภาพรวม</span></button>
 <button class="nav-item" type="button" role="tab" id="tabApps" aria-selected="false" aria-controls="appsPanel" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-folder"/></svg><span>ใบสมัคร<span class="long">สตาฟ</span></span><span class="badge" id="appsBadge"></span></button>
