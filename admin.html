@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="th"><head><title>ระบบอาสาสมัครนักเรียน | AI & Metaverse</title><script src="./bridge.js?v=1"></script><meta charset="utf-8"><base target="_self"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="./assets/logo-badge.svg"><link rel="apple-touch-icon" href="https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png"><meta name="theme-color" content="#1f5eff">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400..700&amp;family=Plus+Jakarta+Sans:wght@600..800&amp;family=Noto+Sans+Thai:wght@400..800&amp;display=swap" media="print" onload="this.media='all'">
 <style>
@@ -478,6 +479,10 @@ body{background:radial-gradient(900px 500px at 30% -10%,#e3eeff 0,transparent 70
 .login-card{border-radius:28px;overflow:hidden}
 .login-cover{background:radial-gradient(circle at 20% 15%,#ffffff40,transparent 45%),var(--grad)}
 .login-form .kicker{color:var(--blue)}
+/* PDF sheets: the round badge, larger and without the old square frame */
+.pdf-head{gap:18px}.pdf-head img{width:72px;height:72px;padding:0;border:0;border-radius:50%;object-fit:cover;flex:none}
+.pdf-head b{font-size:18px}.pdf-head small{font-size:13px}
+.cert-frame img{width:96px;height:96px;padding:0;border:0;border-radius:50%;background:none;object-fit:cover}
 .pdf-sort{display:inline-flex;align-items:center;gap:8px;margin:0;color:var(--muted);font-size:13px;white-space:nowrap}.pdf-sort select{min-height:38px;padding:6px 32px 6px 12px;border:1px solid #d6dfec;border-radius:12px;background:var(--soft);color:var(--ink);font:inherit;font-weight:600}
 @media(max-width:600px){.podium{gap:8px}.rank-panel .podium .applicant-avatar{width:50px;height:50px}.rank-panel .podium .p1 .applicant-avatar{width:62px;height:62px}.plinth b{font-size:21px}.p1 .plinth b{font-size:26px}.plinth span{font-size:11px}.podium .nm{display:-webkit-box;font-size:13px;white-space:normal;-webkit-line-clamp:2;-webkit-box-orient:vertical}.rank-row{grid-template-columns:26px 36px minmax(0,1fr) 64px;gap:8px;padding:8px 10px}.rank-row .hrs{font-size:16px}.rank-row .applicant-avatar{width:36px;height:40px}}
 </style></head><body data-public-url="https://stpphoto.github.io/staffai/"><script>document.body.dataset.appUrl=new URL("./",location.href).href;const checkinParam=new URLSearchParams(location.search).get("checkin")||"";document.body.dataset.checkin=/^VIS-[A-F0-9]{8}\.\d{6}$/.test(checkinParam)?checkinParam:"";</script>
@@ -890,7 +895,7 @@ function forgetSession(){try{sessionStorage.removeItem(SESSION_KEY)}catch{}}
 // Sheets are drawn at 4x (about 380 dpi on A4) so Thai text prints sharp; 2x looked soft on paper.
 const PDF_SCALE = 4;
 const PDF_LIBS=[['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js','sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H'],['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk']];
-const PDF_LOGO='https://fndrpwbjcreqsfhtciwd.supabase.co/storage/v1/object/public/website-images/logos/efd9e4a4-6966-4aeb-921a-bd8fb1e6d933.png';
+const PDF_LOGO='./assets/logo-badge.svg';
 let pdfLibs=null;
 function loadPdfLibs(){if(!pdfLibs)pdfLibs=Promise.all(PDF_LIBS.map(([src,sri])=>new Promise((ok,fail)=>{const s=document.createElement('script');s.src=src;s.integrity=sri;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>fail(Error('โหลดตัวสร้าง PDF ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง'));document.head.append(s)}))).catch(e=>{pdfLibs=null;throw e});return pdfLibs}
 const pdfName=(...parts)=>parts.filter(Boolean).join('-').replace(/[\\/:*?"<>|\s]+/g,'_')+'.pdf';
